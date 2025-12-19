@@ -1,0 +1,57 @@
+/* 全局设置 */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f4f4f9; /* 浅灰色背景 */
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center;     /* 垂直居中 */
+    height: 100vh;           /* 占满整个屏幕高度 */
+    margin: 0;
+}
+
+/* 卡片容器样式 */
+.container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;     /* 圆角 */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* 阴影效果 */
+    text-align: center;
+    width: 300px;
+}
+
+/* 头像样式 */
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;      /* 让图片变圆 */
+    border: 3px solid #6c5ce7;
+    margin-bottom: 15px;
+}
+
+/* 标题和文字 */
+h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* 按钮样式 */
+.btn {
+    display: block;
+    background-color: #6c5ce7;
+    color: white;
+    text-decoration: none;   /* 去掉下划线 */
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 10px 0;
+    transition: background 0.3s; /* 动画过渡 */
+}
+
+.btn:hover {
+    background-color: #5649c0; /* 鼠标悬停变色 */
+}
