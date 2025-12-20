@@ -1,5 +1,14 @@
+// 1. 在文件顶部预加载音效
+const clickSound = new Audio('assets/click.mp3');
+
 // 1. Email 点击监控（升级版：加入智能问候语）
 document.querySelector('a[href^="mailto:"]').addEventListener('click', function(e) {
+// 强制将进度归零（这样连续点击时，声音能立刻重头播放）
+    clickSound.currentTime = 0;
+    clickSound.play().catch(err => {
+        console.log("浏览器拦截了自动播放，需要先与页面产生交互", err);
+    });
+
     const now = new Date();
     const hour = now.getHours();
     let greeting = "";
