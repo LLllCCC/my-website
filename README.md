@@ -1,15 +1,21 @@
-Yopo 的个人主页
+# 🚀 Yopo's Personal Portal
+> 基于 Apple Design 风格打造的个人便当盒主页。
 
-这是一个基于 Apple 风格设计的个人门户，记录了我的 Web 开发学习历程。 已掌握技能：
+<p align="center">
+  <img src="https://capsule-render.vercel.app/render?type=soft&color=auto&height=200&section=header&text=Yopo%20Design&fontSize=70" width="100%" />
+</p>
 
+## 🌟 项目亮点
+-  **Apple Style UI**: 极简便当盒布局，磨砂玻璃导航栏。
+- ⚡ **交互反馈**: 带有物理打击感的按钮与自定义 Toast 弹窗。
+- 🕒 **实时动态**: JavaScript 驱动的实时时钟显示。
+- 📱 **响应式设计**: 完美适配手机、平板与桌面端。
 
+## 🛠️ 技术栈
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
-* Docker 容器化部署
-
-
-
-* Git 版本控制与 GitHub 协作
-
-
-
-* HTML5 \& CSS3 响应式布局
+## 📸 预览地址
+🔗 [yopo.edu.kg](https://yopo.edu.kg)
