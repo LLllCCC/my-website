@@ -1,4 +1,3 @@
-// --- 深色模式切换逻辑 ---
 const themeToggle = document.getElementById('theme-toggle');
 
 themeToggle.addEventListener('click', () => {
@@ -6,7 +5,7 @@ themeToggle.addEventListener('click', () => {
     const isLight = document.body.getAttribute('data-theme') === 'light';
     
     if (isLight) {
-        document.body.removeAttribute('data-theme'); // 移除 light 回到默认 dark
+        document.body.removeAttribute('data-theme'); // 回到深色模式
         showToast("已开启深色模式 🌙");
     } else {
         document.body.setAttribute('data-theme', 'light'); // 开启清新蓝模式
@@ -14,8 +13,6 @@ themeToggle.addEventListener('click', () => {
     }
     
     // 播放点击音效
-    if (typeof clickSound !== 'undefined') {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    }
+    clickSound.currentTime = 0;
+    clickSound.play().catch(e => {});
 });
