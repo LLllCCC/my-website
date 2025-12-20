@@ -1,5 +1,5 @@
 // 1. 在文件顶部预加载音效
-const clickSound = new Audio('./assets/click.mp3');
+const clickSound = new Audio('https://yopo.edu.kg/assets/click.mp3');
 
 // 1. Email 点击监控（升级版：加入智能问候语）
 document.querySelector('a[href^="mailto:"]').addEventListener('click', function(e) {
