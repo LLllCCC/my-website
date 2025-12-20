@@ -255,3 +255,34 @@ nav {
 .card-social:hover {
     box-shadow: 0 0 20px rgba(41, 151, 255, 0.5);
 }
+
+/* Toast 弹窗基础样式 */
+.toast-notification {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(44, 44, 46, 0.9); /* 深色磨砂感 */
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px; /* 圆润的长条状 */
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    animation: slideInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 消失动画 */
+.toast-notification.fade-out {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+    transition: all 0.5s ease;
+}
+
+/* 进入动画 */
+@keyframes slideInDown {
+    from { opacity: 0; transform: translate(-50%, -50px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
