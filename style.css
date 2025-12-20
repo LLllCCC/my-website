@@ -1,9 +1,36 @@
 /* 默认：深色模式 (Apple Dark) */
+/* 默认模式 (深色) 保持不变 */
 :root {
     --bg-color: #000000;
     --card-bg: #1c1c1e;
+    --card-hover: #2c2c2e;
     --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
     --nav-bg: rgba(0, 0, 0, 0.7);
+}
+
+/* 2. 浅色模式切换为你的清新蓝 (#98F5F9) */
+[data-theme="light"] {
+    --bg-color: #98F5F9;         /* 背景变为清新蓝 */
+    --card-bg: rgba(255, 255, 255, 0.6); /* 卡片半透明，更有呼吸感 */
+    --card-hover: rgba(255, 255, 255, 0.9);
+    --text-primary: #1d1d1f;     /* 文字变深色 */
+    --text-secondary: #48484a;
+    --nav-bg: rgba(152, 245, 249, 0.7); /* 导航栏也带一点蓝色的磨砂感 */
+}
+
+/* 3. 核心：确保 body 使用了变量，否则颜色不会变 */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: background-color 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.5s ease;
+}
+
+.card {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    backdrop-filter: blur(10px); /* 让浅色下的卡片有磨砂玻璃感 */
+    -webkit-backdrop-filter: blur(10px);
 }
 
 /* 切换后：浅色模式 (Apple Light) */
