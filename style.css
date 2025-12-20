@@ -1,57 +1,223 @@
 /* 全局设置 */
+/* --- 1. 全局变量与基础设置 (Apple Style) --- */
+:root {
+    --bg-color: #000000;
+    --card-bg: #1c1c1e;
+    --card-hover: #2c2c2e;
+    --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
+    --accent-color: #2997ff; /* Apple Blue */
+    --radius: 24px;
+    --transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f4f4f9; /* 浅灰色背景 */
-    display: flex;
-    justify-content: center; /* 水平居中 */
-    align-items: center;     /* 垂直居中 */
-    height: 100vh;           /* 占满整个屏幕高度 */
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
     margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased; /* 让字体更清晰 */
 }
-
-/* 卡片容器样式 */
+/* 隐藏滚动条但保留功能 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+/* --- 2. 导航栏 (磨砂玻璃效果) --- */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(20px); /* 核心：磨砂效果 */
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.nav-container {
+    max-width: 980px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+.logo {
+    font-weight: 600;
+    font-size: 1.2rem;
+    letter-spacing: -0.5px;
+}
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+.nav-links a:hover {
+    color: var(--text-primary);
+}
+/* --- 3. 核心布局 (Bento Grid / 便当盒布局) --- */
 .container {
-    background-color: white;
-    padding: 40px;
-    border-radius: 20px;     /* 圆角 */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* 阴影效果 */
-    text-align: center;
-    width: 300px;
+    max-width: 980px;
+    margin: 100px auto 50px;
+    padding: 20px;
 }
+/* 这是一个网格系统 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4列布局 */
+    grid-template-rows: auto;
+    gap: 20px;
+}
+/* 通用卡片样式 */
+.card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+}
+/* 鼠标悬停时的缩放效果 */
+.card:hover {
+    transform: scale(1.02);
+    background-color: var(--card-hover);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+/* --- 4. 各个特定卡片的布局 --- */
 
-/* 头像样式 */
+/* 个人介绍卡片 (占4列，即全宽) */
+.card-hero {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px;
+    background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+}
+.hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -2px;
+    background: linear-gradient(to right, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.hero-text p {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-top: 10px;
+}
 .avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;      /* 让图片变圆 */
-    border: 3px solid #6c5ce7;
-    margin-bottom: 15px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255,255,255,0.1);
+}
+/* 社交链接 (占1列) */
+.card-social {
+    grid-column: span 1;
+    aspect-ratio: 1/1; /* 正方形 */
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-primary);
 }
 
-/* 标题和文字 */
-h1 {
-    font-size: 24px;
-    color: #333;
+.card-social i {
+    font-size: 3rem;
     margin-bottom: 10px;
 }
-
-p {
-    color: #666;
-    margin-bottom: 30px;
+/* 项目展示 (占2列) */
+.card-project {
+    grid-column: span 2;
+    justify-content: flex-end;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    min-height: 250px;
+}
+/* 给项目卡片加一个黑色渐变遮罩，为了看清文字 */
+.card-project::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70%;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    z-index: 1;
+}
+.project-info {
+    z-index: 2;
+}
+.project-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.project-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+/* 地图/位置卡片 (占2列) */
+.card-map {
+    grid-column: span 2;
+    background: #2c3e50; /* 临时背景色，可以换成图片 */
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 5rem;
+}
+/* 技能卡片 (占4列) */
+.card-skills {
+    grid-column: span 4;
 }
 
-/* 按钮样式 */
-.btn {
-    display: block;
-    background-color: #6c5ce7;
-    color: white;
-    text-decoration: none;   /* 去掉下划线 */
-    padding: 10px 20px;
-    border-radius: 8px;
-    margin: 10px 0;
-    transition: background 0.3s; /* 动画过渡 */
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
 }
-
-.btn:hover {
-    background-color: #5649c0; /* 鼠标悬停变色 */
+.tag {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+/* --- 5. 响应式适配 (手机端变为单列) --- */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr; /* 手机上一行只放1个 */
+    }
+    .card-hero {
+        grid-column: span 1;
+        flex-direction: column;
+        text-align: center;
+        padding: 30px;
+    }
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+    .card-social, .card-project, .card-map, .card-skills {
+        grid-column: span 1; /* 所有卡片在手机上都占满宽度 */
+    }
+    .avatar {
+        margin-bottom: 20px;
+        width: 100px;
+        height: 100px;
+    }
 }
