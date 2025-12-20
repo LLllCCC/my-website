@@ -18,4 +18,4 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 ## 📸 预览地址
-🔗 [yopo.edu.kg](https://yopo.edu.kg)
+🔗 [yopo.888431.xyz](https://yopo.888431.xyz)

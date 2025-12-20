@@ -1,5 +1,5 @@
 // 1. 创建唯一的全局音频实例
-const clickSound = new Audio('https://yopo.edu.kg/assets/click.mp3');
+const clickSound = new Audio('https://yopo.888431.xyz/assets/click.mp3');
 clickSound.preload = 'auto'; // 强制浏览器预读文件
 
 // 2. 核心：通过全局点击激活音频上下文（兼容 iOS/Safari/Chrome）
