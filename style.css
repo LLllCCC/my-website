@@ -58,6 +58,8 @@ nav {
     margin-left: 25px;
     font-size: 0.9rem;
     transition: color 0.3s;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 .nav-links a:hover {
     color: var(--text-primary);
@@ -220,4 +222,15 @@ nav {
         width: 100px;
         height: 100px;
     }
+}
+
+/* 所有卡片悬停时增加微弱发光和位移 */
+.card:hover {
+    box-shadow: 0 10px 30px rgba(41, 151, 255, 0.2);
+    border: 1px solid rgba(41, 151, 255, 0.3);
+}
+
+/* GitHub 卡片专属蓝色光晕 */
+.card-social:hover {
+    box-shadow: 0 0 20px rgba(41, 151, 255, 0.5);
 }
