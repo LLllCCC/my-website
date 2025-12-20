@@ -18,8 +18,8 @@
             <div class="logo">YOPO</div>
             <div class="nav-links">
                 <a href="#">首页</a>
-                <a href="#">项目</a>
-                <a href="#">关于</a>
+                <a href="#my-projects">项目</a>
+                <a href="#my-skills">关于</a>
                 <span id="local-time" style="margin-left: 20px; color: var(--text-secondary); font-size: 0.85rem; font-family: monospace;"></span>
             </div>
         </div>
@@ -52,7 +52,7 @@
             </a>
 
             <!-- 4. 项目展示卡片 A -->
-            <div class="card card-project fade-in" style="background-image: url('assets/project-3.jpg'); animation-delay: 0.4s;">
+            <div id="my-projects" class="card card-project fade-in" style="background-image: url('assets/project-3.jpg'); animation-delay: 0.4s;">
                 <div class="project-info">
                     <div class="project-title">个人网站项目</div>
                     <div class="project-desc">基于 Cloudflare Pages 部署</div>
@@ -60,13 +60,13 @@
             </div>
 
             <!-- 5. 装饰性卡片/地图 -->
-            <div class="card card-map fade-in" style="background-image: url('assets/map.jpg'); background-size: cover; animation-delay: 0.5s;">
+            <a href="https://www.google.com/maps/place/Kyrgyzstan" target="_blank" class="card card-map fade-in" style="background-image: url('assets/map.jpg'); background-size: cover; animation-delay: 0.5s; text-decoration: none;">
                 <i class="ri-map-pin-2-fill" style="font-size: 2rem; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"></i>
                 <span style="font-size: 1rem; margin-top: 10px; color: #fff; font-weight: 600;">Kyrgyzstan</span>
-            </div>
+            </a>
 
             <!-- 6. 项目展示卡片 B -->
-            <div class="card card-project fade-in" style="background-image: url('assets/project-1.jpg'); animation-delay: 0.6s;">
+            <div id="my-skills" class="card card-project fade-in" style="background-image: url('assets/project-1.jpg'); animation-delay: 0.6s;">
                 <div class="project-info">
                     <div class="project-title">Docker 音乐服务器</div>
                     <div class="project-desc">成功部署 QQ 音乐 API 镜像，掌握容器化部署流程</div>

@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 /* 全局设置 */
 /* --- 1. 全局变量与基础设置 (Apple Style) --- */
 :root {
