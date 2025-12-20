@@ -1,9 +1,7 @@
 # 🚀 Yopo's Personal Portal
 > 基于 Apple Design 风格打造的个人便当盒主页。
 
-<p align="center">
-  <img src="https://capsule-render.vercel.app/render?type=soft&color=auto&height=200&section=header&text=Yopo%20Design&fontSize=70" width="100%" />
-</p>
+---
 
 ## 🌟 项目亮点
 -  **Apple Style UI**: 极简便当盒布局，磨砂玻璃导航栏。

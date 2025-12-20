@@ -1,3 +1,19 @@
+/* 默认：深色模式 (Apple Dark) */
+:root {
+    --bg-color: #000000;
+    --card-bg: #1c1c1e;
+    --text-primary: #f5f5f7;
+    --nav-bg: rgba(0, 0, 0, 0.7);
+}
+
+/* 切换后：浅色模式 (Apple Light) */
+[data-theme="light"] {
+    --bg-color: #f5f5f7;
+    --card-bg: #ffffff;
+    --text-primary: #1d1d1f;
+    --nav-bg: rgba(255, 255, 255, 0.7);
+}
+
 html {
     scroll-behavior: smooth;
 }
