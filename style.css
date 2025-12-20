@@ -113,7 +113,11 @@ nav {
     margin: 0;
     letter-spacing: -2px;
     background: linear-gradient(to right, #fff, #888);
-    -webkit-background-clip: text;
+    
+    /* 核心修复：同时保留前缀和标准写法 */
+    -webkit-background-clip: text; /* 兼容旧版 Chrome/Safari */
+    background-clip: text;         /* 标准属性写法 */
+    
     -webkit-text-fill-color: transparent;
 }
 .hero-text p {
