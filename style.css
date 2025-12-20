@@ -224,13 +224,26 @@ nav {
     }
 }
 
-/* 所有卡片悬停时增加微弱发光和位移 */
+/* --- 6. 交互特效 (整合版) --- */
+
+/* 所有卡片的通用悬停效果：上浮 + 阴影 */
 .card:hover {
-    box-shadow: 0 10px 30px rgba(41, 151, 255, 0.2);
+    transform: translateY(-8px) scale(1.02); /* 合并位移和微扩 */
+    background-color: var(--card-hover);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 10px 30px rgba(41, 151, 255, 0.2);
     border: 1px solid rgba(41, 151, 255, 0.3);
 }
 
-/* GitHub 卡片专属蓝色光晕 */
+/* 社交卡片点击时的即时反馈 (Active) */
+.card-social:active {
+    transform: scale(0.92) !important; /* 优先级最高，确保点击必缩小 */
+    background-color: #f5f5f7 !important;
+    color: #1c1c1e !important;
+    filter: brightness(1.3);
+    transition: transform 0.1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* GitHub 卡片悬停时的特殊蓝光 */
 .card-social:hover {
     box-shadow: 0 0 20px rgba(41, 151, 255, 0.5);
 }
