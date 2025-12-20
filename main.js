@@ -1,6 +1,15 @@
 // 1. 在文件顶部预加载音效
 const clickSound = new Audio('https://yopo.edu.kg/assets/click.mp3');
 
+// 2. 核心：增加一个“全局激活器”
+// 只要用户点一下页面任何地方，我们就让音频“静音播放”一次，骗过浏览器
+document.addEventListener('click', function() {
+    clickSound.play().then(() => {
+        clickSound.pause(); // 播放成功立刻暂停
+        clickSound.currentTime = 0;
+    }).catch(e => {}); 
+}, { once: true }); // 只执行一次
+
 // 1. Email 点击监控（升级版：加入智能问候语）
 document.querySelector('a[href^="mailto:"]').addEventListener('click', function(e) {
 // 强制将进度归零（这样连续点击时，声音能立刻重头播放）
