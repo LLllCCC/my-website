@@ -274,11 +274,51 @@ nav {
     animation: slideInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 消失动画 */
+/* --- 7. Toast 弹窗 (Apple 灵动岛质感版) --- */
+.toast-notification {
+    position: fixed;
+    top: 40px; 
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* 核心修改：透明磨砂效果 */
+    background: rgba(28, 28, 30, 0.75); 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px);
+    
+    color: white;
+    padding: 10px 24px;
+    border-radius: 30px; 
+    
+    /* 增加精致感的边框 */
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+    
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 10000;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    
+    /* 进场动画：参考 iOS 的顺滑感 */
+    animation: slideInDown 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* 渐隐消失样式（替换你框出的部分） */
 .toast-notification.fade-out {
     opacity: 0;
-    transform: translate(-50%, -20px);
+    transform: translate(-50%, -20px) scale(0.9);
     transition: all 0.5s ease;
+}
+
+/* 动画定义（替换你框出的部分） */
+@keyframes slideInDown {
+    from { 
+        opacity: 0; 
+        transform: translate(-50%, -60px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translate(-50%, 0) scale(1); 
+    }
 }
 
 /* 进入动画 */
