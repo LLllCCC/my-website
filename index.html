@@ -20,6 +20,7 @@
                 <a href="#">首页</a>
                 <a href="#">项目</a>
                 <a href="#">关于</a>
+                <span id="local-time" style="margin-left: 20px; color: var(--text-secondary); font-size: 0.85rem; font-family: monospace;"></span>
             </div>
         </div>
     </nav>
@@ -100,6 +101,26 @@
         // 如果你的系统没弹邮件窗口，下面这行会给你一个弹窗反馈
         // alert("正在尝试为您唤起邮件客户端..."); 
     });
+</script>
+
+<script>
+    function updateTime() {
+        const timeElement = document.getElementById('local-time');
+        const now = new Date();
+        
+        // 格式化时间为 HH:mm:ss
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // 每 1000 毫秒（1秒）调用一次函数
+    setInterval(updateTime, 1000);
+    
+    // 页面加载时立即执行一次，避免 1 秒的空白
+    updateTime();
 </script>
 
 </body>
