@@ -45,7 +45,7 @@
             </a>
 
             <!-- 3. 社交媒体卡片 (Email) -->
-            <a href="mailto:z.daisy-cn@foxmail.com" class="card card-social fade-in" style="background-color: #2997ff; color: white; animation-delay: 0.3s;">
+            <a href="mailto:3501168429@qq.com" class="card card-social fade-in" style="background-color: #2997ff; color: white; animation-delay: 0.3s;">
                 <i class="ri-mail-send-fill"></i>
                 <span style="font-size: 0.9rem; margin-top:5px;">Email</span>
             </a>
@@ -93,6 +93,14 @@
             <p>&copy; 2025 Yopo. Designed with Apple Style.</p>
         </footer>
     </div>
+
+<script>
+    document.querySelector('a[href^="mailto:"]').addEventListener('click', function(e) {
+        console.log("Email 按钮被点击了");
+        // 如果你的系统没弹邮件窗口，下面这行会给你一个弹窗反馈
+        // alert("正在尝试为您唤起邮件客户端..."); 
+    });
+</script>
 
 </body>
 </html>
