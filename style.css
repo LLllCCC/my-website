@@ -200,6 +200,9 @@ nav {
     box-shadow: none !important;  /* 强制去掉阴影 */
     overflow: visible; 
     perspective: 1000px;
+
+    /* ➕ 加上这一行，确保卡片永远是正方形 */
+    aspect-ratio: 1/1;
 }
 
 /* 核心修复：鼠标悬停时，容器依然要保持透明，防止出现“残影” */
