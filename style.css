@@ -167,3 +167,24 @@ nav {
 
 /* Email 卡片专用样式（替代内联 background-color 和 color） */
 .card-email { background-color: #2997ff; color: white; }
+
+/* 导航主题切换按钮样式（替代内联样式） */
+.nav-theme-toggle { font-size: 1.2rem; margin-left: 10px; text-decoration: none; }
+
+/* 本地时间显示样式 */
+.local-time { margin-left: 20px; color: var(--text-secondary); font-size: 0.85rem; font-family: monospace; }
+
+/* 社交卡片下方标签 */
+.card-label { font-size: 0.9rem; margin-top: 5px; display: block; }
+
+/* 地图链接的图标与说明 */
+.map-link { text-decoration: none; }
+.map-external-icon { position: absolute; top: 15px; right: 15px; font-size: 1.2rem; color: rgba(255,255,255,0.6); }
+.map-pin-icon { font-size: 2rem; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.map-caption { font-size: 1rem; margin-top: 10px; color: #fff; font-weight: 600; display: block; }
+
+/* 项目标题底部间距类 */
+.project-title--mb { margin-bottom: 5px; }
+
+/* 页脚样式 */
+.site-footer { text-align: center; margin-top: 50px; color: #555; font-size: 0.8rem; padding-bottom: 20px; }

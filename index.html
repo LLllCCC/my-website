@@ -26,8 +26,8 @@
                 <a href="#home">首页</a>
                 <a href="#my-projects">项目</a>
                 <a href="#skills">关于</a>
-                <a href="javascript:void(0);" id="theme-toggle" style="font-size: 1.2rem; margin-left: 10px; text-decoration: none;">🌓</a>
-                <span id="local-time" style="margin-left: 20px; color: var(--text-secondary); font-size: 0.85rem; font-family: monospace;"></span>
+                <a href="javascript:void(0);" id="theme-toggle" class="nav-theme-toggle">🌓</a>
+                <span id="local-time" class="local-time"></span>
             </div>
         </div>
     </nav>
@@ -49,13 +49,13 @@
             <!-- 2. 社交媒体卡片 (GitHub) -->
             <a href="https://github.com/LLllCCC" target="_blank" rel="noopener noreferrer" aria-label="打开 GitHub（在新标签页）" class="card card-social fade-in delay-02">
                 <i class="ri-github-fill"></i>
-                <span style="font-size: 0.9rem; margin-top:5px;">GitHub</span>
+                <span class="card-label">GitHub</span>
             </a>
 
             <!-- 3. 社交媒体卡片 (Email) -->
             <a href="mailto:3501168429@qq.com" class="card card-social fade-in delay-03 card-email" aria-label="发送邮件到 3501168429@qq.com">
                 <i class="ri-mail-send-fill"></i>
-                <span style="font-size: 0.9rem; margin-top:5px;">Email</span>
+                <span class="card-label">Email</span>
             </a>
 
             <!-- 4. 项目展示卡片 A -->
@@ -67,11 +67,11 @@
             </div>
 
             <!-- 5. 装饰性卡片/地图 -->
-            <a href="https://www.google.com/maps/place/Kyrgyzstan" target="_blank" rel="noopener noreferrer" class="card card-map fade-in bg-map delay-05" style="text-decoration: none;" aria-label="在新标签页中打开地图：Kyrgyzstan">
-                <i class="ri-external-link-line" style="position: absolute; top: 15px; right: 15px; font-size: 1.2rem; color: rgba(255,255,255,0.6);"></i>
+            <a href="https://www.google.com/maps/place/Kyrgyzstan" target="_blank" rel="noopener noreferrer" class="card card-map fade-in bg-map delay-05 map-link" aria-label="在新标签页中打开地图：Kyrgyzstan">
+                <i class="ri-external-link-line map-external-icon"></i>
 
-                <i class="ri-map-pin-2-fill" style="font-size: 2rem; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"></i>
-                <span style="font-size: 1rem; margin-top: 10px; color: #fff; font-weight: 600;">Kyrgyzstan</span>
+                <i class="ri-map-pin-2-fill map-pin-icon"></i>
+                <span class="map-caption">Kyrgyzstan</span>
             </a>
 
             <!-- 6. 项目展示卡片 B -->
@@ -84,7 +84,7 @@
 
             <!-- 7. 技能栈卡片 -->
             <div id="skills" class="card card-skills fade-in delay-07">
-                <div class="project-title" style="margin-bottom: 5px;">技术栈</div>
+                <div class="project-title project-title--mb">技术栈</div>
                 <div class="project-desc">我目前正在使用的工具</div>
                 <div class="skill-tags">
                     <span class="tag">HTML5</span>
@@ -99,7 +99,7 @@
         </div>
         
         <!-- 页脚 -->
-        <footer style="text-align: center; margin-top: 50px; color: #555; font-size: 0.8rem; padding-bottom: 20px;">
+        <footer class="site-footer">
             <p>&copy; 2025 Yopo. Designed with Apple Style.</p>
         </footer>
     </div>
