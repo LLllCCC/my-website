@@ -647,3 +647,100 @@ nav {
 .card-social-container:hover .card-social-flip {
     transform: rotateY(180deg) !important; /* ✅ 只允许旋转，不允许 scale */
 }
+
+
+/* --- 🖼️ 博客封面图样式优化 --- */
+
+/* 1. 重置文章卡片样式 */
+.article-card {
+    padding: 0 !important; /* 🔴 关键：去掉卡片默认的内边距，让图片能贴边 */
+    overflow: hidden;      /* 确保圆角不被图片遮挡 */
+    border-left: none;     /* 去掉原来的左侧装饰线，因为有图片了就不需要了 */
+    flex-direction: column;
+}
+
+/* 2. 封面图容器 */
+.article-cover {
+    width: 100%;
+    height: 220px; /* 固定高度，保证所有卡片整齐划一 */
+    overflow: hidden;
+    position: relative;
+}
+
+/* 3. 图片本身 */
+.article-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 🔴 关键：让图片填满容器且不变形 (类似 iPhone 相册) */
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* 4. 文字内容区域 (把刚才去掉的内边距加回在这里) */
+.article-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* 让文字区域填满剩余空间 */
+}
+
+/* 5. 悬停时的联动特效 */
+.article-card:hover .article-cover img {
+    transform: scale(1.05); /* 鼠标放上去，图片轻微放大 */
+}
+
+/* 手机端适配：图片稍微变矮一点 */
+@media (max-width: 768px) {
+    .article-cover { height: 180px; }
+    .article-body { padding: 20px; }
+}
+
+/* --- 📝 首页博客卡片样式美化 --- */
+
+.card-blog {
+    /* 1. 设置背景图 */
+    background-image: url('assets/map.jpg'); /* 👈 如果想换图，改这里的文件名即可 */
+    background-size: cover;
+    background-position: center;
+    border: none !important; /* 去掉边框，像照片一样 */
+    
+    /* 2. 布局设置：让文字沉底 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+    position: relative;
+    text-decoration: none;
+    overflow: hidden;
+}
+
+/* 3. 添加黑色渐变遮罩 (关键步骤！) */
+/* 如果没有这个，背景图太亮时就看不清白色的字了 */
+.card-blog::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* 底部深黑，顶部透明 */
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* 4. 文字样式优化 */
+.card-blog .project-info {
+    z-index: 2; /* 确保文字浮在遮罩上面 */
+    position: relative;
+}
+
+.card-blog .project-title {
+    color: #fff !important;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.3); /* 加一点文字阴影 */
+}
+
+.card-blog .project-desc {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 0.95rem;
+}
+
