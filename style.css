@@ -95,6 +95,17 @@ nav {
 .card-social { grid-column: span 1; aspect-ratio: 1/1; justify-content: center; align-items: center; text-decoration: none; }
 .card-social i { font-size: 3.5rem; color: var(--text-primary); }
 
+/* 鼠标停止时的图标动画（当用户在卡片上静止一段时间，图标开始脉动） */
+.card-social.stopped i {
+    animation: social-pulse 1.2s ease-in-out infinite;
+    transform-origin: center;
+}
+@keyframes social-pulse {
+    0% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+    50% { transform: translateY(-8px) scale(1.06); filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25)); }
+    100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+}
+
 /* --- 7. 项目卡片文字清晰度修复 (解决截图 94b4d0 问题) --- */
 .card-project {
     grid-column: span 2; min-height: 280px; justify-content: flex-end;
@@ -117,3 +128,42 @@ nav {
     .hero-text h1 { font-size: 2.5rem; }
     .card-project, .card-social { grid-column: span 1; }
 }
+
+/* 简单的淡入效果，用于页面加载时的卡片 */
+.fade-in {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: fadeInUp 520ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Toast 通知样式 */
+.toast-notification {
+    position: fixed;
+    left: 50%; transform: translateX(-50%);
+    bottom: 28px;
+    background: rgba(0,0,0,0.85);
+    color: #fff; padding: 10px 16px; border-radius: 12px;
+    font-size: 0.95rem; z-index: 9999; box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    transition: transform 180ms ease, opacity 180ms ease;
+}
+.toast-notification.fade-out { opacity: 0; transform: translateX(-50%) translateY(8px); }
+
+/* 把内联 animation-delay 提取为类，便于复用与维护 */
+.delay-01 { animation-delay: 0.1s; }
+.delay-02 { animation-delay: 0.2s; }
+.delay-03 { animation-delay: 0.3s; }
+.delay-04 { animation-delay: 0.4s; }
+.delay-05 { animation-delay: 0.5s; }
+.delay-06 { animation-delay: 0.6s; }
+.delay-07 { animation-delay: 0.7s; }
+
+/* 背景图类：把 background-image 从 HTML 内联移动到 CSS */
+.bg-project-1 { background-image: url('assets/project-1.jpg'); background-size: cover; background-position: center; }
+.bg-project-3 { background-image: url('assets/project-3.jpg'); background-size: cover; background-position: center; }
+.bg-map { background-image: url('assets/map.jpg'); background-size: cover; background-position: center; }
+
+/* Email 卡片专用样式（替代内联 background-color 和 color） */
+.card-email { background-color: #2997ff; color: white; }

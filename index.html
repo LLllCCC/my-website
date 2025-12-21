@@ -7,7 +7,13 @@
     <!-- 引入 Remix Icon 图标库 -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css">
+    <!-- 基本 CSP：允许自身域与 jsdelivr CDN（根据需要调整） -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' https://cdn.jsdelivr.net; object-src 'none';">
+
+    <!-- 将主题初始化移至外部脚本（保证在样式加载前运行） -->
+    <script src="theme-init.js"></script>
+
+    <link rel="stylesheet" href="style.css">
     
 </head>
 <body>
@@ -31,7 +37,7 @@
         <div class="grid">
             
             <!-- 1. 超大个人介绍卡片 -->
-            <div id="home" class="card card-hero fade-in" style="animation-delay: 0.1s;">
+            <div id="home" class="card card-hero fade-in delay-01" >
                 <div class="hero-text">
                     <h1>创意无限，<br>代码不止。</h1>
                     <p>你好，我是 Yopo。一名热爱 Web 开发的探索者。</p>
@@ -40,20 +46,20 @@
                 <img src="assets/my-avatar.jpg" alt="Yopo's Avatar" class="avatar">
             </div>
 
-             <!-- 2. 社交媒体卡片 (GitHub) -->
-            <a href="https://github.com/LLllCCC" target="_blank" class="card card-social fade-in" style="animation-delay: 0.2s;">
+            <!-- 2. 社交媒体卡片 (GitHub) -->
+            <a href="https://github.com/LLllCCC" target="_blank" rel="noopener noreferrer" aria-label="打开 GitHub（在新标签页）" class="card card-social fade-in delay-02">
                 <i class="ri-github-fill"></i>
                 <span style="font-size: 0.9rem; margin-top:5px;">GitHub</span>
             </a>
 
             <!-- 3. 社交媒体卡片 (Email) -->
-            <a href="mailto:3501168429@qq.com" class="card card-social fade-in" style="background-color: #2997ff; color: white; animation-delay: 0.3s;">
+            <a href="mailto:3501168429@qq.com" class="card card-social fade-in delay-03 card-email" aria-label="发送邮件到 3501168429@qq.com">
                 <i class="ri-mail-send-fill"></i>
                 <span style="font-size: 0.9rem; margin-top:5px;">Email</span>
             </a>
 
             <!-- 4. 项目展示卡片 A -->
-            <div id="my-projects" class="card card-project fade-in" style="background-image: url('assets/project-3.jpg'); animation-delay: 0.4s;">
+            <div id="my-projects" class="card card-project fade-in bg-project-3 delay-04">
                 <div class="project-info">
                     <div class="project-title">个人网站项目</div>
                     <div class="project-desc">基于 Cloudflare Pages 部署</div>
@@ -61,7 +67,7 @@
             </div>
 
             <!-- 5. 装饰性卡片/地图 -->
-            <a href="https://www.google.com/maps/place/Kyrgyzstan" target="_blank" class="card card-map fade-in" style="background-image: url('assets/map.jpg'); background-size: cover; animation-delay: 0.5s; text-decoration: none;">
+            <a href="https://www.google.com/maps/place/Kyrgyzstan" target="_blank" rel="noopener noreferrer" class="card card-map fade-in bg-map delay-05" style="text-decoration: none;" aria-label="在新标签页中打开地图：Kyrgyzstan">
                 <i class="ri-external-link-line" style="position: absolute; top: 15px; right: 15px; font-size: 1.2rem; color: rgba(255,255,255,0.6);"></i>
 
                 <i class="ri-map-pin-2-fill" style="font-size: 2rem; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"></i>
@@ -69,7 +75,7 @@
             </a>
 
             <!-- 6. 项目展示卡片 B -->
-            <div id="my-skills" class="card card-project fade-in" style="background-image: url('assets/project-1.jpg'); animation-delay: 0.6s;">
+            <div id="my-skills" class="card card-project fade-in bg-project-1 delay-06">
                 <div class="project-info">
                     <div class="project-title">Docker 音乐服务器</div>
                     <div class="project-desc">成功部署 QQ 音乐 API 镜像，掌握容器化部署流程</div>
@@ -77,7 +83,7 @@
             </div>
 
             <!-- 7. 技能栈卡片 -->
-            <div id="skills" class="card card-skills fade-in" style="animation-delay: 0.7s;">
+            <div id="skills" class="card card-skills fade-in delay-07">
                 <div class="project-title" style="margin-bottom: 5px;">技术栈</div>
                 <div class="project-desc">我目前正在使用的工具</div>
                 <div class="skill-tags">
