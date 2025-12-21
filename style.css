@@ -338,3 +338,193 @@ nav {
 }
 
 
+/* --- 📝 博客页面专用样式 --- */
+
+/* 调整博客页面的容器宽度，适合阅读 */
+.blog-container {
+    max-width: 800px; /* 比主页窄一点，阅读体验更好 */
+}
+
+/* 博客头部 */
+.blog-header {
+    margin-bottom: 50px;
+    text-align: center;
+}
+.blog-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.blog-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* 文章卡片 */
+.article-card {
+    margin-bottom: 30px; /* 文章之间的间距 */
+    align-items: flex-start; /* 左对齐 */
+    border-left: 4px solid var(--accent-color); /* 左侧加一条装饰线 */
+    cursor: default; /* 文章卡片不需要浮起特效 */
+}
+
+/* 覆盖全局 hover 特效：文章卡片不要浮起太夸张 */
+.article-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+.article-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-family: monospace;
+}
+
+.article-title {
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+    color: var(--text-primary);
+}
+
+.article-excerpt {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.read-more {
+    text-decoration: none;
+    color: var(--accent-color); /* 使用你的蓝色主题色 */
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    transition: margin-left 0.3s;
+}
+
+.read-more i {
+    margin-left: 5px;
+}
+
+.read-more:hover {
+    margin-left: 5px; /* 箭头移动特效 */
+    text-decoration: underline;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .blog-header h1 { font-size: 2.2rem; }
+    .article-title { font-size: 1.3rem; }
+}
+
+
+/* --- 📝 文章详情页专用样式 --- */
+
+/* 限制文章宽度，居中显示，防止一行字太长读着累 */
+.blog-post-container {
+    max-width: 720px; 
+    margin-top: 100px;
+}
+
+/* 头部信息 */
+.post-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.post-meta {
+    font-family: monospace;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+.post-tag {
+    background: rgba(41, 151, 255, 0.1);
+    color: var(--accent-color);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+.post-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 10px;
+    background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 正文排版 (核心) */
+.article-content {
+    line-height: 1.8; /* 字间距宽松一点 */
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    padding: 40px !important; /* 内边距大一点 */
+    cursor: default;
+    /* 去掉悬停浮起效果 */
+    transform: none !important; 
+    box-shadow: none !important;
+    border: 1px solid var(--border-color);
+}
+/* 禁止文章卡片悬停变色 */
+.article-content:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* 正文里的标题 */
+.article-content h2 {
+    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* 正文里的引用块 */
+.article-content blockquote {
+    border-left: 4px solid var(--accent-color);
+    margin: 20px 0;
+    padding-left: 20px;
+    font-style: italic;
+    color: var(--text-secondary);
+    background: rgba(128, 128, 128, 0.05);
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+}
+
+/* 底部按钮 */
+.post-footer {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+.back-btn {
+    display: inline-block;
+    padding: 10px 30px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.back-btn:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .post-title { font-size: 1.8rem; }
+    .article-content { padding: 20px !important; font-size: 1rem; }
+}
+
+
