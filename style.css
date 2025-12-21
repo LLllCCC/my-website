@@ -216,7 +216,7 @@ nav {
     height: 100%;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
     cursor: pointer;
     text-decoration: none;
     border-radius: 28px;
@@ -295,3 +295,43 @@ nav {
     animation: avatar-breathe 4s infinite ease-in-out;
     border: 4px solid rgba(255,255,255,0.2);
 }
+
+
+/* --- 🚀 最终版悬停逻辑：动静分离 --- */
+
+/* 1. 全局卡片速度 (保持你喜欢的慢动作) */
+.card {
+    /* 建议 0.8s，既有飘浮感又不拖沓 */
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* 2. 只给“普通卡片” (排除 GitHub/Email) 添加悬停特效 */
+.card:not(.card-social-container):hover {
+    /* 动作：大幅上浮 */
+    transform: translateY(-10px) scale(1.02);
+    
+    /* 视觉：强烈的深色阴影 */
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    
+    /* 边框高亮 */
+    border-color: rgba(255, 255, 255, 0.3);
+    
+    /* 确保浮在最上面 */
+    z-index: 10;
+}
+
+/* 3. 浅色模式下的普通卡片适配 */
+[data-theme="light"] .card:not(.card-social-container):hover {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 4. 翻转卡片容器 (GitHub/Email) 特殊处理 */
+.card-social-container:hover {
+    /* 强制“原地不动”，不上浮，无阴影，只触发内部的翻转 */
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+
