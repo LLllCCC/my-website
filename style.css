@@ -188,3 +188,26 @@ nav {
 
 /* 页脚样式 */
 .site-footer { text-align: center; margin-top: 50px; color: #555; font-size: 0.8rem; padding-bottom: 20px; }
+
+/* --- 修复 Email 卡片悬停看不见的问题 --- */
+
+/* 1. 强制 Email 卡片在任何时候都保持蓝色底、白字 */
+a[href^="mailto:"] {
+    background-color: #2997ff !important;
+    color: white !important;
+    border: none !important; /* 确保没有边框干扰 */
+}
+
+/* 2. 鼠标悬停时：变成深一点的蓝色 (而不是变成通用的白色背景) */
+a[href^="mailto:"]:hover {
+    background-color: #0071e3 !important; /* Apple 风格的深蓝点击态 */
+    color: white !important;
+    transform: translateY(-8px) scale(1.02); /* 保持上浮效果 */
+    box-shadow: 0 20px 40px rgba(41, 151, 255, 0.4); /* 增加蓝色光晕 */
+}
+
+/* 3. 鼠标点击时：按压感 */
+a[href^="mailto:"]:active {
+    transform: scale(0.95) !important;
+    background-color: #005bb5 !important; /* 更深的按压蓝 */
+}
