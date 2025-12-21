@@ -42,10 +42,7 @@ nav {
     justify-content: space-between; align-items: center; padding: 0 20px;
 }
 
-/* 当导航用于博客页时，使用更窄的容器以对齐博客内容区 */
-.nav-container.narrow {
-    max-width: 800px;
-}
+/* .nav-container.narrow 已移除 — 导航保持统一容器宽度以简化样式 */
 .nav-links a {
     color: var(--text-primary); /* 使用 Primary 确保文字清晰 */
     text-decoration: none; margin-left: 20px; font-size: 0.95rem; font-weight: 500;

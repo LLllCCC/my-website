@@ -11,31 +11,31 @@ function loadNavbar() {
     // 这里给 <a> 标签加上了 style="color: inherit; text-decoration: none;"
     // 这就是解决主页蓝色链接的关键！无论在哪里，它都长这样。
     // =========================================
-    const logoHtml = `
-        <div class="logo">
-            <a href="/index.html">YOPO</a>
-            <span>/</span>
-            <a href="/blog.html">BLOG</a>
-        </div>
-    `;
+    let logoHtml = '';
+    if (isBlogSection) {
+        logoHtml = `
+            <div class="logo">
+                <a href="/index.html">YOPO</a>
+                <span>/</span>
+                <a href="/blog.html">BLOG</a>
+            </div>
+        `;
+    } else {
+        // 主页只显示站点名，避免显示博客专属面包屑
+        logoHtml = `
+            <div class="logo">
+                <a href="/index.html">YOPO</a>
+            </div>
+        `;
+    }
 
     // 3. 定义右上角的菜单 (根据页面自动变，但这不影响左边的样式)
     let linksHtml = '';
 
-    if (isBlogSection) {
-        // [场景 A：在博客区域] -> 右边显示回首页
-        linksHtml = `
-            <a href="/index.html">首页</a>
-        `;
-    } else {
-        // [场景 B：在主页] -> 右边显示完整的锚点链接
-        // 注意：这里的链接 CSS 已经在 style.css 里定义好了，所以不用加内联样式
-        linksHtml = `
-            <a href="/index.html">首页</a>
-            <a href="#my-projects">项目</a>
-            <a href="#skills">关于</a>
-        `;
-    }
+    // 只保留回首页的链接，移除“项目”和“关于”项及相关链接
+    linksHtml = `
+        <a href="/index.html">首页</a>
+    `;
 
     // 4. 组装最终 HTML — 对博客页面使用更窄的容器以与文章宽度对齐
     const containerClass = isBlogSection ? 'nav-container narrow' : 'nav-container';
