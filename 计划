@@ -5,24 +5,3 @@
 
 给博客加个 “RSS 订阅” 或者 “评论区”
 
-/* --- 🚀 强制修复左上角 Logo 链接颜色 --- */
-
-/* 1. 针对 .logo 里面的所有 a 标签 */
-.logo a {
-    color: var(--text-primary) !important;  /* 强制使用你的主题文字颜色 (白/黑) */
-    text-decoration: none !important;       /* 强制去掉下划线 */
-    border: none !important;                /* 确保没有边框 */
-    transition: opacity 0.2s;
-}
-
-/* 2. 鼠标放上去时的效果 */
-.logo a:hover {
-    opacity: 0.6;                           /* 鼠标悬停变淡一点 */
-    color: var(--text-primary) !important;  /* 悬停时也保持颜色不变 */
-}
-
-/* 3. 中间的斜杠分隔符 */
-.logo span {
-    color: var(--text-secondary) !important; /* 斜杠用淡一点的颜色 */
-}
-

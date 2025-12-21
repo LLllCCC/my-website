@@ -202,30 +202,31 @@ nav {
 .site-footer { text-align: center; margin-top: 50px; color: #555; font-size: 0.8rem; padding-bottom: 20px; }
 
 
-/* --- 🚀 3D 翻转卡片特效 (修复残影版) --- */
+/* --- 🚀 3D 翻转卡片核心引擎 (通用版：适配 GitHub & Email) --- */
 
-/* 1. 容器：彻底隐身，只作为 3D 舞台 */
+/* 1. 舞台容器：隐身且稳定 */
 .card-social-container {
     padding: 0;
-    border: none !important;      /* 强制去掉边框 */
-    background: transparent !important; /* 强制去掉背景 */
-    box-shadow: none !important;  /* 强制去掉阴影 */
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
     overflow: visible; 
-    perspective: 1000px;
-
-    /* ➕ 加上这一行，确保卡片永远是正方形 */
-    aspect-ratio: 1/1;
+    perspective: 1000px; /* 3D 景深 */
+    aspect-ratio: 1/1;   /* 强制正方形 */
 }
 
-/* 核心修复：鼠标悬停时，容器依然要保持透明，防止出现“残影” */
-.card-social-container:hover {
+/* 悬停/聚焦时保持透明，防止残影 */
+/* 🛠️ 修复：强制卡片悬停时“原地不动”，只做翻转，不变大 */
+.card-social-container:hover,
+.card-social-container:focus-within {
     background-color: transparent !important;
     box-shadow: none !important;
-    /* 注意：这里不写 transform，让它继承 .card:hover 的上浮效果是可以的，
-       只要背景是透明的，你就看不到那个不动的方块了 */
+    
+    /* 👇 加上这一行，卡片就不会“变大”了 👇 */
+    transform: none !important; 
 }
 
-/* 2. 翻转主体 (保持不变) */
+/* 2. 翻转主体 (增加硬件加速与 Safari 修复) */
 .card-social-flip {
     width: 100%;
     height: 100%;
@@ -235,24 +236,37 @@ nav {
     cursor: pointer;
     text-decoration: none;
     border-radius: 28px;
+    
+    /* 🛠️ 性能优化：开启 GPU 硬件加速，让动画如丝般顺滑 */
+    will-change: transform; 
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
-/* 鼠标悬停翻转 */
-.card-social-container:hover .card-social-flip {
+/* 3. 触发翻转的条件 (合并了 hover 和 键盘 focus) */
+/* 逻辑：当鼠标悬停 OR 键盘焦点在内部时，旋转 180度 */
+.card-social-container:hover .card-social-flip,
+.card-social-container:focus-within .card-social-flip {
     transform: rotateY(180deg);
 }
 
-/* 3. 正面与背面通用样式 (修复直角的核心) */
+/* 4. 正面与背面通用物理属性 */
 .flip-front, .flip-back {
     position: absolute;
     width: 100%;
     height: 100%;
+    
+    /* 🛠️ 视觉修复：隐藏背面 + 字体抗锯齿 */
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
     
-    /* 核心修复：强制圆角并裁剪，防止变方 */
     border-radius: 28px !important; 
     overflow: hidden;
+    
+    /* 🍎 Safari 专属修复：防止翻转时圆角失效溢出 */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
     
     display: flex;
     flex-direction: column;
@@ -261,24 +275,28 @@ nav {
     font-size: 0.9rem;
     font-weight: 500;
     
+    /* 基础外观 */
     background-color: var(--card-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    
+    /* 🛠️ 缝隙修复：给 1px 透明边框，防止旋转时边缘出现杂色 */
+    border: 1px solid transparent; 
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* 4. 正面 */
+/* 5. 正面特有样式 */
 .flip-front i {
     font-size: 3.5rem;
     margin-bottom: 8px;
 }
 
-/* 5. 背面 */
+/* 6. 背面特有样式 */
 .flip-back {
     transform: rotateY(180deg);
     background-color: var(--card-hover);
 }
 
+/* 7. GitHub 头像样式 */
 .mini-avatar {
     width: 60px;
     height: 60px;
@@ -287,11 +305,11 @@ nav {
     border: 3px solid rgba(255,255,255,0.2);
 }
 
-/* --- Email 卡片配色 --- */
+/* --- 📧 Email 卡片专用配色 (覆盖通用样式) --- */
 .email-card .flip-front {
     background-color: #2997ff;
     color: white;
-    border: none;
+    border: none; /* Email 卡片不需要边框 */
 }
 .email-card .flip-back {
     background-color: #0071e3;
@@ -602,3 +620,30 @@ nav {
 }
 
 
+/* --- 🚨 紧急修复：Email 卡片尺寸与防抖 --- */
+
+/* 1. 全局盒模型修复：防止加边框导致变大 */
+* {
+    box-sizing: border-box;
+}
+
+/* 2. 统一 Email 卡片的边框厚度 */
+/* 之前写了 border: none，这会导致它比 GitHub 卡片小一圈，翻转时会跳动。
+   现在给它加一个“隐形”的 1px 边框，保持尺寸完全一致。 */
+.email-card .flip-front,
+.email-card .flip-back {
+    border: 1px solid rgba(255, 255, 255, 0.01) !important; /* 几乎透明的边框 */
+    background-clip: padding-box; /* 防止背景色溢出到边框 */
+}
+
+/* 3. 强行按住卡片：禁止任何形式的变大或位移 */
+.card-social-container:hover,
+.card-social-container:focus-within {
+    transform: none !important; /* 🚫 禁止上浮/位移 */
+    z-index: auto !important;   /* 🚫 禁止层级变化 */
+}
+
+/* 4. 强行按住内部元素：防止内部缩放 */
+.card-social-container:hover .card-social-flip {
+    transform: rotateY(180deg) !important; /* ✅ 只允许旋转，不允许 scale */
+}
