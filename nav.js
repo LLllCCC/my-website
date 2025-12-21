@@ -13,11 +13,9 @@ function loadNavbar() {
     // =========================================
     const logoHtml = `
         <div class="logo">
-            <a href="/index.html" style="text-decoration: none; color: inherit; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.6'" onmouseout="this.style.opacity='1'">YOPO</a>
-            
-            <span style="margin: 0 5px; opacity: 0.4;">/</span>
-            
-            <a href="/blog.html" style="text-decoration: none; color: inherit; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.6'" onmouseout="this.style.opacity='1'">BLOG</a>
+            <a href="/index.html">YOPO</a>
+            <span>/</span>
+            <a href="/blog.html">BLOG</a>
         </div>
     `;
 
@@ -39,10 +37,11 @@ function loadNavbar() {
         `;
     }
 
-    // 4. 组装最终 HTML
+    // 4. 组装最终 HTML — 对博客页面使用更窄的容器以与文章宽度对齐
+    const containerClass = isBlogSection ? 'nav-container narrow' : 'nav-container';
     const navHTML = `
     <nav>
-        <div class="nav-container">
+        <div class="${containerClass}">
             ${logoHtml}
 
             <div class="nav-links">

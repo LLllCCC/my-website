@@ -41,10 +41,25 @@ nav {
     max-width: 980px; margin: 0 auto; display: flex;
     justify-content: space-between; align-items: center; padding: 0 20px;
 }
+
+/* 当导航用于博客页时，使用更窄的容器以对齐博客内容区 */
+.nav-container.narrow {
+    max-width: 800px;
+}
 .nav-links a {
     color: var(--text-primary); /* 使用 Primary 确保文字清晰 */
     text-decoration: none; margin-left: 20px; font-size: 0.95rem; font-weight: 500;
 }
+
+/* 强制修复左上角 Logo 链接颜色，确保全站一致 */
+.logo a {
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    border: none !important;
+    transition: opacity 0.2s;
+}
+.logo a:hover { opacity: 0.6; color: var(--text-primary) !important; }
+.logo span { color: var(--text-secondary) !important; }
 
 /* --- 4. Bento Grid 核心系统 --- */
 .container { max-width: 980px; margin: 100px auto 50px; padding: 20px; }
