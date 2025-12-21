@@ -75,18 +75,19 @@
             </div>
 
             <!-- 5. 装饰性卡片/地图 -->
-<a href="blog.html" class="card card-blog fade-in delay-05">
-                <div class="project-info">
-                    <div class="project-title">我的博客</div>
-                    <div class="project-desc">分享技术与生活随笔</div>
-                    
-                    <div style="margin-top: 12px;">
-                        <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; color: white; font-size: 0.75rem; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);">
-                            Latest Post ✨
-                        </span>
-                    </div>
-                </div>
-            </a>
+    <a href="blog.html" id="home-blog-card" class="card card-blog fade-in delay-05">
+        <div class="project-info">
+            <div class="project-title" id="home-blog-title">我的博客</div>
+            
+            <div class="project-desc" id="home-blog-desc">分享技术与生活随笔</div>
+            
+            <div style="margin-top: 12px;">
+                <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; color: white; font-size: 0.75rem; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);">
+                    Latest Post ✨
+                </span>
+            </div>
+        </div>
+    </a>
 
             <!-- 6. 项目展示卡片 B -->
             <div id="my-skills" class="card card-project fade-in bg-project-1 delay-06">
@@ -117,6 +118,8 @@
         <script src="/footer.js"></script>
     </div>
 
-    <script src="/nav.js"></script><script src="main.js"></script>
+    <script src="/nav.js"></script>
+    <script src="blog-data.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

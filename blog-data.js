@@ -3,6 +3,14 @@
 // 1. 文章数据列表 (以后写新文章，就在这里加一个 { ... })
 const blogPosts = [
     {
+        title: "web 开发",
+        date: "2025-12-22",
+        desc: "当当当",
+        link: "#", // 链接到具体的文章文件
+        tags: ["GG"],
+        cover: "assets/project-2.jpg" // 👈 新增这一行：封面图路径
+    },
+    {
         title: "如何用 HTML 和 CSS 打造 Apple 风格主页",
         date: "2025-12-21",
         desc: "记录了我从零开始搭建个人主页的过程，包括 Bento Grid 布局、深色模式适配以及那些有趣的 CSS 3D 翻转特效...",

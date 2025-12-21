@@ -119,3 +119,34 @@ if (themeToggle) {
                 el.addEventListener('blur', () => { if (timer) { clearTimeout(timer); timer = null; } el.classList.remove('stopped'); });
             });
         })();
+
+        // --- 🚀 首页博客卡片自动更新逻辑 ---
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. 检查数据是否存在 (blogPosts 来自 blog-data.js)
+    if (typeof blogPosts === 'undefined' || blogPosts.length === 0) return;
+
+    // 2. 获取最新的一篇文章 (数组的第0个)
+    const latestPost = blogPosts[0];
+
+    // 3. 找到主页的卡片元素
+    const card = document.getElementById('home-blog-card');
+    const title = document.getElementById('home-blog-title');
+    const desc = document.getElementById('home-blog-desc');
+
+    // 4. 如果元素都存在，就更新它们
+    if (card && title && desc) {
+        // 更新背景图
+        if (latestPost.cover) {
+            card.style.backgroundImage = `url('${latestPost.cover}')`;
+        }
+        
+        // 更新标题
+        title.textContent = latestPost.title;
+
+        // 更新简介 (如果没有简介，就显示默认文字)
+        desc.textContent = latestPost.desc || "点击阅读最新文章";
+        
+        // 可选：让卡片直接跳转到最新文章，而不是博客列表
+        // card.href = latestPost.link; 
+    }
+});
