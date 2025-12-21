@@ -48,17 +48,31 @@
             </div>
 
             <!-- 2. 社交媒体卡片 (GitHub) -->
-            <a href="https://github.com/LLllCCC" target="_blank" rel="noopener noreferrer" aria-label="打开 GitHub（在新标签页）" class="card card-social fade-in delay-02">
+    <div class="card card-social-container fade-in" style="animation-delay: 0.2s;">
+        <a href="https://github.com/LLllCCC" target="_blank" class="card-social-flip">
+            <div class="flip-front">
                 <i class="ri-github-fill"></i>
-                <span class="card-label">GitHub</span>
-            </a>
+                <span>GitHub</span>
+            </div>
+            <div class="flip-back">
+                <img src="https://avatars.githubusercontent.com/u/102663675?v=4" alt="Avatar" class="mini-avatar">
+                <span>LLllCCC</span>
+            </div>
+        </a>
+    </div>
 
-            <!-- 3. 社交媒体卡片 (Email) -->
-            <a href="mailto:3501168429@qq.com" class="card card-social fade-in delay-03 card-email" aria-label="发送邮件到 3501168429@qq.com">
+    <div class="card card-social-container fade-in" style="animation-delay: 0.3s;">
+        <a href="mailto:z.daisy-cn@foxmail.com" class="card-social-flip email-card">
+            <div class="flip-front">
                 <i class="ri-mail-send-fill"></i>
-                <span class="card-label">Email</span>
-            </a>
-
+                <span>Email</span>
+            </div>
+            <div class="flip-back email-back">
+                <i class="ri-at-line" style="font-size: 2rem; margin-bottom: 5px;"></i>
+                <span style="font-size: 0.8rem; word-break: break-all;">z.daisy-cn<br>@foxmail.com</span>
+            </div>
+        </a>
+    </div>
             <!-- 4. 项目展示卡片 A -->
             <div id="my-projects" class="card card-project fade-in bg-project-3 delay-04">
                 <div class="project-info">

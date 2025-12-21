@@ -189,25 +189,114 @@ nav {
 /* 页脚样式 */
 .site-footer { text-align: center; margin-top: 50px; color: #555; font-size: 0.8rem; padding-bottom: 20px; }
 
-/* --- 修复 Email 卡片悬停看不见的问题 --- */
 
-/* 1. 强制 Email 卡片在任何时候都保持蓝色底、白字 */
-a[href^="mailto:"] {
-    background-color: #2997ff !important;
-    color: white !important;
-    border: none !important; /* 确保没有边框干扰 */
+/* --- 🚀 3D 翻转卡片特效 --- */
+
+/* 1. 容器设置：清除原来的 padding，让内部元素撑开 */
+.card-social-container {
+    padding: 0; 
+    border: none;
+    background: transparent; /* 背景交给内部的 flip 处理 */
+    overflow: visible; /* 允许 3D 效果溢出 */
+    perspective: 1000px; /* 3D 视距，让翻转更有立体感 */
 }
 
-/* 2. 鼠标悬停时：变成深一点的蓝色 (而不是变成通用的白色背景) */
-a[href^="mailto:"]:hover {
-    background-color: #0071e3 !important; /* Apple 风格的深蓝点击态 */
-    color: white !important;
-    transform: translateY(-8px) scale(1.02); /* 保持上浮效果 */
-    box-shadow: 0 20px 40px rgba(41, 151, 255, 0.4); /* 增加蓝色光晕 */
+/* 2. 翻转主体 */
+.card-social-flip {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d; /* 开启 3D 空间 */
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
 }
 
-/* 3. 鼠标点击时：按压感 */
-a[href^="mailto:"]:active {
-    transform: scale(0.95) !important;
-    background-color: #005bb5 !important; /* 更深的按压蓝 */
+/* 鼠标悬停时：旋转 180 度 */
+.card-social-container:hover .card-social-flip {
+    transform: rotateY(180deg);
+}
+
+/* 3. 正面与背面的通用样式 */
+.flip-front, .flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* 核心：背面不可见 */
+    -webkit-backface-visibility: hidden;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    
+    /* 继承原来的卡片质感 */
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* 4. 正面样式 */
+.flip-front i {
+    font-size: 3.5rem;
+    margin-bottom: 8px;
+}
+
+/* 5. 背面样式 (默认旋转 180 度藏在后面) */
+.flip-back {
+    transform: rotateY(180deg);
+    background-color: var(--card-hover); /* 背面稍微亮一点 */
+}
+
+.mini-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 8px;
+    border: 3px solid rgba(255,255,255,0.2);
+}
+
+/* --- 特定优化：Email 卡片配色保持 --- */
+
+/* Email 正面：保持蓝色 */
+.email-card .flip-front {
+    background-color: #2997ff;
+    color: white;
+    border: none;
+}
+
+/* Email 背面：保持深蓝，且文字更小以适应长邮箱 */
+.email-card .flip-back {
+    background-color: #0071e3;
+    color: white;
+    border: none;
+    padding: 10px;
+    text-align: center;
+}
+
+/* --- 🚀 补回：头像呼吸灯特效 --- */
+@keyframes avatar-breathe {
+    0% { box-shadow: 0 0 8px rgba(41, 151, 255, 0.3); border-color: rgba(255, 255, 255, 0.2); }
+    50% { box-shadow: 0 0 25px rgba(41, 151, 255, 0.7); border-color: rgba(41, 151, 255, 0.5); }
+    100% { box-shadow: 0 0 8px rgba(41, 151, 255, 0.3); border-color: rgba(255, 255, 255, 0.2); }
+}
+
+@keyframes avatar-breathe-light {
+    0% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.4); border-color: rgba(0, 0, 0, 0.1); }
+    50% { box-shadow: 0 0 25px rgba(255, 255, 255, 1); border-color: rgba(255, 255, 255, 0.8); }
+    100% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.4); border-color: rgba(0, 0, 0, 0.1); }
+}
+
+/* 应用动画到头像 */
+.avatar {
+    animation: avatar-breathe 4s infinite ease-in-out;
+    transition: all 0.5s ease;
+}
+
+/* 浅色模式切换动画颜色 */
+[data-theme="light"] .avatar {
+    animation: avatar-breathe-light 4s infinite ease-in-out;
 }
