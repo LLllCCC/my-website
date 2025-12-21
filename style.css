@@ -525,3 +525,28 @@ nav {
 }
 
 
+/* --- 🌗 自动切换日/月图标 --- */
+
+/* 1. 图标基础样式 */
+.theme-icon-img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 2. 默认模式 (深色模式)：显示月亮，隐藏太阳 */
+.icon-sun { display: none; }
+.icon-moon { display: inline-block; }
+
+/* 3. 浅色模式：显示太阳，隐藏月亮 */
+[data-theme="light"] .icon-sun { display: inline-block; }
+[data-theme="light"] .icon-moon { display: none; }
+
+/* 4. 悬停旋转特效 */
+.nav-theme-toggle:hover .theme-icon-img {
+    transform: rotate(30deg) scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+}
+
+
