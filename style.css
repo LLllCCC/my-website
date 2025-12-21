@@ -547,9 +547,9 @@ nav {
 }
 
 
-/* --- 🌗 自动切换日/月图标 --- */
+/* --- 🌗 自动切换日/月图标 (修复深色模式看不见的问题) --- */
 
-/* 1. 图标基础样式 */
+/* 1. 图标基础设置 */
 .theme-icon-img {
     width: 24px;
     height: 24px;
@@ -557,18 +557,36 @@ nav {
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 2. 默认模式 (深色模式)：显示月亮，隐藏太阳 */
-.icon-sun { display: none; }
-.icon-moon { display: inline-block; }
+/* 2. 默认模式 (深色模式) */
+/* 逻辑：背景是黑的，我们要显示“太阳”图标，并把它反转成白色 */
+.icon-sun { 
+    display: inline-block; 
+    filter: invert(1); /* 核心代码：把黑色图片变成白色！ */
+}
+.icon-moon { 
+    display: none; 
+}
 
-/* 3. 浅色模式：显示太阳，隐藏月亮 */
-[data-theme="light"] .icon-sun { display: inline-block; }
-[data-theme="light"] .icon-moon { display: none; }
+/* 3. 浅色模式 (清新蓝) */
+/* 逻辑：背景是亮的，我们要显示“月亮”图标，颜色保持黑色 */
+[data-theme="light"] .icon-sun { 
+    display: none; 
+}
+[data-theme="light"] .icon-moon { 
+    display: inline-block; 
+    filter: none; /* 不需要反转，保持原色 */
+}
 
 /* 4. 悬停旋转特效 */
 .nav-theme-toggle:hover .theme-icon-img {
     transform: rotate(30deg) scale(1.1);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    /* 发光效果适配：深色模式发白光，浅色模式不发光或发黑光 */
+    filter: invert(1) drop-shadow(0 0 5px rgba(255,255,255,0.8));
+}
+/* 浅色模式下悬停的特殊处理 */
+[data-theme="light"] .nav-theme-toggle:hover .theme-icon-img {
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.2));
+    transform: rotate(-30deg) scale(1.1);
 }
 
 
