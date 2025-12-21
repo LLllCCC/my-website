@@ -395,6 +395,28 @@ nav {
     margin-bottom: 20px;
 }
 
+.article-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* 博客列表元数据 (日期 + 标签) */
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tag-small {
+    font-size: 0.75rem;
+    background: rgba(41, 151, 255, 0.1);
+    color: var(--accent-color);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
 .read-more {
     text-decoration: none;
     color: var(--accent-color); /* 使用你的蓝色主题色 */
