@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Yopo 的主页 - Web 开发与生活随笔</title>
-
-    <meta name="description" content="你好，我是 Yopo。这是一款基于 Apple 设计风格的个人主页，分享 HTML/CSS 前端开发、Docker 运维教程以及生活中的思维碎片。">
-
-    <meta name="keywords" content="Yopo, 个人主页, Web 开发, HTML5, CSS3, Docker 教程, 博客, 个人网站, Cloudflare Pages">
-
+    <meta name="description" content="你好，我是 Yopo。分享 HTML/CSS 前端开发、Docker 运维教程以及生活中的思维碎片。">
+    <meta name="keywords" content="Yopo, 个人主页, Web 开发, Docker 教程">
     <meta name="author" content="Yopo">
 
     <meta property="og:type" content="website">
@@ -19,15 +16,19 @@
     <meta property="og:image" content="https://yopo.888431.xyz/assets/map.jpg">
 
     <link rel="icon" href="assets/my-avatar.jpg" type="image/jpeg">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet">
+
     <script src="theme-init.js"></script>
-    <link rel="stylesheet" href="style.css?v=2">
-    
+
+    <link rel="stylesheet" href="style.css?v=3">
+
     <style>
     @media (max-width: 768px) {
-        /* 1. 强制单栏布局，让卡片变宽 */
+        /* 1. 强制让所有卡片变成一列 */
         .grid { 
-            grid-template-columns: 1fr !important; 
+            display: flex !important;
+            flex-direction: column !important;
             gap: 20px !important;
             padding: 0 20px !important;
         }
@@ -45,10 +46,10 @@
         .card-hero .avatar { margin-bottom: 25px !important; }
         .hero-text h1 { font-size: 2.2rem !important; margin-top: 10px !important; }
 
-        /* 3. 让所有卡片都占满一整行 */
-        .card-project, .card-social, .card-blog, .card-skills, #my-skills, .card-social-container { 
-            grid-column: span 1 !important; 
+        /* 3. 让所有卡片都占满宽度 */
+        .card, .card-project, .card-social-container, .card-blog, .card-skills { 
             width: 100% !important;
+            grid-column: auto !important;
         }
 
         /* 4. 修复图片卡片的高度 */
@@ -56,60 +57,59 @@
             min-height: 240px !important;
             background-attachment: scroll !important;
         }
+        
+        /* 5. 允许上下滑，禁止左右乱晃 */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            position: relative;
+        }
     }
     </style>
 </head>
 
 <body>
 
-    <!-- 导航栏 -->
-<div id="global-nav"></div>
+    <div id="global-nav"></div>
 
-    <!-- 主内容区 -->
     <div class="container">
         <div class="grid">
             
-            <!-- 1. 超大个人介绍卡片 -->
             <div id="home" class="card card-hero fade-in delay-01" >
                 <div class="hero-text">
                     <h1>创意无限，<br>代码不止。</h1>
                     <p>你好，我是 Yopo。一名热爱 Web 开发的探索者。</p>
                 </div>
-                <!-- 这里的头像可以换成你自己的图片链接 -->
                 <img src="assets/my-avatar.jpg" alt="Yopo's Avatar" class="avatar">
             </div>
 
-            <!-- 2. 社交媒体卡片 (GitHub) -->
-    <div class="card card-social-container fade-in" style="animation-delay: 0.2s;">
-        <a href="https://github.com/LLllCCC" target="_blank" class="card-social-flip">
-            <div class="flip-front">
-                <i class="ri-github-fill"></i>
-                <span>GitHub</span>
+            <div class="card card-social-container fade-in" style="animation-delay: 0.2s;">
+                <a href="https://github.com/LLllCCC" target="_blank" class="card-social-flip">
+                    <div class="flip-front">
+                        <i class="ri-github-fill"></i>
+                        <span>GitHub</span>
+                    </div>
+                    <div class="flip-back">
+                        <img src="assets/github-back.jpg" alt="Avatar" class="mini-avatar">
+                        <span>LLllCCC</span>
+                    </div>
+                </a>
             </div>
-            <div class="flip-back">
-                <img src="assets/github-back.jpg" alt="Avatar" class="mini-avatar">
-                <span>LLllCCC</span>
-            </div>
-        </a>
-    </div>
 
-    <div class="card card-social-container fade-in" style="animation-delay: 0.3s;">
-        <a href="mailto:z.daisy-cn@foxmail.com" class="card-social-flip email-card">
-            <div class="flip-front">
-                <i class="ri-mail-send-fill"></i>
-                <span>Email</span>
+            <div class="card card-social-container fade-in" style="animation-delay: 0.3s;">
+                <a href="mailto:z.daisy-cn@foxmail.com" class="card-social-flip email-card">
+                    <div class="flip-front">
+                        <i class="ri-mail-send-fill"></i>
+                        <span>Email</span>
+                    </div>
+                    <div class="flip-back email-back">
+                        <i class="ri-at-line" style="font-size: 2rem; margin-bottom: 5px;"></i>
+                        <span style="font-size: 0.75rem; opacity: 0.9; margin-bottom: 2px;">点击此卡片发送Email</span>
+                        <span style="font-size: 0.8rem; word-break: break-all; font-weight: 600;">z.daisy-cn<br>@foxmail.com</span>
+                    </div>
+                </a>
             </div>
-        <div class="flip-back email-back">
-            <i class="ri-at-line" style="font-size: 2rem; margin-bottom: 5px;"></i>
-            
-            <span style="font-size: 0.75rem; opacity: 0.9; margin-bottom: 2px;">点击此卡片发送Email</span>
-            
-            <span style="font-size: 0.8rem; word-break: break-all; font-weight: 600;">z.daisy-cn<br>@foxmail.com</span>
-        </div>
-        </a>
-    </div>
 
-<!-- 4. 项目展示卡片 A -->
             <div id="my-projects" class="card card-project fade-in bg-project-3 delay-04">
                 <div class="project-info">
                     <div class="project-title">个人网站项目</div>
@@ -117,22 +117,18 @@
                 </div>
             </div>
 
-            <!-- 5. 装饰性卡片/地图 -->
-    <a href="blog.html" id="home-blog-card" class="card card-blog fade-in delay-05">
-        <div class="project-info">
-            <div class="project-title" id="home-blog-title">我的博客</div>
-            
-            <div class="project-desc" id="home-blog-desc">分享技术与生活随笔</div>
-            
-            <div style="margin-top: 12px;">
-                <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; color: white; font-size: 0.75rem; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);">
-                    Latest Post ✨
-                </span>
-            </div>
-        </div>
-    </a>
+            <a href="blog.html" id="home-blog-card" class="card card-blog fade-in delay-05">
+                <div class="project-info">
+                    <div class="project-title" id="home-blog-title">我的博客</div>
+                    <div class="project-desc" id="home-blog-desc">分享技术与生活随笔</div>
+                    <div style="margin-top: 12px;">
+                        <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; color: white; font-size: 0.75rem; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);">
+                            Latest Post ✨
+                        </span>
+                    </div>
+                </div>
+            </a>
 
-            <!-- 6. 项目展示卡片 B -->
             <div id="my-skills" class="card card-project fade-in bg-project-1 delay-06">
                 <div class="project-info">
                     <div class="project-title">Docker 音乐服务器</div>
@@ -140,7 +136,6 @@
                 </div>
             </div>
 
-            <!-- 7. 技能栈卡片 -->
             <div id="skills" class="card card-skills fade-in delay-07">
                 <div class="project-title project-title--mb">技术栈</div>
                 <div class="project-desc">我目前正在使用的工具</div>
@@ -156,7 +151,6 @@
 
         </div>
         
-        <!-- 页脚 -->
         <div id="global-footer"></div>
         <script src="/footer.js"></script>
     </div>
