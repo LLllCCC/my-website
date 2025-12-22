@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>科普：云服务器到底是做什么的？ - Yopo 的博客</title>
+
+    <link rel="icon" href="../assets/my-avatar.jpg" type="image/jpeg"> 
+    <link rel="stylesheet" href="../style.css"> 
+    <script src="../theme-init.js"></script> 
+    <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet">
+</head> 
+
+<body>
+    <div id="global-nav"></div>
+
+    <div class="container blog-post-container fade-in">
+        
+        <header class="post-header">
+            <div class="post-meta">
+                <span class="post-date">2025-12-23</span>
+                <span class="post-tag">科普</span>
+                <span class="post-tag">服务器</span>
+            </div>
+            <h1 class="post-title">云服务器到底是做什么的？</h1>
+        </header>
+
+        <div class="article-content card">
+            <p>很多刚接触开发的朋友都会问：“云服务器（VPS）到底是什么？它和我的电脑有什么区别？”今天这篇博客就来聊聊这个话题。</p>
+            
+            <h2>1. 简单来说，它是什么？</h2>
+            <p>简单来说，云服务器就是一台<strong>“永不关机、放在机房里、你可以远程控制的高性能电脑”</strong>。</p>
+            <p>你可以把它想象成你在网上<strong>租</strong>了一台电脑。这台电脑不在你家里，而是在阿里云、腾讯云或 AWS 的数据中心里，但这台电脑的控制权完全归你。</p>
+
+            <img src="../assets/project-2.jpg" alt="服务器示意图" style="width: 100%; border-radius: 12px; margin: 20px 0;">
+
+            <h2>2. 它能拿来做什么？</h2>
+            <p>对于开发者来说，云服务器的用途简直是无限的：</p>
+            <ul>
+                <li><strong>搭建网站和博客：</strong> 像 WordPress、企业官网或论坛，都需要服务器来托管。</li>
+                <li><strong>部署后端应用：</strong> 比如我之前的 Docker 音乐服务器，放在云端就能 24 小时为我提供 API 服务。</li>
+                <li><strong>私人云盘：</strong> 搭建 Nextcloud，拥有一个完全属于自己的“Dropbox”，不限速，更隐私。</li>
+                <li><strong>游戏服务器：</strong> 喊朋友一起玩 Minecraft 或幻兽帕鲁？你自己开个服，规则你定。</li>
+                <li><strong>跑自动化脚本：</strong> 比如每天早上 8 点自动发邮件提醒天气，或者自动爬虫，它会一直帮你盯着。</li>
+            </ul>
+
+            <h2>3. 为什么不用家里的电脑？</h2>
+            <p>你可能会问：“这些我电脑上也能做啊？” 区别主要在以下几点：</p>
+            <blockquote>
+                <strong>1. 永不关机：</strong> 它是 7x24 小时在线的。<br>
+                <strong>2. 公网 IP：</strong> 它拥有独立的公网 IP，全世界任何地方都能直接访问，而家里的宽带通常没有。<br>
+                <strong>3. 稳定性：</strong> 机房有多条光纤和备用电源，极少断网断电。
+            </blockquote>
+
+            <h2>4. 总结</h2>
+            <p>云服务器就是你在互联网上的<strong>“房地产”</strong>。你可以拿它盖房子（做网站）、开仓库（存数据）或者开派对（做游戏服）。对于想进阶全栈开发的同学来说，拥有一台云服务器是折腾的开始。</p>
+        </div>
+
+        <div class="post-footer">
+            <a href="../blog.html" class="back-btn">返回文章列表</a>
+        </div>
+
+    </div> 
+    
+    <div id="global-footer"></div>
+    <script src="../footer.js"></script>
+    <script src="../nav.js"></script>   
+    <script src="../main.js"></script>
+</body>
+</html>

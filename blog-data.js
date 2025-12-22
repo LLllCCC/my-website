@@ -2,13 +2,14 @@
 
 // 1. 文章数据列表 (以后写新文章，就在这里加一个 { ... })
 const blogPosts = [
+// 👇 新文章放在第一个 (自动成为最新文章)
     {
-        title: "web 开发",
-        date: "2025-12-22",
-        desc: "当当当",
-        link: "#", // 链接到具体的文章文件
-        tags: ["GG"],
-        cover: "assets/project-2.jpg" // 👈 新增这一行：封面图路径
+        title: "科普：云服务器到底是做什么的？",
+        date: "2025-12-23",
+        desc: "简单通俗地解释什么是云服务器 (VPS)，它能用来搭建博客、游戏服、私人云盘，以及它与家用电脑的区别。",
+        link: "posts/post-2.html",  // 对应刚才创建的文件
+        tags: ["科普", "服务器"],
+        cover: "assets/project-2.jpg" // 封面图
     },
     {
         title: "如何用 HTML 和 CSS 打造 Apple 风格主页",
