@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
+<>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -22,6 +22,42 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="theme-init.js"></script>
     <link rel="stylesheet" href="style.css?v=2">
+    
+    <style>
+    @media (max-width: 768px) {
+        /* 1. 强制单栏布局，让卡片变宽 */
+        .grid { 
+            grid-template-columns: 1fr !important; 
+            gap: 20px !important;
+            padding: 0 20px !important;
+        }
+
+        /* 2. 英雄卡片：头像在上，文字在下 */
+        .card-hero { 
+            display: flex !important;
+            flex-direction: column-reverse !important; 
+            text-align: center !important; 
+            padding: 40px 20px !important; 
+            height: auto !important;
+        }
+        
+        /* 调整头像和文字的间距 */
+        .card-hero .avatar { margin-bottom: 25px !important; }
+        .hero-text h1 { font-size: 2.2rem !important; margin-top: 10px !important; }
+
+        /* 3. 让所有卡片都占满一整行 */
+        .card-project, .card-social, .card-blog, .card-skills, #my-skills, .card-social-container { 
+            grid-column: span 1 !important; 
+            width: 100% !important;
+        }
+
+        /* 4. 修复图片卡片的高度 */
+        .card-project, .card-blog {
+            min-height: 240px !important;
+            background-attachment: scroll !important;
+        }
+    }
+    </style>
 </head>
 
 <body>
