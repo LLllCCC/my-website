@@ -171,13 +171,16 @@ async function searchMusic() {
     resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7;">🔍 正在通过 Docker 容器抓取数据...</div>`;
 
     try {
+        // 请求 API (带上 token)
         const response = await fetch(myApiUrl + encodeURIComponent(keyword) + "&token=yopo666");
         const data = await response.json();
         
+        // 判断数据是否有效
         if (data && data.result && data.result.songs) {
             const song = data.result.songs[0];
-            // 构造跳转链接：搜索结果点击后跳转到网易云搜索页
-            const jumpUrl = `https://music.163.com/#/search/m/?s=${encodeURIComponent(song.name)}`;
+            
+            // 生成 QQ 音乐跳转链接 (歌名 + 歌手)
+            const jumpUrl = `https://y.qq.com/n/ryqq/search?w=${encodeURIComponent(song.name + ' ' + song.artists[0].name)}`;
 
             resultDiv.innerHTML = `
                 <a href="${jumpUrl}" target="_blank" style="text-decoration: none; color: inherit;">
@@ -185,22 +188,29 @@ async function searchMusic() {
                          onmouseover="this.style.background='rgba(255,255,255,0.15)'" 
                          onmouseout="this.style.background='rgba(255,255,255,0.1)'">
                         <div>
-                            <p style="margin: 0 0 5px 0; font-size: 1.1rem;">✅ <strong>${song.name}</strong></p>
+                            <p style="margin: 0 0 5px 0; font-size: 1.1rem;">
+                                <i class="ri-music-fill" style="color: #2ecc71;"></i> 
+                                <strong>${song.name}</strong>
+                            </p>
                             <p style="margin: 0; font-size: 0.85rem; opacity: 0.7;">🎤 ${song.artists[0].name} · 💿 ${song.album.name}</p>
                         </div>
-                        <i class="ri-arrow-right-up-line" style="font-size: 1.2rem; opacity: 0.5;"></i>
+                        <div style="text-align:right;">
+                             <span style="font-size: 0.75rem; background: #2ecc71; color: white; padding: 2px 8px; border-radius: 4px;">QQ音乐</span>
+                             <i class="ri-arrow-right-s-line" style="font-size: 1.2rem; opacity: 0.5; vertical-align: middle;"></i>
+                        </div>
                     </div>
                 </a>
-                <p style="font-size: 10px; opacity: 0.4; margin-top: 8px; text-align: right;">点击卡片可跳转播放 🎧</p>
             `;
             showToast("搜索成功！");
         } else {
             resultDiv.innerHTML = "❌ 没找到呢，换个词试试？";
         }
     } catch (error) {
+        console.error(error); // 打印错误方便调试
         resultDiv.innerHTML = "🛑 容器连接异常，请检查后端。";
     }
 }
+
 // 4. 绑定点击事件
 const searchBtn = document.getElementById('search-btn');
 if (searchBtn) {
