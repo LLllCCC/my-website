@@ -171,7 +171,7 @@ async function searchMusic() {
     resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7;">🔍 正在通过 Docker 容器抓取数据...</div>`;
 
     try {
-        const response = await fetch(myApiUrl + encodeURIComponent(keyword));
+        const response = await fetch(myApiUrl + encodeURIComponent(keyword) + "&token=yopo666");
         const data = await response.json();
         
         if (data && data.result && data.result.songs) {
