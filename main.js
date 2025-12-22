@@ -168,7 +168,8 @@ async function searchMusic() {
         return;
     }
 
-    resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7;">🔍 正在通过 Docker 容器抓取数据...</div>`;
+    // 显示加载状态
+    resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7;">🔍 正在呼叫网易云 API...</div>`;
 
     try {
         // 请求 API (带上 token)
@@ -178,35 +179,46 @@ async function searchMusic() {
         // 判断数据是否有效
         if (data && data.result && data.result.songs) {
             const song = data.result.songs[0];
-            
-            // 生成 QQ 音乐跳转链接 (歌名 + 歌手)
-            const jumpUrl = `https://y.qq.com/n/ryqq/search?w=${encodeURIComponent(song.name + ' ' + song.artists[0].name)}`;
+            const songId = song.id; // 获取歌曲 ID，这是播放的关键
 
+            // 生成网易云播放器代码 (iframe)
+            // height=86 是标准高度，auto=1 尝试自动播放
+            const playerHtml = `
+                <iframe 
+                    frameborder="no" border="0" marginwidth="0" marginheight="0" 
+                    width="100%" height="86" 
+                    src="//music.163.com/outchain/player?type=2&id=${songId}&auto=1&height=66">
+                </iframe>
+            `;
+
+            // 渲染卡片
             resultDiv.innerHTML = `
-                <a href="${jumpUrl}" target="_blank" style="text-decoration: none; color: inherit;">
-                    <div class="fade-in" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" 
-                         onmouseover="this.style.background='rgba(255,255,255,0.15)'" 
-                         onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-                        <div>
-                            <p style="margin: 0 0 5px 0; font-size: 1.1rem;">
-                                <i class="ri-music-fill" style="color: #2ecc71;"></i> 
-                                <strong>${song.name}</strong>
-                            </p>
-                            <p style="margin: 0; font-size: 0.85rem; opacity: 0.7;">🎤 ${song.artists[0].name} · 💿 ${song.album.name}</p>
+                <div class="fade-in" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 5px;">
+                        <div style="font-size: 0.9rem; opacity: 0.9;">
+                            <i class="ri-netease-cloud-music-fill" style="color: #E60026;"></i> 
+                            正在播放: <strong>${song.name}</strong>
                         </div>
-                        <div style="text-align:right;">
-                             <span style="font-size: 0.75rem; background: #2ecc71; color: white; padding: 2px 8px; border-radius: 4px;">QQ音乐</span>
-                             <i class="ri-arrow-right-s-line" style="font-size: 1.2rem; opacity: 0.5; vertical-align: middle;"></i>
+                        <div style="font-size: 0.8rem; opacity: 0.6;">
+                            ${song.artists[0].name}
                         </div>
                     </div>
-                </a>
+
+                    <div style="overflow: hidden; border-radius: 8px;">
+                        ${playerHtml}
+                    </div>
+
+                    <p style="font-size: 10px; opacity: 0.4; margin-top: 6px; text-align: center;">
+                        注：版权歌曲可能无法播放，属于正常现象
+                    </p>
+                </div>
             `;
-            showToast("搜索成功！");
+            showToast(`🎵 准备播放：${song.name}`);
         } else {
-            resultDiv.innerHTML = "❌ 没找到呢，换个词试试？";
+            resultDiv.innerHTML = "❌ 没找到这首歌，换个词试试？";
         }
     } catch (error) {
-        console.error(error); // 打印错误方便调试
+        console.error("Search Error:", error);
         resultDiv.innerHTML = "🛑 容器连接异常，请检查后端。";
     }
 }
