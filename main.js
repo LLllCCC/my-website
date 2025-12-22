@@ -150,3 +150,58 @@ document.addEventListener("DOMContentLoaded", function() {
         // card.href = latestPost.link; 
     }
 });
+
+
+// --- 🚀 音乐搜索 API 联动逻辑 ---
+
+// 1. 定义你的云端 API 地址
+const myApiUrl = "https://yopolute-my-docker-test.hf.space/search?key="; 
+
+// 2. 搜索函数
+async function searchMusic() {
+    const input = document.getElementById('music-input');
+    const resultDiv = document.getElementById('search-results');
+    const keyword = input.value.trim();
+
+    if (!keyword) {
+        showToast("请输入歌名内容哦！");
+        return;
+    }
+
+    resultDiv.innerHTML = "🔍 正在从云端抓取数据...";
+
+    try {
+        const response = await fetch(myApiUrl + keyword);
+        const data = await response.json();
+        
+        // 3. 处理返回的 JSON 数据
+        if (data.result && data.result.songs) {
+            const song = data.result.songs[0];
+            resultDiv.innerHTML = `
+                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                    <p>✅ 找到歌曲：<strong>${song.name}</strong></p>
+                    <p>🎤 歌手：${song.artists[0].name}</p>
+                    <p>💿 专辑：${song.album.name}</p>
+                    <small>数据来源：你的 Hugging Face Docker 容器</small>
+                </div>
+            `;
+            showToast("搜索成功！✨");
+        } else {
+            resultDiv.innerHTML = "❌ 未找到相关歌曲。";
+        }
+    } catch (error) {
+        console.error("搜索失败:", error);
+        resultDiv.innerHTML = "🛑 API 连接失败，请检查 Docker 容器是否运行。";
+        showToast("连接 API 失败 😢");
+    }
+}
+
+// 4. 绑定点击事件
+const searchBtn = document.getElementById('search-btn');
+if (searchBtn) {
+    searchBtn.addEventListener('click', searchMusic);
+    // 支持回车搜索
+    document.getElementById('music-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchMusic();
+    });
+}
