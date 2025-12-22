@@ -182,30 +182,42 @@ async function searchMusic() {
             // 1. 先默认用第一首歌初始化播放器
             updatePlayer(songs[0]);
 
+
             // 2. 生成下方的“歌曲选择列表”
             let listHtml = '<div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">';
             
             songs.forEach((song, index) => {
-                // 处理单引号，防止报错
                 const safeSongName = song.name.replace(/'/g, "\\'"); 
                 const safeArtist = song.artists[0].name.replace(/'/g, "\\'");
                 
+                // 生成网易云官网链接
+                const linkUrl = `https://music.163.com/#/song?id=${song.id}`;
+
                 listHtml += `
-                    <div class="song-item" 
-                         onclick="playSong(${song.id}, '${safeSongName}', '${safeArtist}')"
-                         style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s;"
+                    <div class="song-item fade-in" 
+                         style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s;"
                          onmouseover="this.style.background='rgba(255,255,255,0.15)'" 
                          onmouseout="this.style.background='rgba(255,255,255,0.05)'">
                         
-                        <div style="flex: 1;">
+                        <div style="flex: 1; cursor: pointer;" onclick="playSong(${song.id}, '${safeSongName}', '${safeArtist}')">
                             <div style="font-size: 0.9rem; font-weight: bold;">${index + 1}. ${song.name}</div>
                             <div style="font-size: 0.75rem; opacity: 0.6;">${song.artists[0].name} - ${song.album.name}</div>
                         </div>
-                        <i class="ri-play-circle-line" style="font-size: 1.5rem; opacity: 0.5;"></i>
+
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <a href="${linkUrl}" target="_blank" title="去网易云官网听" style="text-decoration: none; color: inherit; opacity: 0.5; transition: 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">
+                                <i class="ri-external-link-line" style="font-size: 1.2rem;"></i>
+                            </a>
+                            
+                            <div onclick="playSong(${song.id}, '${safeSongName}', '${safeArtist}')" style="cursor: pointer; opacity: 0.8;">
+                                <i class="ri-play-circle-line" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
             listHtml += '</div>';
+         
 
             // 把列表加到播放器下面
             const playerBox = document.getElementById('current-player-box');
