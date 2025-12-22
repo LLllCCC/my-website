@@ -171,27 +171,34 @@ async function searchMusic() {
     resultDiv.innerHTML = "🔍 正在从云端抓取数据...";
 
     try {
-        const response = await fetch(myApiUrl + keyword);
+        // 使用 encodeURIComponent 确保中文歌名不会导致链接断裂
+        const response = await fetch(myApiUrl + encodeURIComponent(keyword));
+        
+        if (!response.ok) throw new Error('网络响应异常');
+        
         const data = await response.json();
         
-        // 3. 处理返回的 JSON 数据
-        if (data.result && data.result.songs) {
+        // 打印到控制台，如果还是搜不到，请按 F12 告诉我在 Console 里的内容
+        console.log("收到原始数据:", data);
+
+        // 更加严谨的层级检查
+        if (data && data.result && data.result.songs && data.result.songs.length > 0) {
             const song = data.result.songs[0];
             resultDiv.innerHTML = `
-                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                    <p>✅ 找到歌曲：<strong>${song.name}</strong></p>
-                    <p>🎤 歌手：${song.artists[0].name}</p>
-                    <p>💿 专辑：${song.album.name}</p>
-                    <small>数据来源：你的 Hugging Face Docker 容器</small>
+                <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: left;">
+                    <p style="margin: 0 0 5px 0;">✅ 找到歌曲：<strong>${song.name}</strong></p>
+                    <p style="margin: 0 0 5px 0; font-size: 0.85em; opacity: 0.8;">🎤 歌手：${song.artists[0].name}</p>
+                    <p style="margin: 0; font-size: 0.85em; opacity: 0.8;">💿 专辑：${song.album.name}</p>
                 </div>
             `;
             showToast("搜索成功！✨");
         } else {
-            resultDiv.innerHTML = "❌ 未找到相关歌曲。";
+            // 如果 API 返回 code 200 但没有 result，可能是接口被临时封禁
+            resultDiv.innerHTML = "❌ 服务器返回了空数据，请稍后再试或换个关键词。";
         }
     } catch (error) {
-        console.error("搜索失败:", error);
-        resultDiv.innerHTML = "🛑 API 连接失败，请检查 Docker 容器是否运行。";
+        console.error("搜索失败详情:", error);
+        resultDiv.innerHTML = "🛑 API 连接失败。请确保 Hugging Face 为绿色 Running 状态。";
         showToast("连接 API 失败 😢");
     }
 }
