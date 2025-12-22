@@ -133,13 +133,6 @@ nav {
 .project-title { font-size: 1.3rem; font-weight: 700; }
 .project-desc { font-size: 0.95rem; opacity: 0.9; }
 
-/* --- 8. 响应式适配 --- */
-@media (max-width: 768px) {
-    .grid { grid-template-columns: 1fr; }
-    .card-hero { flex-direction: column; text-align: center; padding: 30px; }
-    .hero-text h1 { font-size: 2.5rem; }
-    .card-project, .card-social { grid-column: span 1; }
-}
 
 /* 简单的淡入效果，用于页面加载时的卡片 */
 .fade-in {
@@ -744,3 +737,50 @@ nav {
     font-size: 0.95rem;
 }
 
+/* =========================================
+   🚀 最终防线：手机端强制适配 (放在文件最底部)
+   ========================================= */
+@media (max-width: 768px) {
+    /* 1. 强制单栏布局 */
+    .grid { 
+        grid-template-columns: 1fr !important; 
+        gap: 15px !important;
+    }
+
+    /* 2. 英雄卡片 (头像改到上面，文字在下面) */
+    .card-hero { 
+        display: flex !important;
+        flex-direction: column-reverse !important; /* 让文字在下，头像在上，更符合手机阅读习惯 */
+        text-align: center !important; 
+        padding: 30px 20px !important; 
+        height: auto !important;
+    }
+    
+    .hero-text h1 { 
+        font-size: 2.2rem !important; 
+        margin-top: 15px !important;
+    }
+
+    /* 3. 强制所有卡片占满一行 */
+    .card-project, .card-social, .card-blog, .card-skills, #my-skills { 
+        grid-column: span 1 !important; 
+        width: 100% !important;
+    }
+
+    /* 4. 修复图片卡片的高度和显示 */
+    .card-project, .card-blog {
+        min-height: 220px !important; /* 手机上稍微矮一点 */
+        background-attachment: scroll !important; /* 防止 iOS 滚动背景Bug */
+    }
+    
+    /* 5. 导航栏调整 */
+    .nav-container { padding: 0 15px !important; }
+    .logo a { font-size: 1.1rem !important; }
+    
+    /* 6. 防止左右横向滚动 */
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        position: relative;
+    }
+}
