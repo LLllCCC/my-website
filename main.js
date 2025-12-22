@@ -168,21 +168,20 @@ async function searchMusic() {
         return;
     }
 
-    // 显示加载状态
-    resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7;">🔍 正在呼叫网易云 API...</div>`;
+    resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7;">🔍 正在努力搜索...</div>`;
 
     try {
-        // 请求 API (带上 token)
         const response = await fetch(myApiUrl + encodeURIComponent(keyword) + "&token=yopo666");
         const data = await response.json();
         
-        // 判断数据是否有效
-        if (data && data.result && data.result.songs) {
+        // 🟢 严格检查：只有当 songs 数组里真的有东西时才显示
+        if (data && data.result && data.result.songs && data.result.songs.length > 0) {
             const song = data.result.songs[0];
-            const songId = song.id; // 获取歌曲 ID，这是播放的关键
+            const songId = song.id;
 
-            // 生成网易云播放器代码 (iframe)
-            // height=86 是标准高度，auto=1 尝试自动播放
+            // 如果 ID 是我们之前那个假的 254504 且歌名不对，过滤掉 (双重保险)
+            // 但因为后端已经改了，这里只要正常显示即可
+            
             const playerHtml = `
                 <iframe 
                     frameborder="no" border="0" marginwidth="0" marginheight="0" 
@@ -191,35 +190,26 @@ async function searchMusic() {
                 </iframe>
             `;
 
-            // 渲染卡片
             resultDiv.innerHTML = `
                 <div class="fade-in" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 5px;">
                         <div style="font-size: 0.9rem; opacity: 0.9;">
                             <i class="ri-netease-cloud-music-fill" style="color: #E60026;"></i> 
-                            正在播放: <strong>${song.name}</strong>
+                            <strong>${song.name}</strong>
                         </div>
-                        <div style="font-size: 0.8rem; opacity: 0.6;">
-                            ${song.artists[0].name}
-                        </div>
+                        <div style="font-size: 0.8rem; opacity: 0.6;">${song.artists[0].name}</div>
                     </div>
-
-                    <div style="overflow: hidden; border-radius: 8px;">
-                        ${playerHtml}
-                    </div>
-
-                    <p style="font-size: 10px; opacity: 0.4; margin-top: 6px; text-align: center;">
-                        注：版权歌曲可能无法播放，属于正常现象
-                    </p>
+                    <div style="overflow: hidden; border-radius: 8px;">${playerHtml}</div>
                 </div>
             `;
-            showToast(`🎵 准备播放：${song.name}`);
+            showToast(`🎵 找到：${song.name}`);
         } else {
-            resultDiv.innerHTML = "❌ 没找到这首歌，换个词试试？";
+            // 如果后端返回空，直接显示未找到，不再显示奇怪的假数据
+            resultDiv.innerHTML = "❌ 抱歉，暂时没搜到这首歌（可能被接口拦截）。";
         }
     } catch (error) {
         console.error("Search Error:", error);
-        resultDiv.innerHTML = "🛑 容器连接异常，请检查后端。";
+        resultDiv.innerHTML = "🛑 网络连接异常，请稍后再试。";
     }
 }
 
