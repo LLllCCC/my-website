@@ -164,45 +164,43 @@ async function searchMusic() {
     const keyword = input.value.trim();
 
     if (!keyword) {
-        showToast("请输入歌名内容哦！");
+        showToast("输入歌名，开启音乐之门 ✨");
         return;
     }
 
-    resultDiv.innerHTML = "🔍 正在从云端抓取数据...";
+    resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7;">🔍 正在通过 Docker 容器抓取数据...</div>`;
 
     try {
-        // 使用 encodeURIComponent 确保中文歌名不会导致链接断裂
         const response = await fetch(myApiUrl + encodeURIComponent(keyword));
-        
-        if (!response.ok) throw new Error('网络响应异常');
-        
         const data = await response.json();
         
-        // 打印到控制台，如果还是搜不到，请按 F12 告诉我在 Console 里的内容
-        console.log("收到原始数据:", data);
-
-        // 更加严谨的层级检查
-        if (data && data.result && data.result.songs && data.result.songs.length > 0) {
+        if (data && data.result && data.result.songs) {
             const song = data.result.songs[0];
+            // 构造跳转链接：搜索结果点击后跳转到网易云搜索页
+            const jumpUrl = `https://music.163.com/#/search/m/?s=${encodeURIComponent(song.name)}`;
+
             resultDiv.innerHTML = `
-                <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: left;">
-                    <p style="margin: 0 0 5px 0;">✅ 找到歌曲：<strong>${song.name}</strong></p>
-                    <p style="margin: 0 0 5px 0; font-size: 0.85em; opacity: 0.8;">🎤 歌手：${song.artists[0].name}</p>
-                    <p style="margin: 0; font-size: 0.85em; opacity: 0.8;">💿 专辑：${song.album.name}</p>
-                </div>
+                <a href="${jumpUrl}" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="fade-in" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" 
+                         onmouseover="this.style.background='rgba(255,255,255,0.15)'" 
+                         onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        <div>
+                            <p style="margin: 0 0 5px 0; font-size: 1.1rem;">✅ <strong>${song.name}</strong></p>
+                            <p style="margin: 0; font-size: 0.85rem; opacity: 0.7;">🎤 ${song.artists[0].name} · 💿 ${song.album.name}</p>
+                        </div>
+                        <i class="ri-arrow-right-up-line" style="font-size: 1.2rem; opacity: 0.5;"></i>
+                    </div>
+                </a>
+                <p style="font-size: 10px; opacity: 0.4; margin-top: 8px; text-align: right;">点击卡片可跳转播放 🎧</p>
             `;
-            showToast("搜索成功！✨");
+            showToast("搜索成功！");
         } else {
-            // 如果 API 返回 code 200 但没有 result，可能是接口被临时封禁
-            resultDiv.innerHTML = "❌ 服务器返回了空数据，请稍后再试或换个关键词。";
+            resultDiv.innerHTML = "❌ 没找到呢，换个词试试？";
         }
     } catch (error) {
-        console.error("搜索失败详情:", error);
-        resultDiv.innerHTML = "🛑 API 连接失败。请确保 Hugging Face 为绿色 Running 状态。";
-        showToast("连接 API 失败 😢");
+        resultDiv.innerHTML = "🛑 容器连接异常，请检查后端。";
     }
 }
-
 // 4. 绑定点击事件
 const searchBtn = document.getElementById('search-btn');
 if (searchBtn) {
