@@ -260,44 +260,6 @@ window.playSong = function(id, name, artist) {
     showToast(`🎵 切歌：${name}`);
 }
 
-// 辅助函数：更新播放器 (把这个函数放在 searchMusic 外面)
-function updatePlayer(song) {
-    const resultDiv = document.getElementById('search-results');
-    const playerHtml = `
-        <iframe 
-            frameborder="no" border="0" marginwidth="0" marginheight="0" 
-            width="100%" height="86" 
-            src="//music.163.com/outchain/player?type=2&id=${song.id}&auto=1&height=66">
-        </iframe>
-    `;
-
-    // 重新渲染上半部分
-    resultDiv.innerHTML = `
-        <div id="current-player-box" class="fade-in" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 5px;">
-                <div style="font-size: 0.9rem; opacity: 0.9;">
-                    <i class="ri-netease-cloud-music-fill" style="color: #E60026;"></i> 
-                    正在播放: <strong>${song.name}</strong>
-                </div>
-                <div style="font-size: 0.8rem; opacity: 0.6;">${song.artists[0].name}</div>
-            </div>
-            <div style="overflow: hidden; border-radius: 8px;">${playerHtml}</div>
-        </div>
-    `;
-}
-
-// 辅助函数：点击列表触发 (也要放在外面)
-window.playSong = function(id, name, artist) {
-    // 构造一个临时 song 对象传给 updatePlayer
-    const tempSong = {
-        id: id,
-        name: name,
-        artists: [{ name: artist }]
-    };
-    updatePlayer(tempSong);
-    showToast(`🎵 切歌：${name}`);
-}
-
 
 // 4. 绑定点击事件
 const searchBtn = document.getElementById('search-btn');
