@@ -168,28 +168,30 @@ async function searchMusic() {
         return;
     }
 
+    // 显示加载状态
     resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7; padding:20px;">🔍 正在搜索全网乐库...</div>`;
 
     try {
         const response = await fetch(myApiUrl + encodeURIComponent(keyword) + "&token=yopo666");
         const data = await response.json();
         
+        // 判断数据是否有效
         if (data && data.result && data.result.songs && data.result.songs.length > 0) {
             const songs = data.result.songs;
             
-            // 1. 默认播放第一首
+            // 1. 先默认用第一首歌初始化播放器
             updatePlayer(songs[0]);
 
-            // 2. 生成下方的“搜索结果列表”
+            // 2. 生成下方的“歌曲选择列表”
             let listHtml = '<div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">';
             
             songs.forEach((song, index) => {
-                // 转义单引号，防止报错
+                // 处理单引号，防止报错
                 const safeSongName = song.name.replace(/'/g, "\\'"); 
                 const safeArtist = song.artists[0].name.replace(/'/g, "\\'");
                 
                 listHtml += `
-                    <div class="song-item fade-in" 
+                    <div class="song-item" 
                          onclick="playSong(${song.id}, '${safeSongName}', '${safeArtist}')"
                          style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s;"
                          onmouseover="this.style.background='rgba(255,255,255,0.15)'" 
@@ -205,10 +207,10 @@ async function searchMusic() {
             });
             listHtml += '</div>';
 
-            // 将列表追加到播放器下方
-            const playerDiv = document.getElementById('current-player-box');
-            if (playerDiv) {
-                playerDiv.insertAdjacentHTML('afterend', listHtml);
+            // 把列表加到播放器下面
+            const playerBox = document.getElementById('current-player-box');
+            if(playerBox) {
+                playerBox.insertAdjacentHTML('afterend', listHtml);
             }
 
         } else {
@@ -218,6 +220,44 @@ async function searchMusic() {
         console.error("Search Error:", error);
         resultDiv.innerHTML = "🛑 网络连接异常。";
     }
+}
+
+// --- 辅助函数：更新播放器 (放在 searchMusic 外面) ---
+function updatePlayer(song) {
+    const resultDiv = document.getElementById('search-results');
+    
+    // 网易云播放器代码
+    const playerHtml = `
+        <iframe 
+            frameborder="no" border="0" marginwidth="0" marginheight="0" 
+            width="100%" height="86" 
+            src="//music.163.com/outchain/player?type=2&id=${song.id}&auto=1&height=66">
+        </iframe>
+    `;
+
+    // 重新渲染上半部分
+    resultDiv.innerHTML = `
+        <div id="current-player-box" class="fade-in" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 5px;">
+                <div style="font-size: 0.9rem; opacity: 0.9;">
+                    <i class="ri-netease-cloud-music-fill" style="color: #E60026;"></i> 
+                    正在播放: <strong>${song.name}</strong>
+                </div>
+                <div style="font-size: 0.8rem; opacity: 0.6;">${song.artists[0].name}</div>
+            </div>
+            <div style="overflow: hidden; border-radius: 8px;">${playerHtml}</div>
+        </div>
+    `;
+}
+
+// --- 辅助函数：列表点击事件 (放在 searchMusic 外面) ---
+window.playSong = function(id, name, artist) {
+    updatePlayer({
+        id: id,
+        name: name,
+        artists: [{ name: artist }]
+    });
+    showToast(`🎵 切歌：${name}`);
 }
 
 // 辅助函数：更新播放器 (把这个函数放在 searchMusic 外面)
