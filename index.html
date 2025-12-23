@@ -176,6 +176,31 @@
         <script src="/footer.js"></script>
     </div>
 
+    <div id="ai-chat-widget">
+        <div id="chat-circle" class="fade-in">
+            <i class="ri-robot-2-fill" style="font-size: 24px;"></i>
+        </div>
+        
+        <div id="chat-box" style="display: none;">
+            <div class="chat-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%;"></div>
+                    <span>Yopo 的 AI 分身</span>
+                </div>
+                <span id="chat-close" style="cursor: pointer; padding: 5px;"><i class="ri-close-line"></i></span>
+            </div>
+            
+            <div id="chat-messages">
+                <div class="message ai-message">👋 嘿！我是 Yopo 的 AI 助手。你可以问我关于技术的问题，或者随便聊聊！</div>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="输入消息..." autocomplete="off" />
+                <button id="chat-send"><i class="ri-send-plane-fill"></i></button>
+            </div>
+        </div>
+    </div>
+
     <script src="/nav.js"></script>
     <script src="blog-data.js"></script>
     <script src="main.js"></script>

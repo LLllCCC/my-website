@@ -282,3 +282,90 @@ if (searchBtn) {
         if (e.key === 'Enter') searchMusic();
     });
 }
+
+// --- 🤖 AI 聊天功能逻辑 ---
+document.addEventListener('DOMContentLoaded', () => {
+    const chatCircle = document.getElementById('chat-circle');
+    const chatBox = document.getElementById('chat-box');
+    const chatClose = document.getElementById('chat-close');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const messagesDiv = document.getElementById('chat-messages');
+
+    // 你的后端地址 (请确认这个地址是对的)
+    const AI_API_URL = "https://yopolute-my-docker-test.hf.space/chat?token=yopo666";
+
+    if (chatCircle) {
+        // 1. 打开/关闭聊天窗
+        chatCircle.addEventListener('click', () => {
+            chatCircle.style.display = 'none';
+            chatBox.style.display = 'flex';
+            // 自动聚焦输入框
+            setTimeout(() => chatInput.focus(), 100);
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatBox.style.display = 'none';
+            chatCircle.style.display = 'flex';
+        });
+
+        // 2. 发送消息核心逻辑
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // 显示用户消息
+            addMessage(text, 'user-message');
+            chatInput.value = '';
+            chatInput.focus();
+
+            // 显示“思考中”状态
+            const loadingId = addMessage("Thinking... 🤔", 'ai-message');
+
+            try {
+                const response = await fetch(AI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                
+                const data = await response.json();
+                
+                // 移除“思考中”，显示真实回复
+                const loadingMsg = document.getElementById(loadingId);
+                if (loadingMsg) loadingMsg.remove();
+
+                if (data.reply) {
+                    addMessage(data.reply, 'ai-message');
+                } else {
+                    addMessage("大脑短路了，请重试 😵", 'ai-message');
+                }
+
+            } catch (error) {
+                console.error(error);
+                const loadingMsg = document.getElementById(loadingId);
+                if (loadingMsg) loadingMsg.remove();
+                addMessage("网络连接失败 🛑", 'ai-message');
+            }
+        }
+
+        // 3. 辅助函数：添加消息气泡
+        function addMessage(text, className) {
+            const div = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            div.id = id;
+            div.className = `message ${className}`;
+            div.innerText = text; // 使用 innerText 防止 XSS
+            messagesDiv.appendChild(div);
+            // 自动滚动到底部
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return id;
+        }
+
+        // 4. 绑定发送事件
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+});
