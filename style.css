@@ -327,13 +327,13 @@ nav {
 
 /* 1. 全局卡片速度 (保持你喜欢的慢动作) */
 .card {
-    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* 2. 只给“普通卡片” (排除 GitHub/Email) 添加悬停特效 */
 .card:not(.card-social-container):hover {
-    /* 动作：大幅上浮 */
-    transform: translateY(-10px) scale(1.02);
+    /* 动作：大幅上浮 
+    transform: translateY(-10px) scale(1.02);*/
     
     /* 🔴 核心修改：在黑色背景下，使用“白色柔光”代替黑色阴影 */
     box-shadow: 0 30px 60px rgba(255, 255, 255, 0.12);
@@ -898,3 +898,71 @@ nav {
     transition: 0.2s;
 }
 #chat-send:hover { color: #764ba2; }
+
+/* --- 🚀 3D 特效配套优化：高光扫光 --- */
+.card {
+    /* 确保 3D 变换时边缘平滑 */
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* 给卡片加一个隐形的反光层 */
+.card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 28px;
+    background: linear-gradient(
+        135deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        transparent 40%, 
+        transparent 100%
+    );
+    opacity: 0; /* 默认看不见 */
+    transition: opacity 0.3s;
+    pointer-events: none; /* 防止遮挡鼠标点击 */
+}
+
+/* 只有鼠标放上去时，反光层才显现 */
+.card:hover::after {
+    opacity: 1;
+}
+
+/* --- 🚨 最终修复 V2：清除残影 + 修复消失 BUG --- */
+
+/* 1. 强制容器完全透明 (解决黑底印记的核心) */
+.card-social-container,
+.card-social-container:hover,
+.card-social-container:focus-within,
+.card-social-container:active {
+    background: transparent !important;       
+    background-color: transparent !important; 
+    box-shadow: none !important;             
+    border: none !important;                 
+    outline: none !important;    
+    /* 🚫 绝对禁止容器位移，防止和内部翻转冲突 */
+    transform: none !important;            
+}
+
+/* 2. 优化翻转动画 (🔴 修正：只给正反面加隐藏，千万别给容器加！) */
+.flip-front,
+.flip-back {
+    /* 隐藏背面，防止翻转一半时看到背面透出来 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    
+    /* 修复边缘溢出导致的残影 */
+    overflow: hidden; 
+}
+
+/* 3. 确保容器开启 3D 空间 (防止消失的第二道保险) */
+.card-social-flip {
+    transform-style: preserve-3d;
+    /* ⚠️ 容器绝对不能加 backface-visibility: hidden */
+    backface-visibility: visible !important; 
+}
+
+/* 4. 再次确保背面是旋转过的 */
+.flip-back {
+    transform: rotateY(180deg);
+}

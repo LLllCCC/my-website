@@ -369,3 +369,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// --- 🚀 选项 2：高级 3D 视差悬停特效 (Apple TV 风格) ---
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. 选择所有需要特效的卡片
+    // 注意：我们排除了 .card-social-container，因为它们已经有翻转特效了，避免冲突
+    const cards = document.querySelectorAll('.card:not(.card-social-container)');
+
+    cards.forEach(card => {
+        // 2. 鼠标移动时：计算角度并跟随
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left; // 鼠标在卡片内的 X 坐标
+            const y = e.clientY - rect.top;  // 鼠标在卡片内的 Y 坐标
+            
+            // 计算中心点
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // 核心算法：鼠标越靠边，旋转角度越大
+            // limit 是最大旋转角度，设为 8~10 度比较优雅
+            const limit = 8; 
+            const rotateX = -((y - centerY) / centerY) * limit; // 上下翻转 (注意负号，让鼠标在上面时卡片往上翘)
+            const rotateY = ((x - centerX) / centerX) * limit;  // 左右翻转
+
+            // 应用 3D 变换
+            // perspective(1000px) 是视距，越小透视感越强
+            // scale3d(1.02...) 是为了稍微浮起一点，更有质感
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        // 3. 鼠标进入时：为了丝滑跟手，必须暂时关掉 CSS 的 transition
+        card.addEventListener('mouseenter', () => {
+            card.style.transition = 'none'; // 🔴 关键：移除延迟，让卡片瞬间响应鼠标
+        });
+
+        // 4. 鼠标离开时：平滑复位
+        card.addEventListener('mouseleave', () => {
+            // 加回 transition，让复位动作有缓冲动画
+            card.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+    });
+});
