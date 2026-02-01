@@ -155,8 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // --- 🚀 音乐搜索 API 联动逻辑 ---
 
 // 1. 定义你的云端 API 地址
-const myApiUrl = "https://yopolute-my-docker-test.hf.space/search?key="; 
-
+const myApiUrl = "https://music-api.888431.xyz/search?keywords=";
 // 2. 搜索函数
 async function searchMusic() {
     const input = document.getElementById('music-input');
@@ -172,7 +171,8 @@ async function searchMusic() {
     resultDiv.innerHTML = `<div style="text-align:center; opacity:0.7; padding:20px;">🔍 正在搜索全网乐库...</div>`;
 
     try {
-        const response = await fetch(myApiUrl + encodeURIComponent(keyword) + "&token=yopo666");
+        // 删掉了后面的 + "&token=..."
+        const response = await fetch(myApiUrl + encodeURIComponent(keyword));
         const data = await response.json();
         
         // 判断数据是否有效
