@@ -234,50 +234,88 @@ async function searchMusic() {
     }
 }
 
-// --- 辅助函数：更新播放器 (放在 searchMusic 外面) ---
-function updatePlayer(song) {
+// --- 核心播放逻辑：从你自己的 API 获取 MP3 地址 ---
+async function updatePlayer(song) {
     const resultDiv = document.getElementById('search-results');
+    const playerBoxId = 'current-player-box';
     
-    // 网易云播放器代码
-    const playerHtml = `
-        <iframe 
-            frameborder="no" border="0" marginwidth="0" marginheight="0" 
-            width="100%" height="86" 
-            src="//music.163.com/outchain/player?type=2&id=${song.id}&auto=1&height=66">
-        </iframe>
-    `;
+    // 1. 查找是否已经有播放器盒子，如果没有就创建一个占位
+    let playerBox = document.getElementById(playerBoxId);
+    if (!playerBox) {
+        // 如果是第一次播放，创建一个新的盒子插在列表最前面
+        const newBox = document.createElement('div');
+        newBox.id = playerBoxId;
+        newBox.className = 'fade-in';
+        newBox.style.marginBottom = '15px';
+        resultDiv.insertBefore(newBox, resultDiv.firstChild);
+        playerBox = newBox;
+    }
 
-    // 重新渲染上半部分
-    resultDiv.innerHTML = `
-        <div id="current-player-box" class="fade-in" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 5px;">
-                <div style="font-size: 0.9rem; opacity: 0.9;">
-                    <i class="ri-netease-cloud-music-fill" style="color: #E60026;"></i> 
-                    正在播放: <strong>${song.name}</strong>
-                </div>
-                <div style="font-size: 0.8rem; opacity: 0.6;">${song.artists[0].name}</div>
-            </div>
-            <div style="overflow: hidden; border-radius: 8px;">${playerHtml}</div>
+    // 2. 显示“加载中...”状态
+    playerBox.innerHTML = `
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+            <div style="margin-bottom: 8px;">⏳ 正在解析音乐地址...</div>
+            <div style="font-size: 0.8rem; opacity: 0.7;">${song.name} - ${song.artists[0].name}</div>
         </div>
     `;
+
+    try {
+        // 3. 关键一步：向你的 API 请求真实的 MP3 链接
+        // ⚠️ 注意：这里用了你的新域名
+        const res = await fetch(`https://music-api.888431.xyz/song/url?id=${song.id}`);
+        const data = await res.json();
+        
+        if (!data.data || !data.data[0].url) {
+            playerBox.innerHTML = `<div style="padding:15px; text-align:center; color:#ff4d4d; background: rgba(255,255,255,0.1); border-radius:12px;">🚫 抱歉，这首歌有版权限制，无法播放。</div>`;
+            return;
+        }
+
+        const mp3Url = data.data[0].url;
+
+        // 4. 渲染原生 <audio> 播放器 (100% 可用)
+        playerBox.innerHTML = `
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 5px;">
+                    <div style="font-size: 0.95rem; font-weight: 600;">
+                        <i class="ri-music-2-fill" style="color: #2ecc71; margin-right: 5px;"></i> 
+                        ${song.name}
+                    </div>
+                    <div style="font-size: 0.8rem; opacity: 0.6;">${song.artists[0].name}</div>
+                </div>
+                
+                <audio controls autoplay style="width: 100%; height: 32px; outline: none;">
+                    <source src="${mp3Url}" type="audio/mpeg">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div>
+        `;
+
+    } catch (error) {
+        console.error("播放失败:", error);
+        playerBox.innerHTML = `<div style="padding:15px; text-align:center;">⚠️ 播放出错，请重试</div>`;
+    }
 }
 
-// --- 辅助函数：列表点击事件 (放在 searchMusic 外面) ---
-window.playSong = function(id, name, artist) {
-    updatePlayer({
+// --- 辅助函数：列表点击事件 ---
+// 这里加了 async，因为 updatePlayer 现在是异步的了
+window.playSong = async function(id, name, artist) {
+    // 简单的防抖：如果名字里有单引号，处理一下防止报错
+    const safeName = String(name).replace(/'/g, "");
+    const safeArtist = String(artist).replace(/'/g, "");
+
+    await updatePlayer({
         id: id,
-        name: name,
-        artists: [{ name: artist }]
+        name: safeName,
+        artists: [{ name: safeArtist }]
     });
-    showToast(`🎵 切歌：${name}`);
+    
+    showToast(`🎵 正在切歌：${safeName}`);
 }
 
-
-// 4. 绑定点击事件
+// 4. 绑定点击事件 (保持不变)
 const searchBtn = document.getElementById('search-btn');
 if (searchBtn) {
     searchBtn.addEventListener('click', searchMusic);
-    // 支持回车搜索
     document.getElementById('music-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') searchMusic();
     });
