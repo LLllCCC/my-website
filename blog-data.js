@@ -1,7 +1,7 @@
 // blog-data.js - 动态版 (从数据库获取)
 
 // 👇 指向你刚才搭建好的后端 API
-const API_URL = "http://47.76.123.246:3000/api/posts"; 
+const API_URL = "https://api.888431.xyz/api/posts";
 
 async function renderBlogPosts() {
     const listContainer = document.querySelector('.article-list');
