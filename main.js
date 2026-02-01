@@ -270,7 +270,8 @@ async function updatePlayer(song) {
             return;
         }
 
-        const mp3Url = data.data[0].url;
+        // ✅ 强制把 http 换成 https，防止浏览器拦截
+        const mp3Url = data.data[0].url.replace(/^http:/, 'https:');
 
         // 4. 渲染原生 <audio> 播放器 (100% 可用)
         playerBox.innerHTML = `
