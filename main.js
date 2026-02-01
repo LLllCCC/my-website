@@ -234,7 +234,7 @@ async function searchMusic() {
     }
 }
 
-// --- 核心播放逻辑：从你自己的 API 获取 MP3 地址 ---
+// --- 核心播放逻辑：从你自己的 API 获取 MP3 地址 (Pro 版) ---
 async function updatePlayer(song) {
     const resultDiv = document.getElementById('search-results');
     const playerBoxId = 'current-player-box';
@@ -312,7 +312,7 @@ window.playSong = async function(id, name, artist) {
     showToast(`🎵 正在切歌：${safeName}`);
 }
 
-// 4. 绑定点击事件 (保持不变)
+// 4. 绑定点击事件
 const searchBtn = document.getElementById('search-btn');
 if (searchBtn) {
     searchBtn.addEventListener('click', searchMusic);
