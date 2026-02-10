@@ -1,192 +1,265 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Yopo 的主页 - Web 开发与生活随笔</title>
-    <meta name="description" content="你好，我是 Yopo。分享 HTML/CSS 前端开发、Docker 运维教程以及生活中的思维碎片。">
-    <meta name="keywords" content="Yopo, 个人主页, Web 开发, Docker 教程">
-    <meta name="author" content="Yopo">
+    <meta
+      name="description"
+      content="你好，我是 Yopo。分享 HTML/CSS 前端开发、Docker 运维教程以及生活中的思维碎片。"
+    />
+    <meta name="keywords" content="Yopo, 个人主页, Web 开发, Docker 教程" />
+    <meta name="author" content="Yopo" />
 
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yopo.888431.xyz/">
-    <meta property="og:title" content="Yopo 的主页 - 创意无限，代码不止">
-    <meta property="og:description" content="基于 Apple Style 打造的极简个人便当盒主页。">
-    <meta property="og:image" content="https://yopo.888431.xyz/assets/map.jpg">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yopo.888431.xyz/" />
+    <meta property="og:title" content="Yopo 的主页 - 创意无限，代码不止" />
+    <meta
+      property="og:description"
+      content="基于 Apple Style 打造的极简个人便当盒主页。"
+    />
+    <meta
+      property="og:image"
+      content="https://yopo.888431.xyz/assets/map.jpg"
+    />
 
-    <link rel="icon" href="assets/my-avatar.jpg" type="image/jpeg">
+    <link rel="icon" href="assets/my-avatar.jpg" type="image/jpeg" />
 
-    <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet">
-
+    <link
+      href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css"
+      rel="stylesheet"
+    />
 
     <script src="theme-init.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=3" />
 
     <style>
-    @media (max-width: 768px) {
+      @media (max-width: 768px) {
         /* 1. 强制让所有卡片变成一列 */
-        .grid { 
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 20px !important;
-            padding: 0 20px !important;
+        .grid {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 20px !important;
+          padding: 0 20px !important;
         }
 
         /* 2. 英雄卡片：头像在上，文字在下 */
-        .card-hero { 
-            display: flex !important;
-            flex-direction: column-reverse !important; 
-            text-align: center !important; 
-            padding: 40px 20px !important; 
-            height: auto !important;
+        .card-hero {
+          display: flex !important;
+          flex-direction: column-reverse !important;
+          text-align: center !important;
+          padding: 40px 20px !important;
+          height: auto !important;
         }
-        
+
         /* 调整头像和文字的间距 */
-        .card-hero .avatar { margin-bottom: 25px !important; }
-        .hero-text h1 { font-size: 2.2rem !important; margin-top: 10px !important; }
+        .card-hero .avatar {
+          margin-bottom: 25px !important;
+        }
+        .hero-text h1 {
+          font-size: 2.2rem !important;
+          margin-top: 10px !important;
+        }
 
         /* 3. 让所有卡片都占满宽度 */
-        .card, .card-project, .card-social-container, .card-blog, .card-skills { 
-            width: 100% !important;
-            grid-column: auto !important;
+        .card,
+        .card-project,
+        .card-social-container,
+        .card-blog,
+        .card-skills {
+          width: 100% !important;
+          grid-column: auto !important;
         }
 
         /* 4. 修复图片卡片的高度 */
-        .card-project, .card-blog {
-            min-height: 240px !important;
-            background-attachment: scroll !important;
+        .card-project,
+        .card-blog {
+          min-height: 240px !important;
+          background-attachment: scroll !important;
         }
-        
+
         /* 5. 允许上下滑，禁止左右乱晃 */
-        html, body {
-            overflow-x: hidden !important;
-            width: 100% !important;
-            position: relative;
+        html,
+        body {
+          overflow-x: hidden !important;
+          width: 100% !important;
+          position: relative;
         }
-    }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div id="global-nav"></div>
 
     <div class="container">
-        <div class="grid">
-            
-            <div id="home" class="card card-hero fade-in delay-01" >
-                <div class="hero-text">
-                    <h1>创意无限，<br>代码不止。</h1>
-                    <p>你好，我是 Yopo。一名热爱 Web 开发的探索者。</p>
-                </div>
-                <img src="assets/my-avatar.jpg" alt="Yopo's Avatar" class="avatar">
-            </div>
-
-            <div class="card card-social-container fade-in" style="animation-delay: 0.2s;">
-                <a href="https://github.com/LLllCCC" target="_blank" class="card-social-flip">
-                    <div class="flip-front">
-                        <i class="ri-github-fill"></i>
-                        <span>GitHub</span>
-                    </div>
-                    <div class="flip-back">
-                        <img src="assets/github-back.jpg" alt="Avatar" class="mini-avatar">
-                        <span>LLllCCC</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="card card-social-container fade-in" style="animation-delay: 0.3s;">
-                <a href="mailto:z.daisy-cn@foxmail.com" class="card-social-flip email-card">
-                    <div class="flip-front">
-                        <i class="ri-mail-send-fill"></i>
-                        <span>Email</span>
-                    </div>
-                    <div class="flip-back email-back">
-                        <i class="ri-at-line" style="font-size: 2rem; margin-bottom: 5px;"></i>
-                        <span style="font-size: 0.75rem; opacity: 0.9; margin-bottom: 2px;">点击此卡片发送Email</span>
-                        <span style="font-size: 0.8rem; word-break: break-all; font-weight: 600;">z.daisy-cn<br>@foxmail.com</span>
-                    </div>
-                </a>
-            </div>
-
-            <div id="my-projects" class="card card-project fade-in bg-project-3 delay-04">
-                <div class="project-info">
-                    <div class="project-title">个人网站项目</div>
-                    <div class="project-desc">基于 Cloudflare Pages 部署</div>
-                </div>
-            </div>
-
-            <a href="blog.html" id="home-blog-card" class="card card-blog fade-in delay-05">
-                <div class="project-info">
-                    <div class="project-title" id="home-blog-title">我的博客</div>
-                    <div class="project-desc" id="home-blog-desc">分享技术与生活随笔</div>
-                    <div style="margin-top: 12px;">
-                        <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; color: white; font-size: 0.75rem; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1);">
-                            Latest Post ✨
-                        </span>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://music.888431.xyz" target="_blank" id="my-skills" class="card card-project fade-in bg-project-1 delay-06" style="text-decoration: none; cursor: pointer;">
-                <div class="project-info">
-                    <div class="project-title">Jusic 音乐房间</div>
-                    <div class="project-desc">
-                        <i class="ri-github-fill" style="vertical-align: middle; margin-right: 4px;"></i>
-                        正在研究：多人同步听歌系统 (Java+Vue)
-                    </div>
-                </div>
-            </a>
-
-
-            <div id="skills" class="card card-skills fade-in delay-07">
-                <div class="project-title project-title--mb">技术栈</div>
-                <div class="project-desc">我目前正在使用的工具</div>
-                <div class="skill-tags">
-                    <span class="tag">HTML5</span>
-                    <span class="tag">CSS3</span>
-                    <span class="tag">Git</span>
-                    <span class="tag">VS Code</span>
-                    <span class="tag">Cloudflare</span>
-                    <span class="tag">GitHub Desktop</span>
-                </div>
-            </div>
-
+      <div class="grid">
+        <div id="home" class="card card-hero fade-in delay-01">
+          <div class="hero-text">
+            <h1>创意无限，<br />代码不止。</h1>
+            <p>你好，我是 Yopo。一名热爱 Web 开发的探索者。</p>
+          </div>
+          <img src="assets/my-avatar.jpg" alt="Yopo's Avatar" class="avatar" />
         </div>
-        
-        <div id="global-footer"></div>
-        <script src="/footer.js"></script>
+
+        <div
+          class="card card-social-container fade-in"
+          style="animation-delay: 0.2s"
+        >
+          <a
+            href="https://github.com/LLllCCC"
+            target="_blank"
+            class="card-social-flip"
+          >
+            <div class="flip-front">
+              <i class="ri-github-fill"></i>
+              <span>GitHub</span>
+            </div>
+            <div class="flip-back">
+              <img
+                src="assets/github-back.jpg"
+                alt="Avatar"
+                class="mini-avatar"
+              />
+              <span>LLllCCC</span>
+            </div>
+          </a>
+        </div>
+
+        <div
+          class="card card-social-container fade-in"
+          style="animation-delay: 0.3s"
+        >
+          <a
+            href="mailto:z.daisy-cn@foxmail.com"
+            class="card-social-flip email-card"
+          >
+            <div class="flip-front">
+              <i class="ri-mail-send-fill"></i>
+              <span>Email</span>
+            </div>
+            <div class="flip-back email-back">
+              <i
+                class="ri-at-line"
+                style="font-size: 2rem; margin-bottom: 5px"
+              ></i>
+              <span style="font-size: 0.75rem; opacity: 0.9; margin-bottom: 2px"
+                >点击此卡片发送Email</span
+              >
+              <span
+                style="
+                  font-size: 0.8rem;
+                  word-break: break-all;
+                  font-weight: 600;
+                "
+                >z.daisy-cn<br />@foxmail.com</span
+              >
+            </div>
+          </a>
+        </div>
+
+        <div
+          id="my-projects"
+          class="card card-project fade-in bg-project-3 delay-04"
+        >
+          <div class="project-info">
+            <div class="project-title">个人网站项目</div>
+            <div class="project-desc">基于 Cloudflare Pages 部署</div>
+          </div>
+        </div>
+
+        <a
+          href="blog.html"
+          id="home-blog-card"
+          class="card card-blog fade-in delay-05"
+        >
+          <div class="project-info">
+            <div class="project-title" id="home-blog-title">我的博客</div>
+            <div class="project-desc" id="home-blog-desc">
+              分享技术与生活随笔
+            </div>
+            <div style="margin-top: 12px">
+              <span
+                style="
+                  background: rgba(255, 255, 255, 0.25);
+                  padding: 4px 12px;
+                  border-radius: 20px;
+                  color: white;
+                  font-size: 0.75rem;
+                  backdrop-filter: blur(4px);
+                  border: 1px solid rgba(255, 255, 255, 0.1);
+                "
+              >
+                Latest Post ✨
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <div id="skills" class="card card-skills fade-in delay-07">
+          <div class="project-title project-title--mb">技术栈</div>
+          <div class="project-desc">我目前正在使用的工具</div>
+          <div class="skill-tags">
+            <span class="tag">HTML5</span>
+            <span class="tag">CSS3</span>
+            <span class="tag">Git</span>
+            <span class="tag">VS Code</span>
+            <span class="tag">Cloudflare</span>
+            <span class="tag">GitHub Desktop</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="global-footer"></div>
+      <script src="/footer.js"></script>
     </div>
 
     <div id="ai-chat-widget">
-        <div id="chat-circle" class="fade-in">
-            <i class="ri-robot-2-fill" style="font-size: 24px;"></i>
+      <div id="chat-circle" class="fade-in">
+        <i class="ri-robot-2-fill" style="font-size: 24px"></i>
+      </div>
+
+      <div id="chat-box" style="display: none">
+        <div class="chat-header">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <div
+              style="
+                width: 8px;
+                height: 8px;
+                background: #2ecc71;
+                border-radius: 50%;
+              "
+            ></div>
+            <span>Yopo 的 AI 分身</span>
+          </div>
+          <span id="chat-close" style="cursor: pointer; padding: 5px"
+            ><i class="ri-close-line"></i
+          ></span>
         </div>
-        
-        <div id="chat-box" style="display: none;">
-            <div class="chat-header">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%;"></div>
-                    <span>Yopo 的 AI 分身</span>
-                </div>
-                <span id="chat-close" style="cursor: pointer; padding: 5px;"><i class="ri-close-line"></i></span>
-            </div>
-            
-            <div id="chat-messages">
-                <div class="message ai-message">👋 嘿！我是 Yopo 的 AI 助手。你可以问我关于技术的问题，或者随便聊聊！</div>
-            </div>
-            
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="输入消息..." autocomplete="off" />
-                <button id="chat-send"><i class="ri-send-plane-fill"></i></button>
-            </div>
+
+        <div id="chat-messages">
+          <div class="message ai-message">
+            👋 嘿！我是 Yopo 的 AI
+            助手。你可以问我关于技术的问题，或者随便聊聊！
+          </div>
         </div>
+
+        <div class="chat-input-area">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="输入消息..."
+            autocomplete="off"
+          />
+          <button id="chat-send"><i class="ri-send-plane-fill"></i></button>
+        </div>
+      </div>
     </div>
 
     <script src="/nav.js"></script>
     <script src="blog-data.js"></script>
     <script src="main.js"></script>
-</body>
+  </body>
 </html>
