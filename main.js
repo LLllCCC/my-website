@@ -1,8 +1,9 @@
-// 3. Email 卡片点击监听
+// =========================================================
+// 1. Email 卡片点击监听 (保持不变)
+// =========================================================
 const mailtoLink = document.querySelector('a[href^="mailto:"]');
 if (mailtoLink) {
   mailtoLink.addEventListener("click", function (e) {
-
     // 逻辑 B: 时间判断与问候
     const now = new Date();
     const hour = now.getHours();
@@ -18,11 +19,13 @@ if (mailtoLink) {
   });
 } else {
   console.warn(
-    '邮件链接元素未找到：a[href^="mailto:"] — 未绑定点击音效/问候逻辑。',
+    '邮件链接元素未找到：a[href^="mailto:"] — 未绑定点击音效/问候逻辑。'
   );
 }
 
-// 4. Toast 弹窗
+// =========================================================
+// 2. Toast 弹窗工具 (保持不变)
+// =========================================================
 function showToast(message) {
   const toast = document.createElement("div");
   toast.className = "toast-notification";
@@ -35,7 +38,9 @@ function showToast(message) {
   }, 3000);
 }
 
-// 5. 实时时间
+// =========================================================
+// 3. 实时时间 (保持不变)
+// =========================================================
 function updateTime() {
   const timeElement = document.getElementById("local-time");
   if (!timeElement) return;
@@ -49,7 +54,9 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// --- 深色模式切换逻辑（保存到 localStorage，并在 html 元素上切换） ---
+// =========================================================
+// 4. 深色模式切换 (保持不变)
+// =========================================================
 const themeToggle = document.getElementById("theme-toggle");
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
@@ -72,7 +79,9 @@ if (themeToggle) {
   });
 }
 
-// --- 鼠标停止检测：当鼠标在社交卡片上停住超过 600ms，添加 .stopped 类触发动画 ---
+// =========================================================
+// 5. 鼠标停止检测 (保持不变)
+// =========================================================
 (function () {
   const els = document.querySelectorAll(".card-social");
   els.forEach((el) => {
@@ -91,7 +100,7 @@ if (themeToggle) {
       }
       el.classList.remove("stopped");
     });
-    // 支持键盘焦点触发（可选）
+    // 支持键盘焦点触发
     el.setAttribute("tabindex", "0");
     el.addEventListener("focus", () => {
       if (timer) clearTimeout(timer);
@@ -107,38 +116,71 @@ if (themeToggle) {
   });
 })();
 
-// --- 🚀 首页博客卡片自动更新逻辑 ---
-document.addEventListener("DOMContentLoaded", function () {
-  // 1. 检查数据是否存在 (blogPosts 来自 blog-data.js)
-  if (typeof blogPosts === "undefined" || blogPosts.length === 0) return;
+// =========================================================
+// 🌟 核心修改：C 计划 - API 自动对接逻辑 🌟
+// =========================================================
+document.addEventListener("DOMContentLoaded", async function () {
+  // 你的 API 地址
+  const API_URL = "https://yopoo.888431.xyz/api/posts";
 
-  // 2. 获取最新的一篇文章 (数组的第0个)
-  const latestPost = blogPosts[0];
-
-  // 3. 找到主页的卡片元素
-  const card = document.getElementById("home-blog-card");
-  const title = document.getElementById("home-blog-title");
-  const desc = document.getElementById("home-blog-desc");
-
-  // 4. 如果元素都存在，就更新它们
-  if (card && title && desc) {
-    // 更新背景图
-    if (latestPost.cover) {
-      card.style.backgroundImage = `url('${latestPost.cover}')`;
+  try {
+    console.log("正在尝试连接 API:", API_URL);
+    
+    // 1. 发起请求
+    const response = await fetch(API_URL);
+    
+    // 2. 检查响应
+    if (!response.ok) {
+      throw new Error(`网络错误: ${response.status}`);
     }
 
-    // 更新标题
-    title.textContent = latestPost.title;
+    // 3. 解析 JSON 数据
+    const posts = await response.json();
+    console.log("成功获取文章数据:", posts);
 
-    // 更新简介 (如果没有简介，就显示默认文字)
-    desc.textContent = latestPost.desc || "点击阅读最新文章";
+    // 4. 如果有数据，取出最新的一篇（通常是数组第一个，或者按日期排序）
+    if (posts && posts.length > 0) {
+      // 简单排序：确保显示日期最新的那一篇
+      // (假设 date 格式是 'YYYY-MM-DD')
+      posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      const latestPost = posts[0]; // 取出排序后的第一篇
+      
+      // 5. 更新网页元素
+      const card = document.getElementById("home-blog-card");
+      const title = document.getElementById("home-blog-title");
+      const desc = document.getElementById("home-blog-desc");
+      // 如果你有给卡片加链接的需求，可以把下面这行解开
+      // const link = document.getElementById("home-blog-link"); 
 
-    // 可选：让卡片直接跳转到最新文章，而不是博客列表
-    // card.href = latestPost.link;
+      if (card && title && desc) {
+        // 更新标题
+        title.textContent = latestPost.title;
+        // 更新简介
+        desc.textContent = latestPost.description;
+        // 更新背景图
+        if (latestPost.cover) {
+           card.style.backgroundImage = `url('${latestPost.cover}')`;
+        }
+        // 更新链接跳转 (如果有)
+        // if (link) link.href = latestPost.link;
+        
+        console.log("首页卡片已更新为:", latestPost.title);
+      }
+    } else {
+      console.warn("API 返回了空数组");
+    }
+
+  } catch (error) {
+    console.error("无法获取博客数据:", error);
+    // 可选：如果失败，显示一个 Toast 提示
+    // showToast("博客数据加载失败，请检查后端服务");
   }
 });
 
-// --- 🤖 AI 聊天功能逻辑 ---
+// =========================================================
+// 7. AI 聊天功能逻辑 (保持不变)
+// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
   const chatCircle = document.getElementById("chat-circle");
   const chatBox = document.getElementById("chat-box");
@@ -147,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatSend = document.getElementById("chat-send");
   const messagesDiv = document.getElementById("chat-messages");
 
-  // 你的后端地址 (请确认这个地址是对的)
+  // 你的后端地址
   const AI_API_URL =
     "https://yopolute-my-docker-test.hf.space/chat?token=yopo666";
 
@@ -156,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
     chatCircle.addEventListener("click", () => {
       chatCircle.style.display = "none";
       chatBox.style.display = "flex";
-      // 自动聚焦输入框
       setTimeout(() => chatInput.focus(), 100);
     });
 
@@ -170,12 +211,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = chatInput.value.trim();
       if (!text) return;
 
-      // 显示用户消息
       addMessage(text, "user-message");
       chatInput.value = "";
       chatInput.focus();
 
-      // 显示“思考中”状态
       const loadingId = addMessage("Thinking... 🤔", "ai-message");
 
       try {
@@ -187,7 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await response.json();
 
-        // 移除“思考中”，显示真实回复
         const loadingMsg = document.getElementById(loadingId);
         if (loadingMsg) loadingMsg.remove();
 
@@ -210,9 +248,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = "msg-" + Date.now();
       div.id = id;
       div.className = `message ${className}`;
-      div.innerText = text; // 使用 innerText 防止 XSS
+      div.innerText = text;
       messagesDiv.appendChild(div);
-      // 自动滚动到底部
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
       return id;
     }
@@ -225,43 +262,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// --- 🚀 选项 2：高级 3D 视差悬停特效 (Apple TV 风格) ---
+// =========================================================
+// 8. 高级 3D 视差悬停特效 (保持不变)
+// =========================================================
 document.addEventListener("DOMContentLoaded", function () {
-  // 1. 选择所有需要特效的卡片
-  // 注意：我们排除了 .card-social-container，因为它们已经有翻转特效了，避免冲突
   const cards = document.querySelectorAll(".card:not(.card-social-container)");
 
   cards.forEach((card) => {
-    // 2. 鼠标移动时：计算角度并跟随
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left; // 鼠标在卡片内的 X 坐标
-      const y = e.clientY - rect.top; // 鼠标在卡片内的 Y 坐标
-
-      // 计算中心点
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-
-      // 核心算法：鼠标越靠边，旋转角度越大
-      // limit 是最大旋转角度，设为 8~10 度比较优雅
       const limit = 8;
-      const rotateX = -((y - centerY) / centerY) * limit; // 上下翻转 (注意负号，让鼠标在上面时卡片往上翘)
-      const rotateY = ((x - centerX) / centerX) * limit; // 左右翻转
+      const rotateX = -((y - centerY) / centerY) * limit;
+      const rotateY = ((x - centerX) / centerX) * limit;
 
-      // 应用 3D 变换
-      // perspective(1000px) 是视距，越小透视感越强
-      // scale3d(1.02...) 是为了稍微浮起一点，更有质感
       card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     });
 
-    // 3. 鼠标进入时：为了丝滑跟手，必须暂时关掉 CSS 的 transition
     card.addEventListener("mouseenter", () => {
-      card.style.transition = "none"; // 🔴 关键：移除延迟，让卡片瞬间响应鼠标
+      card.style.transition = "none";
     });
 
-    // 4. 鼠标离开时：平滑复位
     card.addEventListener("mouseleave", () => {
-      // 加回 transition，让复位动作有缓冲动画
       card.style.transition = "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)";
       card.style.transform =
         "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
