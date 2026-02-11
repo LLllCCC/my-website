@@ -1,30 +1,7 @@
-// 1. 创建唯一的全局音频实例
-const clickSound = new Audio("./assets/click.mp3");
-clickSound.preload = "auto"; // 强制浏览器预读文件
-
-// 2. 核心：通过全局点击激活音频上下文（兼容 iOS/Safari/Chrome）
-// 只要用户在页面任何地方点一下，音频就被“唤醒”了
-document.addEventListener(
-  "click",
-  function () {
-    clickSound
-      .play()
-      .then(() => {
-        clickSound.pause();
-        clickSound.currentTime = 0;
-      })
-      .catch((e) => {});
-  },
-  { once: true },
-);
-
 // 3. Email 卡片点击监听
 const mailtoLink = document.querySelector('a[href^="mailto:"]');
 if (mailtoLink) {
   mailtoLink.addEventListener("click", function (e) {
-    // 逻辑 A: 声音播放（不使用 load()，直接重置并播放）
-    clickSound.currentTime = 0;
-    const playPromise = clickSound.play();
 
     if (playPromise !== undefined) {
       playPromise.catch((error) => {
@@ -97,12 +74,6 @@ if (themeToggle) {
         localStorage.setItem("theme", "light");
       } catch (e) {}
       showToast("已开启清新模式 ✨");
-    }
-
-    // 播放点击音效
-    if (typeof clickSound !== "undefined") {
-      clickSound.currentTime = 0;
-      clickSound.play().catch((e) => {});
     }
   });
 }
