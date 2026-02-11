@@ -8,6 +8,37 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="theme-init.js"></script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 搜索框专属样式 */
+        .search-container {
+            margin: 20px auto 40px;
+            max-width: 600px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 122, 255, 0.2);
+        }
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -20,8 +51,13 @@
             <p>记录代码旅程与生活点滴。</p>
         </div>
 
+        <div class="search-container fade-in">
+            <i class="ri-search-line search-icon"></i>
+            <input type="text" id="blog-search" class="search-input" placeholder="搜索文章标题或内容...">
+        </div>
+
         <div class="article-list" id="dynamic-article-list">
-            <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">正在从数据库加载文章... 🚀</p>
+            <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">正在加载中... 🚀</p>
         </div>
 
         <div id="global-footer"></div>
@@ -34,31 +70,25 @@
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
             const listContainer = document.getElementById("dynamic-article-list");
+            const searchInput = document.getElementById("blog-search");
             const API_URL = "https://yopoo.888431.xyz/api/posts";
+            
+            let allPosts = []; // 用来存放原始数据
 
-            try {
-                // 1. 获取数据
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error("API 响应失败");
-                const posts = await response.json();
-
-                // 2. 清空“加载中”提示
+            // 1. 获取并渲染数据的函数
+            function renderPosts(posts) {
                 listContainer.innerHTML = "";
+                if (posts.length === 0) {
+                    listContainer.innerHTML = `<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">没找到相关的文章 😅</p>`;
+                    return;
+                }
 
-                // 3. 排序：按日期降序排列
-                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                // 4. 循环生成卡片
                 posts.forEach(post => {
                     const card = document.createElement("div");
                     card.className = "card blog-post-card fade-in";
-                    
-                    // 设置背景图
                     if (post.cover) {
                         card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('${post.cover}')`;
                     }
-
-                    // 填充卡片内容
                     card.innerHTML = `
                         <div class="card-content">
                             <div class="post-meta">
@@ -70,16 +100,29 @@
                             <a href="${post.link}" class="read-more">阅读全文 <i class="ri-arrow-right-line"></i></a>
                         </div>
                     `;
-                    
                     listContainer.appendChild(card);
                 });
-
-                console.log("✅ 博客列表页已成功动态渲染 " + posts.length + " 篇文章");
-
-            } catch (error) {
-                console.error("❌ 渲染博客列表出错:", error);
-                listContainer.innerHTML = `<p style="text-align: center; color: #ff4d4d; grid-column: 1/-1;">数据加载失败，请检查后端 API 是否正常运行。</p>`;
             }
+
+            // 2. 初始化加载
+            try {
+                const response = await fetch(API_URL);
+                allPosts = await response.json();
+                allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                renderPosts(allPosts);
+            } catch (error) {
+                listContainer.innerHTML = `<p style="text-align: center; color: #ff4d4d; grid-column: 1/-1;">加载失败，请检查 API 状态。</p>`;
+            }
+
+            // 3. 🌟 搜索监听逻辑
+            searchInput.addEventListener("input", (e) => {
+                const keyword = e.target.value.toLowerCase();
+                const filtered = allPosts.filter(post => 
+                    post.title.toLowerCase().includes(keyword) || 
+                    (post.description && post.description.toLowerCase().includes(keyword))
+                );
+                renderPosts(filtered);
+            });
         });
     </script>
 </body>
