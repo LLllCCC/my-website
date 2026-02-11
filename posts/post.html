@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正在加载文章...</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .post-content { max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.8; }
+        /* 给 Markdown 转换出来的代码块加点样式 */
+        pre { background: #f4f4f4; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        code { font-family: 'Courier New', Courier, monospace; color: #d63384; }
+    </style>
+</head>
+<body>
+    <div id="global-nav"></div>
+
+    <article class="container">
+        <div class="blog-header">
+            <h1 id="article-title">加载中...</h1>
+            <p id="article-meta" style="color: var(--text-secondary);"></p>
+        </div>
+        
+        <div id="article-body" class="post-content"></div>
+    </article>
+
+    <script src="/nav.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            // 3. 从网页链接里获取文章 ID (例如 post.html?id=5)
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+
+            if (!postId) {
+                document.getElementById('article-body').innerHTML = "文章 ID 丢失啦！👀";
+                return;
+            }
+
+            try {
+                // 4. 去后端请求这篇文章的详情 (包含 content 字段)
+                const res = await fetch(`https://yopoo.888431.xyz/api/posts/${postId}`);
+                const post = await res.json();
+
+                // 5. 更新标题和元数据
+                document.title = post.title;
+                document.getElementById('article-title').textContent = post.title;
+                document.getElementById('article-meta').textContent = `${post.date} · ${post.tags}`;
+
+                // 6. 🔥 核心魔法：将数据库里的内容传给 marked 转换成 HTML
+                // 如果数据库里的 content 是空的，就显示提示文字
+                const markdownRaw = post.content || "这篇文章还没有正文内容哦。";
+                document.getElementById('article-body').innerHTML = marked.parse(markdownRaw);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('article-body').innerHTML = "加载失败，请检查 API 是否开启。";
+            }
+        });
+    </script>
+</body>
+</html>

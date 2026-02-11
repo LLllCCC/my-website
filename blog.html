@@ -96,8 +96,7 @@
                                 <span class="post-tag">${post.tags || '生活'}</span>
                             </div>
                             <h2 class="post-title">${post.title}</h2>
-                            <p class="post-desc">${post.description || ''}</p>
-                            <a href="${post.link}" class="read-more">阅读全文 <i class="ri-arrow-right-line"></i></a>
+                            <a href="post.html?id=${post.id}" class="read-more">阅读全文 <i class="ri-arrow-right-line"></i></a>
                         </div>
                     `;
                     listContainer.appendChild(card);

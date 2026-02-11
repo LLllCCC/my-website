@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Yopo - 秘密发布后台</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <style>
+        .admin-box { max-width: 800px; margin: 50px auto; padding: 20px; background: var(--card-bg); border-radius: 15px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--card-border); background: var(--bg-color); color: var(--text-primary); }
+        button { background: #007aff; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="admin-box">
+        <h2>🚀 发布新文章</h2>
+        <input type="text" id="title" placeholder="文章标题">
+        <input type="text" id="tags" placeholder="标签 (用逗号隔开)">
+        <input type="text" id="cover" placeholder="封面图链接 (assets/...)">
+        <textarea id="markdown-editor"></textarea>
+        <input type="password" id="admin-token" placeholder="输入发布口令">
+        <button onclick="publishPost()">立即发布到服务器</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <script>
+        // 初始化 Markdown 编辑器
+        const easymde = new EasyMDE({ element: document.getElementById('markdown-editor') });
+
+        async function publishPost() {
+            const data = {
+                title: document.getElementById('title').value,
+                tags: document.getElementById('tags').value,
+                cover: document.getElementById('cover').value,
+                content: easymde.value(), // 获取 Markdown 原文
+                token: document.getElementById('admin-token').value
+            };
+
+            // 发送到你的 API (我们需要在后端增加这个接收口)
+            const res = await fetch('https://yopoo.888431.xyz/api/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if(res.ok) {
+                alert("发布成功！🎉");
+                window.location.href = "blog.html";
+            } else {
+                alert("发布失败，请检查口令或服务器。");
+            }
+        }
+    </script>
+</body>
+</html>
