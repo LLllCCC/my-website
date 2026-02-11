@@ -1,0 +1,23 @@
+name: 自动部署个人主页
+
+# 触发条件：当你向 main 分支推送代码时执行
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 远程连接服务器并更新
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          password: ${{ secrets.SERVER_PASSWORD }}
+          # 这一行就是你平时手动敲的命令，现在由机器人代劳
+          script: |
+            cd /root/myweb
+            git pull
+            docker restart my-nginx
