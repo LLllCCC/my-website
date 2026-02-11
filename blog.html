@@ -20,15 +20,67 @@
             <p>记录代码旅程与生活点滴。</p>
         </div>
 
-        <div class="article-list">
-            </div>
-        <script src="blog-data.js?v=2"></script>
-        
+        <div class="article-list" id="dynamic-article-list">
+            <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">正在从数据库加载文章... 🚀</p>
+        </div>
+
         <div id="global-footer"></div>
         <script src="/footer.js"></script>
     </div>
 
-    <script src="/nav.js"></script><script src="main.js"></script>
+    <script src="/nav.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const listContainer = document.getElementById("dynamic-article-list");
+            const API_URL = "https://yopoo.888431.xyz/api/posts";
+
+            try {
+                // 1. 获取数据
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error("API 响应失败");
+                const posts = await response.json();
+
+                // 2. 清空“加载中”提示
+                listContainer.innerHTML = "";
+
+                // 3. 排序：按日期降序排列
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // 4. 循环生成卡片
+                posts.forEach(post => {
+                    const card = document.createElement("div");
+                    card.className = "card blog-post-card fade-in";
+                    
+                    // 设置背景图
+                    if (post.cover) {
+                        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('${post.cover}')`;
+                    }
+
+                    // 填充卡片内容
+                    card.innerHTML = `
+                        <div class="card-content">
+                            <div class="post-meta">
+                                <span class="post-date">${post.date}</span>
+                                <span class="post-tag">${post.tags || '生活'}</span>
+                            </div>
+                            <h2 class="post-title">${post.title}</h2>
+                            <p class="post-desc">${post.description || ''}</p>
+                            <a href="${post.link}" class="read-more">阅读全文 <i class="ri-arrow-right-line"></i></a>
+                        </div>
+                    `;
+                    
+                    listContainer.appendChild(card);
+                });
+
+                console.log("✅ 博客列表页已成功动态渲染 " + posts.length + " 篇文章");
+
+            } catch (error) {
+                console.error("❌ 渲染博客列表出错:", error);
+                listContainer.innerHTML = `<p style="text-align: center; color: #ff4d4d; grid-column: 1/-1;">数据加载失败，请检查后端 API 是否正常运行。</p>`;
+            }
+        });
+    </script>
 </body>
 </html>
-
