@@ -3,12 +3,6 @@ const mailtoLink = document.querySelector('a[href^="mailto:"]');
 if (mailtoLink) {
   mailtoLink.addEventListener("click", function (e) {
 
-    if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.log("播放被拦截，尝试手动触发");
-      });
-    }
-
     // 逻辑 B: 时间判断与问候
     const now = new Date();
     const hour = now.getHours();
