@@ -22,34 +22,156 @@
         <button onclick="publishPost()">立即发布到服务器</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
-    <script>
-        // 初始化 Markdown 编辑器
-        const easymde = new EasyMDE({ element: document.getElementById('markdown-editor') });
+<script>
+    const API_URL = 'https://yopoo.888431.xyz/api/posts'; // 你的API地址
+    let currentEditingId = null; // 用于记录当前正在修改哪篇文章
 
-        async function publishPost() {
-            const data = {
-                title: document.getElementById('title').value,
-                tags: document.getElementById('tags').value,
-                cover: document.getElementById('cover').value,
-                content: easymde.value(), // 获取 Markdown 原文
-                token: document.getElementById('admin-token').value
-            };
+    // 1. 页面加载时，获取所有文章列表
+    async function loadPosts() {
+        const listContainer = document.getElementById('admin-post-list');
+        try {
+            const res = await fetch(API_URL);
+            const posts = await res.json();
 
-            // 发送到你的 API (我们需要在后端增加这个接收口)
-            const res = await fetch('https://yopoo.888431.xyz/api/posts', {
-                method: 'POST',
+            if (posts.length === 0) {
+                listContainer.innerHTML = '<p style="color: #666;">暂无文章</p>';
+                return;
+            }
+
+            // 生成列表 HTML
+            listContainer.innerHTML = posts.map(post => `
+                <div style="background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333;">
+                    <div style="flex: 1;">
+                        <span style="color: #fff; font-weight: bold;">${post.title}</span>
+                        <span style="color: #666; font-size: 12px; margin-left: 10px;">${post.date}</span>
+                    </div>
+                    <div style="min-width: 120px; text-align: right;">
+                        <button onclick="editPost(${post.id})" style="background: #2196F3; border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px;">✎ 修改</button>
+                        <button onclick="deletePost(${post.id})" style="background: #F44336; border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">🗑️ 删除</button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+            listContainer.innerHTML = '<p style="color: red;">加载列表失败，请检查API</p>';
+        }
+    }
+
+    // 2. 点击“发布/保存”按钮
+    document.querySelector('button').onclick = async function() {
+        const title = document.querySelector('input[placeholder="文章标题"]').value;
+        const tags = document.querySelector('input[placeholder="标签 (用逗号隔开)"]').value;
+        const cover = document.querySelector('input[placeholder="封面图链接 (assets/...)"]').value;
+        const content = document.querySelector('textarea').value;
+        const token = document.querySelector('input[placeholder="输入发布口令"]').value;
+
+        if (!token) return alert('请输入口令！');
+
+        const data = { title, tags, cover, content, token };
+        
+        // 判断是“新建”还是“修改”
+        let url = API_URL;
+        let method = 'POST';
+        
+        if (currentEditingId) {
+            url = `${API_URL}/${currentEditingId}`;
+            method = 'PUT'; // 修改模式
+        }
+
+        try {
+            const res = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
-            if(res.ok) {
-                alert("发布成功！🎉");
-                window.location.href = "blog.html";
+            const text = await res.text();
+            if (res.ok) {
+                alert(currentEditingId ? '修改成功！' : '发布成功！');
+                resetForm(); // 清空表单
+                loadPosts(); // 刷新列表
             } else {
-                alert("发布失败，请检查口令或服务器。");
+                alert('失败: ' + text);
             }
+        } catch (err) {
+            alert('网络错误');
         }
-    </script>
+    };
+
+    // 3. 点击“修改”按钮 (回填数据)
+    window.editPost = async function(id) {
+        const token = document.querySelector('input[placeholder="输入发布口令"]').value;
+        if (!token) return alert('请先在下方输入口令，再点击修改！');
+
+        // 先获取文章详情
+        try {
+            const res = await fetch(`${API_URL}/${id}`);
+            const post = await res.json();
+            
+            // 填充到表单里
+            document.querySelector('input[placeholder="文章标题"]').value = post.title;
+            document.querySelector('input[placeholder="标签 (用逗号隔开)"]').value = post.tags || '';
+            document.querySelector('input[placeholder="封面图链接 (assets/...)"]').value = post.cover || '';
+            document.querySelector('textarea').value = post.content;
+            
+            // 切换状态
+            currentEditingId = id;
+            document.querySelector('button').innerText = `💾 保存修改 (ID: ${id})`;
+            document.querySelector('h1').innerText = '✏️ 修改文章';
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch(err) {
+            alert('获取文章详情失败');
+        }
+    }
+
+    // 4. 点击“删除”按钮
+    window.deletePost = async function(id) {
+        const token = document.querySelector('input[placeholder="输入发布口令"]').value;
+        if (!token) return alert('请先在下方输入口令，再点击删除！');
+
+        if (!confirm('确定要删除这篇文章吗？删除后无法恢复！')) return;
+
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token }) // 把口令传过去
+            });
+            
+            if (res.ok) {
+                alert('已删除');
+                loadPosts(); // 刷新列表
+            } else {
+                alert('删除失败: ' + await res.text());
+            }
+        } catch (err) {
+            alert('网络错误');
+        }
+    }
+
+    function resetForm() {
+        currentEditingId = null;
+        document.querySelector('button').innerText = '立即发布到服务器';
+        document.querySelector('h1').innerText = '🚀 发布新文章';
+        document.querySelector('input[placeholder="文章标题"]').value = '';
+        document.querySelector('textarea').value = '';
+        // 不清空口令，方便连续操作
+    }
+
+    // 启动时加载列表
+    loadPosts();
+</script>
+
+    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #333;">
+
+    <div style="max-width: 800px; margin: 0 auto; padding-bottom: 50px;">
+        <h2 style="color: #fff; margin-bottom: 20px;">📂 文章管理</h2>
+        <div id="admin-post-list">
+            <p style="color: #666;">正在加载文章列表...</p>
+        </div>
+    </div>
+
 </body>
 </html>
