@@ -22,6 +22,15 @@
         <button onclick="publishPost()">立即发布到服务器</button>
     </div>
 
+    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #333;">
+
+    <div style="max-width: 800px; margin: 0 auto; padding-bottom: 50px;">
+        <h2 style="color: #fff; margin-bottom: 20px;">📂 文章管理</h2>
+        <div id="admin-post-list">
+            <p style="color: #666;">正在加载文章列表...</p>
+        </div>
+    </div>
+    
 <script>
     // 你的 API 地址 (确保没有多余的空格)
     const API_URL = 'https://yopoo.888431.xyz/api/posts'; 
@@ -200,14 +209,6 @@
     loadPosts();
 </script>
 
-    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #333;">
-
-    <div style="max-width: 800px; margin: 0 auto; padding-bottom: 50px;">
-        <h2 style="color: #fff; margin-bottom: 20px;">📂 文章管理</h2>
-        <div id="admin-post-list">
-            <p style="color: #666;">正在加载文章列表...</p>
-        </div>
-    </div>
 
 </body>
 </html>
