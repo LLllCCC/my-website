@@ -189,9 +189,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatSend = document.getElementById("chat-send");
   const messagesDiv = document.getElementById("chat-messages");
 
-  // 你的后端地址
-  const AI_API_URL =
-    "https://yopolute-my-docker-test.hf.space/chat?token=yopo666";
+  // 你的后端地址 (修改为指向你自己的服务器)
+  const AI_API_URL = "https://yopoo.888431.xyz/api/chat";
 
   if (chatCircle) {
     // 1. 打开/关闭聊天窗
