@@ -19,7 +19,7 @@ if (mailtoLink) {
   });
 } else {
   console.warn(
-    '邮件链接元素未找到：a[href^="mailto:"] — 未绑定点击音效/问候逻辑。'
+    '邮件链接元素未找到：a[href^="mailto:"] — 未绑定点击音效/问候逻辑。',
   );
 }
 
@@ -125,10 +125,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   try {
     console.log("正在尝试连接 API:", API_URL);
-    
+
     // 1. 发起请求
     const response = await fetch(API_URL);
-    
+
     // 2. 检查响应
     if (!response.ok) {
       throw new Error(`网络错误: ${response.status}`);
@@ -143,15 +143,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       // 简单排序：确保显示日期最新的那一篇
       // (假设 date 格式是 'YYYY-MM-DD')
       posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-      
+
       const latestPost = posts[0]; // 取出排序后的第一篇
-      
+
       // 5. 更新网页元素
       const card = document.getElementById("home-blog-card");
       const title = document.getElementById("home-blog-title");
       const desc = document.getElementById("home-blog-desc");
       // 如果你有给卡片加链接的需求，可以把下面这行解开
-      // const link = document.getElementById("home-blog-link"); 
+      // const link = document.getElementById("home-blog-link");
 
       if (card && title && desc) {
         // 更新标题
@@ -160,24 +160,22 @@ document.addEventListener("DOMContentLoaded", async function () {
         desc.textContent = latestPost.description;
         // 更新背景图
         if (latestPost.cover) {
-           card.style.backgroundImage = `url('${latestPost.cover}')`;
+          card.style.backgroundImage = `url('${latestPost.cover}')`;
         }
         // 更新链接跳转 (如果有)
         // if (link) link.href = latestPost.link;
-        
+
         console.log("首页卡片已更新为:", latestPost.title);
       }
     } else {
       console.warn("API 返回了空数组");
     }
-
   } catch (error) {
     console.error("无法获取博客数据:", error);
     // 可选：如果失败，显示一个 Toast 提示
     // showToast("博客数据加载失败，请检查后端服务");
   }
 });
-
 
 // =========================================================
 // 8. 高级 3D 视差悬停特效 (保持不变)
