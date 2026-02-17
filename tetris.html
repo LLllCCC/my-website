@@ -8,12 +8,12 @@
     />
     <title>俄罗斯方块 - Yopo</title>
     <link rel="icon" href="assets/my-avatar.jpg" />
-    <link rel="stylesheet" href="style.css" />
     <link
       href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css"
       rel="stylesheet"
     />
     <style>
+      /* 全局样式：禁止页面滚动和缩放 */
       body {
         overflow: hidden;
         touch-action: none;
@@ -24,108 +24,158 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
+        margin: 0;
         font-family: "Courier New", monospace;
+        user-select: none; /* 禁止选中文本 */
+        -webkit-user-select: none;
       }
-      .game-container {
-        position: relative;
+
+      .game-wrapper {
         display: flex;
+        align-items: flex-start;
         gap: 20px;
         padding: 20px;
         background: #2c2c2e;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       }
-      canvas {
+
+      canvas#game {
         background: #000;
         display: block;
         border-radius: 4px;
+        /* 关键修复：不要用 CSS 强行改变宽高，否则会模糊或变形 */
+        width: 240px;
+        height: 400px;
       }
+
       .info-panel {
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        min-width: 100px;
+        gap: 15px;
+        min-width: 90px;
       }
+
       .score-box {
         background: #3a3a3c;
-        padding: 15px;
+        padding: 10px;
         border-radius: 10px;
         text-align: center;
       }
+
       .score-title {
         font-size: 12px;
         color: #888;
         margin-bottom: 5px;
       }
       .score-num {
-        font-size: 24px;
+        font-size: 20px;
         font-weight: bold;
         color: #4cd964;
       }
+
+      .btn-start {
+        background: #0a84ff;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        width: 100%;
+      }
+      .btn-start:active {
+        opacity: 0.8;
+      }
+
       .controls-tip {
         font-size: 12px;
         color: #666;
         margin-top: auto;
         line-height: 1.5;
       }
-      .btn-start {
-        background: #0a84ff;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 16px;
-        margin-top: 10px;
-      }
-      .btn-start:hover {
-        background: #007aff;
-      }
-      /* 移动端控制按钮 */
+
+      /* === 📱 手机端适配 === */
       .mobile-controls {
         display: none;
-        margin-top: 20px;
-        gap: 15px;
-      }
-      .m-btn {
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        border: none;
-        color: white;
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .m-btn:active {
-        background: rgba(255, 255, 255, 0.3);
-      }
+      } /* 默认隐藏 */
 
       @media (max-width: 600px) {
-        .game-container {
+        .game-wrapper {
           flex-direction: column;
+          align-items: center;
           gap: 10px;
-          padding: 15px;
+          padding: 10px;
+          background: transparent; /* 手机上去掉背景框，显得更轻量 */
+          box-shadow: none;
         }
+
         .info-panel {
           flex-direction: row;
           justify-content: space-between;
-          align-items: center;
+          width: 240px; /* 和画布一样宽 */
           min-width: auto;
         }
+
+        .score-box {
+          flex: 1;
+          padding: 5px;
+        }
+        #next-box {
+          display: none;
+        } /* 手机屏幕小，隐藏预览可能更好，或者保留 */
         .controls-tip {
           display: none;
         }
-        .mobile-controls {
-          display: flex;
+        .btn-start {
+          width: auto;
+          padding: 8px 20px;
         }
-        canvas {
-          width: 200px;
-          height: 400px;
-        } /* 缩小适配手机 */
+
+        /* 显示手机按钮 */
+        .mobile-controls {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 15px;
+          margin-top: 10px;
+          width: 280px;
+        }
+
+        .m-btn {
+          width: 70px;
+          height: 70px;
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 50%;
+          border: none;
+          color: white;
+          font-size: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto;
+          backdrop-filter: blur(5px);
+          -webkit-tap-highlight-color: transparent; /* 去掉点击高亮 */
+        }
+        .m-btn:active {
+          background: rgba(10, 132, 255, 0.6);
+          transform: scale(0.95);
+        }
+
+        /* 布局调整：上下左右 */
+        #btn-up {
+          grid-column: 2;
+          background: rgba(255, 255, 255, 0.2);
+        }
+        #btn-left {
+          grid-column: 1;
+        }
+        #btn-right {
+          grid-column: 3;
+        }
+        #btn-down {
+          grid-column: 2;
+        }
       }
     </style>
   </head>
@@ -134,27 +184,30 @@
       href="index.html"
       style="
         position: absolute;
-        top: 20px;
-        left: 20px;
-        color: #fff;
+        top: 15px;
+        left: 15px;
+        color: rgba(255, 255, 255, 0.5);
         text-decoration: none;
         display: flex;
         align-items: center;
         gap: 5px;
-        opacity: 0.8;
+        font-size: 14px;
+        z-index: 10;
       "
     >
-      <i class="ri-arrow-left-line"></i> 返回主页
+      <i class="ri-arrow-left-line"></i> 返回
     </a>
 
-    <div class="game-container">
+    <div class="game-wrapper">
       <canvas id="game" width="240" height="400"></canvas>
+
       <div class="info-panel">
         <div class="score-box">
           <div class="score-title">SCORE</div>
           <div class="score-num" id="score">0</div>
         </div>
-        <div class="score-box">
+
+        <div class="score-box" id="next-box">
           <div class="score-title">NEXT</div>
           <canvas
             id="next"
@@ -163,31 +216,30 @@
             style="background: transparent; margin: 0 auto"
           ></canvas>
         </div>
+
         <button class="btn-start" onclick="toggleGame()" id="startBtn">
-          开始游戏
+          开始
         </button>
+
         <div class="controls-tip">
-          💻 键盘控制:<br />
-          ← → : 移动<br />
-          ↑ : 旋转<br />
-          ↓ : 加速<br />
-          空格 : 暂停
+          ← → 移动<br />↑ 旋转<br />↓ 加速<br />空格 暂停
         </div>
       </div>
     </div>
 
     <div class="mobile-controls">
-      <button class="m-btn" ontouchstart="playerMove(-1)">
+      <div></div>
+      <button class="m-btn" id="btn-up"><i class="ri-refresh-line"></i></button>
+      <div></div>
+
+      <button class="m-btn" id="btn-left">
         <i class="ri-arrow-left-line"></i>
       </button>
-      <button class="m-btn" ontouchstart="playerRotate(1)">
-        <i class="ri-refresh-line"></i>
-      </button>
-      <button class="m-btn" ontouchstart="playerMove(1)">
-        <i class="ri-arrow-right-line"></i>
-      </button>
-      <button class="m-btn" ontouchstart="playerDrop()">
+      <button class="m-btn" id="btn-down">
         <i class="ri-arrow-down-line"></i>
+      </button>
+      <button class="m-btn" id="btn-right">
+        <i class="ri-arrow-right-line"></i>
       </button>
     </div>
 
@@ -197,10 +249,10 @@
       const nextCanvas = document.getElementById("next");
       const nextContext = nextCanvas.getContext("2d");
 
-      context.scale(20, 20); // 放大 20 倍，每个方块 20px
+      context.scale(20, 20);
       nextContext.scale(20, 20);
 
-      // 方块形状定义
+      // 方块定义
       const pieces = "ILJOTSZ";
       const colors = [
         null,
@@ -258,7 +310,6 @@
           ];
       }
 
-      // 游戏状态
       const arena = createMatrix(12, 20);
       const player = { pos: { x: 0, y: 0 }, matrix: null, score: 0 };
       let nextPieceMatrix = null;
@@ -294,28 +345,30 @@
         matrix.forEach((row, y) => {
           row.forEach((value, x) => {
             if (value !== 0) {
+              // 填充颜色
               ctx.fillStyle = colors[value];
               ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
-              // 加点立体效果
+              // 绘制内发光/立体感
               ctx.lineWidth = 0.05;
-              ctx.strokeStyle = "rgba(0,0,0,0.5)";
+              ctx.strokeStyle = "rgba(255,255,255,0.5)";
               ctx.strokeRect(x + offset.x, y + offset.y, 1, 1);
+              // 绘制阴影
+              ctx.fillStyle = "rgba(0,0,0,0.2)";
+              ctx.fillRect(x + offset.x + 0.1, y + offset.y + 0.8, 0.8, 0.1);
+              ctx.fillRect(x + offset.x + 0.8, y + offset.y + 0.1, 0.1, 0.8);
             }
           });
         });
       }
 
       function draw() {
-        // 清空画布
         context.fillStyle = "#000";
         context.fillRect(0, 0, canvas.width, canvas.height);
         drawMatrix(arena, { x: 0, y: 0 }, context);
         drawMatrix(player.matrix, player.pos, context);
 
-        // 绘制下一个方块
         nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
         if (nextPieceMatrix) {
-          // 居中显示
           const offsetX = (4 - nextPieceMatrix[0].length) / 2;
           const offsetY = (4 - nextPieceMatrix.length) / 2;
           drawMatrix(nextPieceMatrix, { x: offsetX, y: offsetY }, nextContext);
@@ -374,7 +427,7 @@
         if (collide(arena, player)) {
           isGameOver = true;
           isPaused = true;
-          document.getElementById("startBtn").innerText = "游戏结束 (重来)";
+          document.getElementById("startBtn").innerText = "重来";
           document.getElementById("startBtn").style.background = "#FF3B30";
         }
       }
@@ -425,7 +478,6 @@
       function toggleGame() {
         const btn = document.getElementById("startBtn");
         if (isGameOver) {
-          // 重置游戏
           arena.forEach((row) => row.fill(0));
           player.score = 0;
           updateScore();
@@ -454,12 +506,50 @@
         else if (event.keyCode === 39) playerMove(1);
         else if (event.keyCode === 40) playerDrop();
         else if (event.keyCode === 38) playerRotate(1);
-        else if (event.keyCode === 32) toggleGame(); // 空格暂停
+        else if (event.keyCode === 32) toggleGame();
       });
 
-      // 初始化显示
+      // === 🚀 手机端长按连续移动逻辑 ===
+      const setupMobileBtn = (id, action) => {
+        const btn = document.getElementById(id);
+        let interval;
+
+        // 触摸开始
+        btn.addEventListener(
+          "touchstart",
+          (e) => {
+            e.preventDefault(); // 防止双击缩放
+            if (isPaused) return;
+            action(); // 立即执行一次
+            // 延时后开启连发
+            setTimeout(() => {
+              if (interval) clearInterval(interval);
+              // 只有当前还在触摸中才开启连发
+              if (btn.matches(":active")) {
+                interval = setInterval(action, 100); // 100ms 连发一次
+              }
+            }, 200);
+          },
+          { passive: false },
+        );
+
+        // 触摸结束/取消/离开
+        const stop = (e) => {
+          if (e) e.preventDefault();
+          clearInterval(interval);
+        };
+        btn.addEventListener("touchend", stop);
+        btn.addEventListener("touchcancel", stop);
+      };
+
+      setupMobileBtn("btn-left", () => playerMove(-1));
+      setupMobileBtn("btn-right", () => playerMove(1));
+      setupMobileBtn("btn-down", () => playerDrop());
+      setupMobileBtn("btn-up", () => playerRotate(1));
+
+      // 初始化
       playerReset();
-      isPaused = true; // 初始暂停
+      isPaused = true;
       draw();
     </script>
   </body>
