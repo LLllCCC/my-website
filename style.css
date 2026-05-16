@@ -21,7 +21,7 @@
   --accent-color: #0071d4;
 }
 
-/* --- 2. 基础布局修复 --- */
+/* --- 2. 基础布局 --- */
 html {
   scroll-behavior: smooth;
 }
@@ -37,7 +37,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- 3. 导航栏修复 (确保浅色模式文字可见) --- */
+/* --- 3. 导航栏 --- */
 nav {
   position: fixed;
   top: 0;
@@ -58,7 +58,6 @@ nav {
   padding: 0 20px;
 }
 
-/* .nav-container.narrow 已移除 — 导航保持统一容器宽度以简化样式 */
 .nav-links {
   display: flex;
   align-items: center;
@@ -66,7 +65,7 @@ nav {
 }
 .nav-links a,
 .nav-links button {
-  color: var(--text-primary); /* 使用 Primary 确保文字清晰 */
+  color: var(--text-primary);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
@@ -81,19 +80,18 @@ nav {
   margin-left: 10px;
 }
 
-/* 强制修复左上角 Logo 链接颜色，确保全站一致 */
 .logo a {
-  color: var(--text-primary) !important;
-  text-decoration: none !important;
-  border: none !important;
+  color: var(--text-primary);
+  text-decoration: none;
+  border: none;
   transition: opacity 0.2s;
 }
 .logo a:hover {
   opacity: 0.6;
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
 }
 .logo span {
-  color: var(--text-secondary) !important;
+  color: var(--text-secondary);
 }
 
 /* --- 4. Bento Grid 核心系统 --- */
@@ -116,20 +114,17 @@ nav {
   flex-direction: column;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  /* 核心修复：解决 image_950ee9 中的底部白边问题 */
   overflow: hidden;
   border: 1px solid var(--border-color);
 }
 
-/* 针对带有背景图的卡片，直接关掉边框以防穿帮（解决截图 950ee9 问题） */
 .card-project,
 .card-map {
-  border: none !important;
+  border: none;
   background-size: cover;
   background-position: center;
 }
 
-/* 物理打击感点击反馈 */
 .card:active {
   transform: scale(0.96) translateY(2px);
   transition: 0.1s;
@@ -139,10 +134,10 @@ nav {
   background-color: var(--card-hover);
 }
 
-/* --- 5. 英雄卡片布局复位 (解决截图 9507c3 问题) --- */
+/* --- 5. 英雄卡片 --- */
 .card-hero {
   grid-column: span 4;
-  flex-direction: row; /* 确保文字头像左右排布 */
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 50px;
@@ -165,7 +160,7 @@ nav {
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- 6. 社交卡片图标大小 --- */
+/* --- 6. 社交卡片 --- */
 .card-social {
   grid-column: span 1;
   aspect-ratio: 1/1;
@@ -178,7 +173,6 @@ nav {
   color: var(--text-primary);
 }
 
-/* 鼠标停止时的图标动画（当用户在卡片上静止一段时间，图标开始脉动） */
 .card-social.stopped i {
   animation: social-pulse 1.2s ease-in-out infinite;
   transform-origin: center;
@@ -198,7 +192,7 @@ nav {
   }
 }
 
-/* --- 7. 项目卡片文字清晰度修复 (解决截图 94b4d0 问题) --- */
+/* --- 7. 项目卡片 --- */
 .card-project {
   grid-column: span 2;
   min-height: 280px;
@@ -214,7 +208,6 @@ nav {
   left: 0;
   right: 0;
   bottom: 0;
-  /* 强力遮罩：底部 90% 不透明，确保文字在任何背景下都可见 */
   background: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.9) 0%,
@@ -226,7 +219,7 @@ nav {
 }
 .project-info {
   z-index: 2;
-  color: #ffffff !important;
+  color: #ffffff;
   text-shadow: 0 2px 15px rgba(0, 0, 0, 1);
 }
 .project-title {
@@ -238,7 +231,7 @@ nav {
   opacity: 0.9;
 }
 
-/* 简单的淡入效果，用于页面加载时的卡片 */
+/* 淡入效果 */
 .fade-in {
   opacity: 0;
   transform: translateY(8px);
@@ -251,7 +244,7 @@ nav {
   }
 }
 
-/* Toast 通知样式 */
+/* Toast 通知 */
 .toast-notification {
   position: fixed;
   left: 50%;
@@ -273,30 +266,15 @@ nav {
   transform: translateX(-50%) translateY(8px);
 }
 
-/* 把内联 animation-delay 提取为类，便于复用与维护 */
-.delay-01 {
-  animation-delay: 0.1s;
-}
-.delay-02 {
-  animation-delay: 0.2s;
-}
-.delay-03 {
-  animation-delay: 0.3s;
-}
-.delay-04 {
-  animation-delay: 0.4s;
-}
-.delay-05 {
-  animation-delay: 0.5s;
-}
-.delay-06 {
-  animation-delay: 0.6s;
-}
-.delay-07 {
-  animation-delay: 0.7s;
-}
+.delay-01 { animation-delay: 0.1s; }
+.delay-02 { animation-delay: 0.2s; }
+.delay-03 { animation-delay: 0.3s; }
+.delay-04 { animation-delay: 0.4s; }
+.delay-05 { animation-delay: 0.5s; }
+.delay-06 { animation-delay: 0.6s; }
+.delay-07 { animation-delay: 0.7s; }
 
-/* 背景图类：把 background-image 从 HTML 内联移动到 CSS */
+/* 背景图类 */
 .bg-project-1 {
   background-image: url("assets/project-1.jpg");
   background-size: cover;
@@ -313,13 +291,13 @@ nav {
   background-position: center;
 }
 
-/* Email 卡片专用样式（替代内联 background-color 和 color） */
+/* Email 卡片专用样式 */
 .card-email {
   background-color: #2997ff;
   color: white;
 }
 
-/* 导航主题切换按钮样式（替代内联样式） */
+/* 导航主题切换按钮 */
 .nav-theme-toggle {
   font-size: 1.2rem;
   margin-left: 10px;
@@ -354,6 +332,7 @@ nav {
   display: none;
 }
 
+/* 屏幕阅读器专用 —— 业界标准写法，!important 是必须的 */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -374,7 +353,6 @@ nav {
   width: 100%;
 }
 
-/* 本地时间显示样式 */
 .local-time {
   margin-left: 20px;
   color: var(--text-secondary);
@@ -382,14 +360,12 @@ nav {
   font-family: monospace;
 }
 
-/* 社交卡片下方标签 */
 .card-label {
   font-size: 0.9rem;
   margin-top: 5px;
   display: block;
 }
 
-/* 地图链接的图标与说明 */
 .map-link {
   text-decoration: none;
 }
@@ -413,12 +389,11 @@ nav {
   display: block;
 }
 
-/* 项目标题底部间距类 */
 .project-title--mb {
   margin-bottom: 5px;
 }
 
-/* 页脚样式 */
+/* 页脚 */
 .site-footer {
   text-align: center;
   margin-top: 50px;
@@ -441,31 +416,27 @@ nav {
   text-decoration: underline;
 }
 
-/* --- 🚀 3D 翻转卡片核心引擎 (通用版：适配 GitHub & Email) --- */
+/* --- 3D 翻转卡片 --- */
 
-/* 1. 舞台容器：隐身且稳定 */
+/* 舞台容器 */
 .card-social-container {
   padding: 0;
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  border: none;
+  background: transparent;
+  box-shadow: none;
   overflow: visible;
-  perspective: 1000px; /* 3D 景深 */
-  aspect-ratio: 1/1; /* 强制正方形 */
+  perspective: 1000px;
+  aspect-ratio: 1/1;
 }
 
-/* 悬停/聚焦时保持透明，防止残影 */
-/* 🛠️ 修复：强制卡片悬停时“原地不动”，只做翻转，不变大 */
 .card-social-container:hover,
 .card-social-container:focus-within {
-  background-color: transparent !important;
-  box-shadow: none !important;
-
-  /* 👇 加上这一行，卡片就不会“变大”了 👇 */
-  transform: none !important;
+  background-color: transparent;
+  box-shadow: none;
+  transform: none;
 }
 
-/* 2. 翻转主体 (增加硬件加速与 Safari 修复) */
+/* 翻转主体 */
 .card-social-flip {
   width: 100%;
   height: 100%;
@@ -475,68 +446,51 @@ nav {
   cursor: pointer;
   text-decoration: none;
   border-radius: 28px;
-
-  /* 🛠️ 性能优化：开启 GPU 硬件加速，让动画如丝般顺滑 */
   will-change: transform;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
 
-/* 3. 触发翻转的条件 (合并了 hover 和 键盘 focus) */
-/* 逻辑：当鼠标悬停 OR 键盘焦点在内部时，旋转 180度 */
 .card-social-container:hover .card-social-flip,
 .card-social-container:focus-within .card-social-flip {
   transform: rotateY(180deg);
 }
 
-/* 4. 正面与背面通用物理属性 */
+/* 正面与背面 */
 .flip-front,
 .flip-back {
   position: absolute;
   width: 100%;
   height: 100%;
-
-  /* 🛠️ 视觉修复：隐藏背面 + 字体抗锯齿 */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
-
-  border-radius: 28px !important;
+  border-radius: 28px;
   overflow: hidden;
-
-  /* 🍎 Safari 专属修复：防止翻转时圆角失效溢出 */
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   mask-image: radial-gradient(white, black);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 0.9rem;
   font-weight: 500;
-
-  /* 基础外观 */
   background-color: var(--card-bg);
   color: var(--text-primary);
-
-  /* 🛠️ 缝隙修复：给 1px 透明边框，防止旋转时边缘出现杂色 */
   border: 1px solid transparent;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* 5. 正面特有样式 */
 .flip-front i {
   font-size: 3.5rem;
   margin-bottom: 8px;
 }
 
-/* 6. 背面特有样式 */
 .flip-back {
   transform: rotateY(180deg);
   background-color: var(--card-hover);
 }
 
-/* 7. GitHub 头像样式 */
 .mini-avatar {
   width: 60px;
   height: 60px;
@@ -545,11 +499,11 @@ nav {
   border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- 📧 Email 卡片专用配色 (覆盖通用样式) --- */
+/* Email 卡片配色 */
 .email-card .flip-front {
   background-color: #2997ff;
   color: white;
-  border: none; /* Email 卡片不需要边框 */
+  border: none;
 }
 .email-card .flip-back {
   background-color: #0071e3;
@@ -559,7 +513,7 @@ nav {
   text-align: center;
 }
 
-/* --- 补回头像呼吸灯 --- */
+/* 头像呼吸灯 */
 @keyframes avatar-breathe {
   0%,
   100% {
@@ -576,49 +530,35 @@ nav {
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- 🚀 最终版悬停逻辑：动静分离 (修复深色阴影不可见) --- */
+/* --- 卡片悬停逻辑：动静分离 --- */
 
-/* 1. 全局卡片速度 (保持你喜欢的慢动作) */
 .card {
   transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* 2. 只给“普通卡片” (排除 GitHub/Email) 添加悬停特效 */
 .card:not(.card-social-container):hover {
-  /* 动作：大幅上浮 
-    transform: translateY(-10px) scale(1.02);*/
-
-  /* 🔴 核心修改：在黑色背景下，使用“白色柔光”代替黑色阴影 */
   box-shadow: 0 30px 60px rgba(255, 255, 255, 0.12);
-
-  /* 边框高亮更加明显 */
   border-color: rgba(255, 255, 255, 0.5);
-
   z-index: 10;
 }
 
-/* 3. 浅色模式 (清新蓝) 下的适配 */
 [data-theme="light"] .card:not(.card-social-container):hover {
-  /* 🔴 浅色背景下，必须变回黑色阴影，否则白色看不见 */
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
   border-color: rgba(0, 0, 0, 0.1);
 }
 
-/* 4. 翻转卡片容器 (GitHub/Email) 特殊处理 */
 .card-social-container:hover {
-  transform: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
+  transform: none;
+  box-shadow: none;
+  background: transparent;
 }
 
-/* --- 📝 博客页面专用样式 --- */
+/* --- 博客页面 --- */
 
-/* 调整博客页面的容器宽度，适合阅读 */
 .blog-container {
-  max-width: 800px; /* 比主页窄一点，阅读体验更好 */
+  max-width: 800px;
 }
 
-/* 博客头部 */
 .blog-header {
   margin-bottom: 50px;
   text-align: center;
@@ -641,7 +581,6 @@ nav {
   font-size: 1.1rem;
 }
 
-/* 博客搜索框 */
 .search-container {
   margin: 20px auto 40px;
   max-width: 600px;
@@ -685,6 +624,7 @@ nav {
   position: relative;
   min-height: 240px;
   overflow: hidden;
+  margin-bottom: 28px;
   padding: 24px;
   border: 1px solid var(--border-color);
   border-radius: 24px;
@@ -709,7 +649,12 @@ nav {
   justify-content: space-between;
   gap: 18px;
 }
-.blog-post-card .post-meta,
+.blog-post-card .post-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+}
 .blog-post-card .post-date,
 .blog-post-card .post-tag,
 .blog-post-card .post-title,
@@ -750,15 +695,14 @@ nav {
 
 /* 文章卡片 */
 .article-card {
-  margin-bottom: 30px; /* 文章之间的间距 */
-  align-items: flex-start; /* 左对齐 */
-  border-left: 4px solid var(--accent-color); /* 左侧加一条装饰线 */
-  cursor: default; /* 文章卡片不需要浮起特效 */
+  margin-bottom: 30px;
+  align-items: flex-start;
+  border-left: 4px solid var(--accent-color);
+  cursor: default;
 }
 
-/* 覆盖全局 hover 特效：文章卡片不要浮起太夸张 */
 .article-card:hover {
-  transform: translateY(-5px) !important;
+  transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -782,7 +726,6 @@ nav {
   margin-bottom: 20px;
 }
 
-/* 博客列表元数据 (日期 + 标签) */
 .article-meta {
   display: flex;
   align-items: center;
@@ -801,7 +744,7 @@ nav {
 
 .read-more {
   text-decoration: none;
-  color: var(--accent-color); /* 使用你的蓝色主题色 */
+  color: var(--accent-color);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -813,11 +756,10 @@ nav {
 }
 
 .read-more:hover {
-  margin-left: 5px; /* 箭头移动特效 */
+  margin-left: 5px;
   text-decoration: underline;
 }
 
-/* 响应式调整 */
 @media (max-width: 768px) {
   .blog-header h1 {
     font-size: 2.2rem;
@@ -827,15 +769,13 @@ nav {
   }
 }
 
-/* --- 📝 文章详情页专用样式 --- */
+/* --- 文章详情页 --- */
 
-/* 限制文章宽度，居中显示，防止一行字太长读着累 */
 .blog-post-container {
   max-width: 720px;
   margin-top: 100px;
 }
 
-/* 头部信息 */
 .post-header {
   text-align: center;
   margin-bottom: 40px;
@@ -868,19 +808,18 @@ nav {
   -webkit-text-fill-color: transparent;
 }
 
-/* 正文排版 (核心) */
+/* 正文排版 */
 .post-content,
 .article-content {
   max-width: 860px;
   margin: 40px auto;
-  line-height: 1.8; /* 字间距宽松一点 */
+  line-height: 1.8;
   font-size: 1.1rem;
   color: var(--text-primary);
-  padding: 40px !important; /* 内边距大一点 */
+  padding: 40px;
   cursor: default;
-  /* 去掉悬停浮起效果 */
-  transform: none !important;
-  box-shadow: none !important;
+  transform: none;
+  box-shadow: none;
   border: 1px solid var(--border-color);
 }
 .post-content pre,
@@ -897,14 +836,12 @@ nav {
   font-family: "Courier New", Courier, monospace;
   color: #d63384;
 }
-/* 禁止文章卡片悬停变色 */
 .post-content:hover,
 .article-content:hover {
-  transform: none !important;
-  box-shadow: none !important;
+  transform: none;
+  box-shadow: none;
 }
 
-/* 正文里的标题 */
 .post-content h2,
 .article-content h2 {
   font-size: 1.5rem;
@@ -914,7 +851,6 @@ nav {
   padding-bottom: 10px;
 }
 
-/* 正文里的引用块 */
 .post-content blockquote,
 .article-content blockquote {
   border-left: 4px solid var(--accent-color);
@@ -934,7 +870,6 @@ nav {
   margin: 20px 0;
 }
 
-/* 底部按钮 */
 .post-footer {
   text-align: center;
   margin-top: 50px;
@@ -956,13 +891,12 @@ nav {
   transform: translateY(-2px);
 }
 
-/* 移动端适配 */
 @media (max-width: 768px) {
   .post-title {
     font-size: 1.8rem;
   }
   .article-content {
-    padding: 20px !important;
+    padding: 20px;
     font-size: 1rem;
   }
 }
@@ -976,41 +910,41 @@ body.index-page .grid {
 
 @media (max-width: 768px) {
   body.index-page .grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    padding: 0 20px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 20px;
   }
   body.index-page .card-hero {
-    display: flex !important;
-    flex-direction: column-reverse !important;
-    text-align: center !important;
-    padding: 40px 20px !important;
-    height: auto !important;
+    display: flex;
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 40px 20px;
+    height: auto;
   }
   body.index-page .card-hero .avatar {
-    margin-bottom: 25px !important;
+    margin-bottom: 25px;
   }
   body.index-page .hero-text h1 {
-    font-size: 2.2rem !important;
-    margin-top: 10px !important;
+    font-size: 2.2rem;
+    margin-top: 10px;
   }
   body.index-page .card,
   body.index-page .card-project,
   body.index-page .card-social-container,
   body.index-page .card-blog,
   body.index-page .card-skills {
-    width: 100% !important;
-    grid-column: auto !important;
+    width: 100%;
+    grid-column: auto;
   }
   body.index-page .card-project,
   body.index-page .card-blog {
-    min-height: 240px !important;
-    background-attachment: scroll !important;
+    min-height: 240px;
+    background-attachment: scroll;
   }
   body.index-page {
-    overflow-x: hidden !important;
-    width: 100% !important;
+    overflow-x: hidden;
+    width: 100%;
     position: relative;
   }
 }
@@ -1284,96 +1218,72 @@ body.tetris-page .mobile-controls {
   }
 }
 
-/* 3. 浅色模式 (清新蓝) */
-/* 逻辑：背景是亮的，我们要显示“月亮”图标，颜色保持黑色 */
+/* 3. 浅色模式主题图标切换 */
 [data-theme="light"] .icon-sun {
   display: none;
 }
 [data-theme="light"] .icon-moon {
   display: inline-block;
-  filter: none; /* 不需要反转，保持原色 */
+  filter: none;
 }
 
 /* 4. 悬停旋转特效 */
 .nav-theme-toggle:hover .theme-icon-img {
   transform: rotate(30deg) scale(1.1);
-  /* 发光效果适配：深色模式发白光，浅色模式不发光或发黑光 */
   filter: invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
 }
-/* 浅色模式下悬停的特殊处理 */
 [data-theme="light"] .nav-theme-toggle:hover .theme-icon-img {
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
   transform: rotate(-30deg) scale(1.1);
 }
 
-/* --- 🚨 紧急修复：Email 卡片尺寸与防抖 --- */
+/* --- Email 卡片尺寸一致性 --- */
 
-/* 1. 全局盒模型修复：防止加边框导致变大 */
 * {
   box-sizing: border-box;
 }
 
-/* 2. 统一 Email 卡片的边框厚度 */
-/* 之前写了 border: none，这会导致它比 GitHub 卡片小一圈，翻转时会跳动。
-   现在给它加一个“隐形”的 1px 边框，保持尺寸完全一致。 */
+/* 统一边框厚度 */
 .email-card .flip-front,
 .email-card .flip-back {
-  border: 1px solid rgba(255, 255, 255, 0.01) !important; /* 几乎透明的边框 */
-  background-clip: padding-box; /* 防止背景色溢出到边框 */
+  border: 1px solid rgba(255, 255, 255, 0.01);
+  background-clip: padding-box;
 }
 
-/* 3. 强行按住卡片：禁止任何形式的变大或位移 */
-.card-social-container:hover,
-.card-social-container:focus-within {
-  transform: none !important; /* 🚫 禁止上浮/位移 */
-  z-index: auto !important; /* 🚫 禁止层级变化 */
-}
+/* --- 博客封面图 --- */
 
-/* 4. 强行按住内部元素：防止内部缩放 */
-.card-social-container:hover .card-social-flip {
-  transform: rotateY(180deg) !important; /* ✅ 只允许旋转，不允许 scale */
-}
-
-/* --- 🖼️ 博客封面图样式优化 --- */
-
-/* 1. 重置文章卡片样式 */
 .article-card {
-  padding: 0 !important; /* 🔴 关键：去掉卡片默认的内边距，让图片能贴边 */
-  overflow: hidden; /* 确保圆角不被图片遮挡 */
-  border-left: none; /* 去掉原来的左侧装饰线，因为有图片了就不需要了 */
+  padding: 0;
+  overflow: hidden;
+  border-left: none;
   flex-direction: column;
 }
 
-/* 2. 封面图容器 */
 .article-cover {
   width: 100%;
-  height: 220px; /* 固定高度，保证所有卡片整齐划一 */
+  height: 220px;
   overflow: hidden;
   position: relative;
 }
 
-/* 3. 图片本身 */
 .article-cover img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 🔴 关键：让图片填满容器且不变形 (类似 iPhone 相册) */
+  object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* 4. 文字内容区域 (把刚才去掉的内边距加回在这里) */
 .article-body {
   padding: 30px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* 让文字区域填满剩余空间 */
+  flex-grow: 1;
 }
 
-/* 5. 悬停时的联动特效 */
 .article-card:hover .article-cover img {
-  transform: scale(1.05); /* 鼠标放上去，图片轻微放大 */
+  transform: scale(1.05);
 }
 
-/* 手机端适配：图片稍微变矮一点 */
 @media (max-width: 768px) {
   .article-cover {
     height: 180px;
@@ -1383,16 +1293,14 @@ body.tetris-page .mobile-controls {
   }
 }
 
-/* --- 📝 首页博客卡片样式美化 --- */
+/* --- 首页博客卡片 --- */
 
 .card-blog {
-  /* 1. 设置背景图 */
-  background-image: url("assets/map.jpg"); /* 👈 如果想换图，改这里的文件名即可 */
+  grid-column: span 2;
+  background-image: url("assets/map.jpg");
   background-size: cover;
   background-position: center;
-  border: none !important; /* 去掉边框，像照片一样 */
-
-  /* 2. 布局设置：让文字沉底 */
+  border: none;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -1402,8 +1310,6 @@ body.tetris-page .mobile-controls {
   overflow: hidden;
 }
 
-/* 3. 添加黑色渐变遮罩 (关键步骤！) */
-/* 如果没有这个，背景图太亮时就看不清白色的字了 */
 .card-blog::before {
   content: "";
   position: absolute;
@@ -1411,7 +1317,6 @@ body.tetris-page .mobile-controls {
   left: 0;
   right: 0;
   bottom: 0;
-  /* 底部深黑，顶部透明 */
   background: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.85) 0%,
@@ -1422,23 +1327,27 @@ body.tetris-page .mobile-controls {
   pointer-events: none;
 }
 
-/* 4. 文字样式优化 */
 .card-blog .project-info {
-  z-index: 2; /* 确保文字浮在遮罩上面 */
+  z-index: 2;
   position: relative;
 }
 
 .card-blog .project-title {
-  color: #fff !important;
+  color: #fff;
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 4px;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* 加一点文字阴影 */
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .card-blog .project-desc {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.95rem;
+}
+
+/* 技能卡片 */
+.card-skills {
+  grid-column: span 2;
 }
 
 .home-blog-badge-wrap {
@@ -1474,6 +1383,7 @@ body.tetris-page .mobile-controls {
 .card-game {
   text-decoration: none;
   grid-column: span 1;
+  margin-top: 20px;
   background: #1a1a1a;
   display: flex;
   flex-direction: column;
@@ -1531,72 +1441,64 @@ body.tetris-page .mobile-controls {
 }
 
 /* =========================================
-   🚀 最终防线：手机端强制适配 (放在文件最底部)
+   手机端强制适配
    ========================================= */
 @media (max-width: 768px) {
-  /* 1. 强制单栏布局 */
   .grid {
-    grid-template-columns: 1fr !important;
-    gap: 15px !important;
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
 
-  /* 2. 英雄卡片 (头像改到上面，文字在下面) */
   .card-hero {
-    display: flex !important;
-    flex-direction: column-reverse !important; /* 让文字在下，头像在上，更符合手机阅读习惯 */
-    text-align: center !important;
-    padding: 30px 20px !important;
-    height: auto !important;
+    display: flex;
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 30px 20px;
+    height: auto;
   }
 
   .hero-text h1 {
-    font-size: 2.2rem !important;
-    margin-top: 15px !important;
+    font-size: 2.2rem;
+    margin-top: 15px;
   }
 
-  /* 3. 强制所有卡片占满一行 */
   .card-project,
   .card-social,
   .card-blog,
   .card-skills,
   #my-skills,
   .card-game {
-    grid-column: span 1 !important;
-    width: 100% !important;
+    grid-column: span 1;
+    width: 100%;
   }
 
-  /* 4. 修复图片卡片的高度和显示 */
   .card-project,
   .card-blog {
-    min-height: 220px !important; /* 手机上稍微矮一点 */
-    background-attachment: scroll !important; /* 防止 iOS 滚动背景Bug */
+    min-height: 220px;
+    background-attachment: scroll;
   }
 
-  /* 5. 导航栏调整 */
   .nav-container {
-    padding: 0 15px !important;
+    padding: 0 15px;
   }
   .logo a {
-    font-size: 1.1rem !important;
+    font-size: 1.1rem;
   }
 
-  /* 6. 防止左右横向滚动 */
   html,
   body {
-    overflow-x: hidden !important;
-    width: 100% !important;
+    overflow-x: hidden;
+    width: 100%;
     position: relative;
   }
 }
 
-/* --- 🚀 3D 特效配套优化：高光扫光 --- */
+/* --- 3D 卡片高光扫光 --- */
 .card {
-  /* 确保 3D 变换时边缘平滑 */
   transform-style: preserve-3d;
   will-change: transform;
 }
 
-/* 给卡片加一个隐形的反光层 */
 .card::after {
   content: "";
   position: absolute;
@@ -1611,60 +1513,45 @@ body.tetris-page .mobile-controls {
     transparent 40%,
     transparent 100%
   );
-  opacity: 0; /* 默认看不见 */
+  opacity: 0;
   transition: opacity 0.3s;
-  pointer-events: none; /* 防止遮挡鼠标点击 */
+  pointer-events: none;
 }
 
-/* 只有鼠标放上去时，反光层才显现 */
 .card:hover::after {
   opacity: 1;
 }
 
-/* --- 🚨 最终修复 V2：清除残影 + 修复消失 BUG --- */
-
-/* 1. 强制容器完全透明 (解决黑底印记的核心) */
+/* --- 翻转卡片最终保障 --- */
 .card-social-container,
 .card-social-container:hover,
 .card-social-container:focus-within,
 .card-social-container:active {
-  background: transparent !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  outline: none !important;
-  /* 🚫 绝对禁止容器位移，防止和内部翻转冲突 */
-  transform: none !important;
+  background: transparent;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  transform: none;
 }
 
-/* 2. 优化翻转动画 (🔴 修正：只给正反面加隐藏，千万别给容器加！) */
 .flip-front,
 .flip-back {
-  /* 隐藏背面，防止翻转一半时看到背面透出来 */
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-
-  /* 修复边缘溢出导致的残影 */
   overflow: hidden;
 }
 
-/* 3. 确保容器开启 3D 空间 (防止消失的第二道保险) */
 .card-social-flip {
   transform-style: preserve-3d;
-  /* ⚠️ 容器绝对不能加 backface-visibility: hidden */
-  backface-visibility: visible !important;
+  backface-visibility: visible;
 }
 
-/* 4. 再次确保背面是旋转过的 */
 .flip-back {
   transform: rotateY(180deg);
 }
 
-/* =========================================
-   🚀 最终防线 & Bug 修复区 (请保持在文件最底部)
-   ========================================= */
-
-/* 2. 彻底清除翻转卡片的残留光泽 (修复黑底问题) */
+/* 清除翻转卡片的 ::after 残留光泽 */
 .card-social-container::after {
   display: none !important;
   content: none !important;

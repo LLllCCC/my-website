@@ -29,13 +29,8 @@ function loadNavbar() {
         `;
     }
 
-    // 3. 定义右上角的菜单 (根据页面自动变，但这不影响左边的样式)
+    // 3. 右上角菜单链接
     let linksHtml = '';
-
-    // 只保留回首页的链接，移除“项目”和“关于”项及相关链接
-    linksHtml = `
-        <a href="/index.html">首页</a>
-    `;
 
     // 4. 组装最终 HTML — 对博客页面使用更窄的容器以与文章宽度对齐
     const containerClass = isBlogSection ? 'nav-container narrow' : 'nav-container';

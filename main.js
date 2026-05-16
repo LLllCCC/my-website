@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // =========================================================
   // 8. 高级 3D 视差悬停特效 (保持不变)
   // =========================================================
-  const cards = document.querySelectorAll(".card:not(.card-social-container)");
+  const cards = document.querySelectorAll(".card:not(.card-social-container):not(.blog-post-card):not(.article-card):not(.post-content):not(.article-content)");
 
   cards.forEach((card) => {
     card.addEventListener("mousemove", (e) => {
