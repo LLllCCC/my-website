@@ -116,6 +116,9 @@ nav {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-color);
+
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
 }
 
 .card-project,
