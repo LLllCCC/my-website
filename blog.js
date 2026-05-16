@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function() {
   const listContainer = document.getElementById("dynamic-article-list");
   const searchInput = document.getElementById("blog-search");
-  const API_URL = "https://yopoo.888431.xyz/api/posts";
-  const LOCAL_POSTS_URL = "posts/posts.json";
   if (!listContainer) return;
 
   let allPosts = []; // 用来存放原始数据
@@ -28,11 +26,11 @@ document.addEventListener("DOMContentLoaded", async function() {
       card.innerHTML = `
           <div class="card-content">
               <div class="post-meta">
-                  <span class="post-date">${post.date}</span>
-                  <span class="post-tag">${post.tags || '生活'}</span>
+                  <span class="post-date">${escapeHtml(post.date)}</span>
+                  <span class="post-tag">${escapeHtml(post.tags || '生活')}</span>
               </div>
-              <h2 class="post-title">${post.title}</h2>
-              <a href="${getPostLink(post)}" class="read-more">阅读全文 <i class="ri-arrow-right-line"></i></a>
+              <h2 class="post-title">${escapeHtml(post.title)}</h2>
+              <a href="${escapeHtml(getPostLink(post))}" class="read-more">阅读全文 <i class="ri-arrow-right-line"></i></a>
           </div>
       `;
       listContainer.appendChild(card);
@@ -76,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
   async function loadLocalPosts() {
     try {
-      const response = await fetch(LOCAL_POSTS_URL);
+      const response = await fetch(CONFIG.LOCAL_POSTS_URL);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -88,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   async function loadPosts() {
     const localPosts = await loadLocalPosts();
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(CONFIG.POSTS_URL);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const remotePosts = await response.json();
       const merged = mergePosts(remotePosts, localPosts);
@@ -109,16 +107,19 @@ document.addEventListener("DOMContentLoaded", async function() {
     renderPosts(allPosts);
   }
 
-  // 3. 🌟 搜索监听逻辑
+  // 3. 搜索监听（300ms 防抖）
   if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
+    searchInput.addEventListener("input", debounce(function (e) {
       const keyword = e.target.value.toLowerCase();
       const filtered = allPosts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(keyword) ||
-          (post.description && post.description.toLowerCase().includes(keyword)),
+        function (post) {
+          return (
+            post.title.toLowerCase().includes(keyword) ||
+            (post.description && post.description.toLowerCase().includes(keyword))
+          );
+        },
       );
       renderPosts(filtered);
-    });
+    }, 300));
   }
 });

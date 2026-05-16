@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const res = await fetch(`https://yopoo.888431.xyz/api/posts/${postId}`);
+    const res = await fetch(`${CONFIG.API_BASE}/posts/${postId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const post = await res.json();
 

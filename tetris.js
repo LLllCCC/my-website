@@ -256,13 +256,13 @@ if (startBtn) {
   startBtn.addEventListener("click", toggleGame);
 }
 
-document.addEventListener("keydown", (event) => {
-  if (isPaused && event.keyCode !== 32) return;
-  if (event.keyCode === 37) playerMove(-1);
-  else if (event.keyCode === 39) playerMove(1);
-  else if (event.keyCode === 40) playerDrop();
-  else if (event.keyCode === 38) playerRotate(1);
-  else if (event.keyCode === 32) toggleGame();
+document.addEventListener("keydown", function (event) {
+  if (isPaused && event.key !== " ") return;
+  if (event.key === "ArrowLeft") playerMove(-1);
+  else if (event.key === "ArrowRight") playerMove(1);
+  else if (event.key === "ArrowDown") playerDrop();
+  else if (event.key === "ArrowUp") playerRotate(1);
+  else if (event.key === " ") toggleGame();
 });
 
 const setupMobileBtn = (id, action) => {

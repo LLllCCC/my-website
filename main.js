@@ -24,35 +24,25 @@ if (mailtoLink) {
 }
 
 // =========================================================
-// 2. Toast 弹窗工具 (保持不变)
-// =========================================================
-function showToast(message) {
-  const toast = document.createElement("div");
-  toast.className = "toast-notification";
-  toast.textContent = message;
-  document.body.appendChild(toast);
-
-  setTimeout(() => {
-    toast.classList.add("fade-out");
-    setTimeout(() => toast.remove(), 500);
-  }, 3000);
-}
-
-// =========================================================
 // 3. 实时时间 (保持不变)
 // =========================================================
-function updateTime() {
+(function () {
   const timeElement = document.getElementById("local-time");
   if (!timeElement) return;
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2, "0");
-  const m = String(now.getMinutes()).padStart(2, "0");
-  const s = String(now.getSeconds()).padStart(2, "0");
-  timeElement.textContent = `${h}:${m}:${s}`;
-}
 
-setInterval(updateTime, 1000);
-updateTime();
+  function updateTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, "0");
+    const m = String(now.getMinutes()).padStart(2, "0");
+    const s = String(now.getSeconds()).padStart(2, "0");
+    timeElement.textContent = `${h}:${m}:${s}`;
+  }
+
+  const timer = setInterval(updateTime, 1000);
+  updateTime();
+
+  window.addEventListener("beforeunload", () => clearInterval(timer));
+})();
 
 // =========================================================
 // 4. 深色模式切换由 nav.js 负责，避免重复绑定
@@ -100,13 +90,11 @@ updateTime();
 // =========================================================
 document.addEventListener("DOMContentLoaded", async function () {
   // 你的 API 地址
-  const API_URL = "https://yopoo.888431.xyz/api/posts";
-
   try {
-    console.log("正在尝试连接 API:", API_URL);
+    console.log("正在尝试连接 API:", CONFIG.POSTS_URL);
 
     // 1. 发起请求
-    const response = await fetch(API_URL);
+    const response = await fetch(CONFIG.POSTS_URL);
 
     // 2. 检查响应
     if (!response.ok) {
