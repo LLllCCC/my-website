@@ -7,6 +7,7 @@
   --text-secondary: #86868b;
   --nav-bg: rgba(0, 0, 0, 0.3);
   --border-color: rgba(255, 255, 255, 0.1);
+  --accent-color: #29a5ff;
 }
 
 [data-theme="light"] {
@@ -17,6 +18,7 @@
   --text-secondary: #48484a;
   --nav-bg: rgba(152, 245, 249, 0.3);
   --border-color: rgba(0, 0, 0, 0.05);
+  --accent-color: #0071d4;
 }
 
 /* --- 2. 基础布局修复 --- */
@@ -308,6 +310,38 @@ nav {
   font-size: 1.2rem;
   margin-left: 10px;
   text-decoration: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.admin-main {
+  padding: 20px 0;
+}
+
+.game-main {
+  width: 100%;
 }
 
 /* 本地时间显示样式 */
@@ -361,6 +395,20 @@ nav {
   color: #555;
   font-size: 0.8rem;
   padding-bottom: 20px;
+}
+.site-footer .footer-links {
+  font-size: 0.8rem;
+  margin-top: 5px;
+  opacity: 0.75;
+}
+.site-footer .footer-links a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.site-footer .footer-links a:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 
 /* --- 🚀 3D 翻转卡片核心引擎 (通用版：适配 GitHub & Email) --- */
@@ -563,6 +611,46 @@ nav {
   font-size: 1.1rem;
 }
 
+/* 博客搜索框 */
+.search-container {
+  margin: 20px auto 40px;
+  max-width: 600px;
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+.search-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(0, 122, 255, 0.2);
+}
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 20px;
+}
+
+.blog-empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  grid-column: 1 / -1;
+  padding: 50px 0;
+}
+.blog-empty-state--error {
+  color: #ff4d4d;
+}
+
 /* 文章卡片 */
 .article-card {
   margin-bottom: 30px; /* 文章之间的间距 */
@@ -725,6 +813,13 @@ nav {
   background: rgba(128, 128, 128, 0.05);
   padding: 15px;
   border-radius: 0 8px 8px 0;
+}
+
+.article-content img {
+  width: 100%;
+  border-radius: 12px;
+  margin: 20px 0;
+}
 }
 
 /* 底部按钮 */
@@ -935,6 +1030,95 @@ nav {
 .card-blog .project-desc {
   color: rgba(255, 255, 255, 0.9) !important;
   font-size: 0.95rem;
+}
+
+.home-blog-badge-wrap {
+  margin-top: 12px;
+}
+.home-blog-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 4px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.75rem;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.email-back-icon {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+.email-back-note {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  margin-bottom: 2px;
+  display: block;
+}
+.email-back-address {
+  font-size: 0.8rem;
+  word-break: break-all;
+  font-weight: 600;
+}
+
+.card-game {
+  text-decoration: none;
+  grid-column: span 1;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+.card-game .game-background {
+  position: absolute;
+  opacity: 0.1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.card-game .game-dot {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  border-radius: 50%;
+}
+.card-game .game-dot--pink {
+  background: #ff0d72;
+  top: 20px;
+  left: 20px;
+}
+.card-game .game-dot--blue {
+  background: #0dc2ff;
+  bottom: 30px;
+  right: 20px;
+}
+.card-game .game-dot--green {
+  background: #0dff72;
+  top: 40px;
+  right: 40px;
+}
+.card-game-content {
+  z-index: 2;
+  text-align: center;
+}
+.card-game-icon {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.card-game-title {
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.card-game-subtitle {
+  color: #888;
+  font-size: 0.8rem;
 }
 
 /* =========================================

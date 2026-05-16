@@ -29,52 +29,18 @@
   <body>
     <div id="global-nav"></div>
 
-    <article class="container">
+    <main>
+      <article class="container" role="main">
       <div class="blog-header">
         <h1 id="article-title">加载中...</h1>
-        <p id="article-meta" style="color: var(--text-secondary)"></p>
+        <p id="article-meta" class="post-meta"></p>
       </div>
 
       <div id="article-body" class="post-content"></div>
-    </article>
+      </article>
+    </main>
 
     <script src="/nav.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        // 3. 从网页链接里获取文章 ID (例如 post.html?id=5)
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get("id");
-
-        if (!postId) {
-          document.getElementById("article-body").innerHTML =
-            "文章 ID 丢失啦！👀";
-          return;
-        }
-
-        try {
-          // 4. 去后端请求这篇文章的详情 (包含 content 字段)
-          const res = await fetch(
-            `https://yopoo.888431.xyz/api/posts/${postId}`,
-          );
-          const post = await res.json();
-
-          // 5. 更新标题和元数据
-          document.title = post.title;
-          document.getElementById("article-title").textContent = post.title;
-          document.getElementById("article-meta").textContent =
-            `${post.date} · ${post.tags}`;
-
-          // 6. 🔥 核心魔法：将数据库里的内容传给 marked 转换成 HTML
-          // 如果数据库里的 content 是空的，就显示提示文字
-          const markdownRaw = post.content || "这篇文章还没有正文内容哦。";
-          document.getElementById("article-body").innerHTML =
-            marked.parse(markdownRaw);
-        } catch (err) {
-          console.error(err);
-          document.getElementById("article-body").innerHTML =
-            "加载失败，请检查 API 是否开启。";
-        }
-      });
-    </script>
+    <script src="post.js"></script>
   </body>
 </html>

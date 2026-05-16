@@ -7,207 +7,51 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
     <style>
         .admin-box { max-width: 800px; margin: 50px auto; padding: 20px; background: var(--card-bg); border-radius: 15px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--card-border); background: var(--bg-color); color: var(--text-primary); }
+        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--card-border); background: var(--bg-color); color: var(--text-primary); }
+        textarea { min-height: 220px; resize: vertical; }
         button { background: #007aff; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; }
+        .admin-divider { margin: 40px 0; border: 0; border-top: 1px solid #333; }
+        .admin-list-section { max-width: 800px; margin: 0 auto; padding-bottom: 50px; }
+        .admin-section-title { color: #fff; margin-bottom: 20px; }
+        .admin-placeholder { color: #666; }
+        .admin-post-card { background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .admin-post-summary { flex: 1; overflow: hidden; }
+        .admin-post-title { color: #fff; font-weight: bold; font-size: 16px; }
+        .admin-post-meta { color: #666; font-size: 12px; margin-top: 4px; }
+        .admin-post-actions { min-width: 140px; text-align: right; margin-left: 10px; }
+        .admin-action-btn { background: #2196F3; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px; }
+        .admin-action-btn--delete { background: #F44336; }
+        .admin-error { color: #ff4444; }
     </style>
 </head>
 <body>
-    <div class="admin-box">
-        <h2>🚀 发布新文章</h2>
-        <input type="text" id="title" placeholder="文章标题">
-        <input type="text" id="tags" placeholder="标签 (用逗号隔开)">
-        <input type="text" id="cover" placeholder="封面图链接 (assets/...)">
-        <textarea id="markdown-editor"></textarea>
-        <input type="password" id="admin-token" placeholder="输入发布口令">
-        <button onclick="publishPost()">立即发布到服务器</button>
-    </div>
+    <main class="admin-main">
+      <div class="admin-box">
+          <h2>🚀 发布新文章</h2>
+          <label for="title" class="sr-only">文章标题</label>
+          <input type="text" id="title" placeholder="文章标题">
+          <label for="tags" class="sr-only">标签</label>
+          <input type="text" id="tags" placeholder="标签 (用逗号隔开)">
+          <label for="cover" class="sr-only">封面图链接</label>
+          <input type="text" id="cover" placeholder="封面图链接 (assets/...)">
+          <label for="markdown-editor" class="sr-only">文章内容</label>
+          <textarea id="markdown-editor"></textarea>
+          <label for="admin-token" class="sr-only">发布口令</label>
+          <input type="password" id="admin-token" placeholder="输入发布口令">
+          <button id="publish-button">立即发布到服务器</button>
+      </div>
 
-    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #333;">
+      <hr class="admin-divider">
 
-    <div style="max-width: 800px; margin: 0 auto; padding-bottom: 50px;">
-        <h2 style="color: #fff; margin-bottom: 20px;">📂 文章管理</h2>
-        <div id="admin-post-list">
-            <p style="color: #666;">正在加载文章列表...</p>
+    <div class="admin-list-section">
+        <h2 class="admin-section-title">📂 文章管理</h2>
+        <div id="admin-post-list" role="status" aria-live="polite">
+            <p class="admin-placeholder">正在加载文章列表...</p>
         </div>
     </div>
+    </main>
     
-<script>
-    // 你的 API 地址 (确保没有多余的空格)
-    const API_URL = 'https://yopoo.888431.xyz/api/posts'; 
-    let currentEditingId = null;
-
-    // 1. [核心] 加载文章列表
-    async function loadPosts() {
-        const listContainer = document.getElementById('admin-post-list');
-        // 先显示加载中...
-        listContainer.innerHTML = '<p style="color: #888;">正在从服务器获取文章...</p>';
-        
-        try {
-            console.log("开始加载文章列表...");
-            const res = await fetch(API_URL);
-            
-            if (!res.ok) throw new Error(`HTTP错误: ${res.status}`);
-            
-            const posts = await res.json();
-            console.log("加载成功，获取到文章数:", posts.length);
-
-            if (posts.length === 0) {
-                listContainer.innerHTML = '<p style="color: #666;">暂无文章，快去发布一篇吧！</p>';
-                return;
-            }
-
-            // 渲染列表
-            listContainer.innerHTML = posts.map(post => `
-                <div style="background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333;">
-                    <div style="flex: 1; overflow: hidden;">
-                        <div style="color: #fff; font-weight: bold; font-size: 16px;">${post.title}</div>
-                        <div style="color: #666; font-size: 12px; margin-top: 4px;">📅 ${post.date.substring(0, 10)} | 🏷️ ${post.tags || '无标签'}</div>
-                    </div>
-                    <div style="min-width: 140px; text-align: right; margin-left: 10px;">
-                        <button onclick="editPost(${post.id})" style="background: #2196F3; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">✎ 修改</button>
-                        <button onclick="deletePost(${post.id})" style="background: #F44336; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer;">🗑️ 删除</button>
-                    </div>
-                </div>
-            `).join('');
-            
-        } catch (err) {
-            console.error("加载列表失败详情:", err);
-            listContainer.innerHTML = `<p style="color: #ff4444;">加载失败: ${err.message}<br>请按 F12 查看控制台 Console</p>`;
-        }
-    }
-
-    // 2. [核心] 发布或保存文章
-    document.querySelector('button').onclick = async function() {
-        // 安全获取输入框内容
-        const getVal = (ph) => {
-            const el = document.querySelector(`input[placeholder="${ph}"]`);
-            return el ? el.value : '';
-        };
-        const getText = () => {
-            const el = document.querySelector('textarea');
-            return el ? el.value : '';
-        };
-
-        const title = getVal('文章标题');
-        const tags = getVal('标签 (用逗号隔开)');
-        const cover = getVal('封面图链接 (assets/...)');
-        const token = getVal('输入发布口令'); // 确保这里 placeholder 文字完全匹配
-        const content = getText();
-
-        if (!title) return alert('标题不能为空！');
-        if (!token) return alert('请输入口令！');
-
-        const data = { title, tags, cover, content, token };
-        
-        let url = API_URL;
-        let method = 'POST';
-        
-        if (currentEditingId) {
-            url = `${API_URL}/${currentEditingId}`;
-            method = 'PUT';
-        }
-
-        try {
-            const res = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            const text = await res.text(); // 先取文字，防止 JSON 解析挂掉
-            
-            if (res.ok) {
-                alert(currentEditingId ? '✅ 修改成功！' : '🎉 发布成功！');
-                
-                // 成功后先刷新列表，再重置表单，防止顺序错误
-                await loadPosts(); 
-                safeResetForm(); 
-            } else {
-                alert('❌ 操作失败: ' + text);
-            }
-        } catch (err) {
-            console.error(err);
-            alert('❌ 网络错误或代码报错: ' + err.message);
-        }
-    };
-
-    // 3. 安全重置表单 (修复了之前的 Bug)
-    function safeResetForm() {
-        currentEditingId = null;
-        
-        // 尝试找按钮改回文字
-        const btn = document.querySelector('button');
-        if(btn) btn.innerText = '立即发布到服务器';
-        
-        // 清空输入框 (使用通用清空逻辑，防止报错)
-        document.querySelectorAll('input:not([type="button"])').forEach(input => input.value = '');
-        document.querySelectorAll('textarea').forEach(area => area.value = '');
-        
-        // 滚动回顶部
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // 4. 修改文章
-    window.editPost = async function(id) {
-        const token = document.querySelector('input[placeholder="输入发布口令"]').value;
-        if (!token) return alert('⚠️ 请先在底部输入口令，再点击修改！');
-
-        try {
-            const res = await fetch(`${API_URL}/${id}`);
-            const post = await res.json();
-            
-            // 回填数据
-            const setVal = (ph, val) => {
-                const el = document.querySelector(`input[placeholder="${ph}"]`);
-                if(el) el.value = val;
-            };
-            
-            setVal('文章标题', post.title);
-            setVal('标签 (用逗号隔开)', post.tags);
-            setVal('封面图链接 (assets/...)', post.cover);
-            
-            const area = document.querySelector('textarea');
-            if(area) area.value = post.content;
-            
-            currentEditingId = id;
-            const btn = document.querySelector('button');
-            if(btn) btn.innerText = `💾 保存修改 (ID: ${post.id})`;
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-        } catch(err) {
-            alert('无法获取文章详情: ' + err.message);
-        }
-    }
-
-    // 5. 删除文章
-    window.deletePost = async function(id) {
-        const token = document.querySelector('input[placeholder="输入发布口令"]').value;
-        if (!token) return alert('⚠️ 请先在底部输入口令，再点击删除！');
-
-        if (!confirm('🗑️ 确定要彻底删除这篇文章吗？')) return;
-
-        try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token })
-            });
-            
-            if (res.ok) {
-                alert('已删除！');
-                loadPosts(); // 刷新列表
-            } else {
-                alert('删除失败: ' + await res.text());
-            }
-        } catch (err) {
-            alert('网络错误');
-        }
-    }
-
-    // 页面加载完毕后，立即获取列表
-    loadPosts();
-</script>
+<script src="/admin.js"></script>
 
 
 </body>

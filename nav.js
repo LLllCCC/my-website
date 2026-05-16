@@ -47,10 +47,10 @@ function loadNavbar() {
             <div class="nav-links">
                 ${linksHtml}
                 
-                <a href="javascript:void(0);" id="theme-toggle" class="nav-theme-toggle">
+                <button id="theme-toggle" class="nav-theme-toggle" type="button" aria-label="切换主题" aria-pressed="false">
                     <img src="/assets/sun.png" class="icon-sun theme-icon-img" alt="Light Mode">
                     <img src="/assets/moon.png" class="icon-moon theme-icon-img" alt="Dark Mode">
-                </a>
+                </button>
             </div>
         </div>
     </nav>
@@ -65,11 +65,20 @@ function loadNavbar() {
     // 6. 重新绑定点击事件
     const toggleBtn = document.getElementById('theme-toggle');
     if (toggleBtn) {
+        const updateToggleState = () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const isLight = currentTheme === 'light';
+            toggleBtn.setAttribute('aria-pressed', isLight.toString());
+        };
+
+        updateToggleState();
+
         toggleBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
+            updateToggleState();
         });
     }
 }

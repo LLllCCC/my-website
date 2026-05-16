@@ -117,7 +117,7 @@ if (themeToggle) {
 })();
 
 // =========================================================
-// 🌟 核心修改：C 计划 - API 自动对接逻辑 🌟
+// 🌟 核心修改：C 计划 - API 自动对接逻辑 + 3D 卡片特效
 // =========================================================
 document.addEventListener("DOMContentLoaded", async function () {
   // 你的 API 地址
@@ -175,12 +175,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     // 可选：如果失败，显示一个 Toast 提示
     // showToast("博客数据加载失败，请检查后端服务");
   }
-});
 
-// =========================================================
-// 8. 高级 3D 视差悬停特效 (保持不变)
-// =========================================================
-document.addEventListener("DOMContentLoaded", function () {
+  // =========================================================
+  // 8. 高级 3D 视差悬停特效 (保持不变)
+  // =========================================================
   const cards = document.querySelectorAll(".card:not(.card-social-container)");
 
   cards.forEach((card) => {

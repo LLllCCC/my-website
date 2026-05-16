@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const footerHTML = `
     <footer class="site-footer">
         <p>© 2025 Yopo. Designed with Apple Style.</p>
-        <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.6;">
-            <a href="/index.html" style="color: inherit; text-decoration: none;">首页</a> | 
-            <a href="/blog.html" style="color: inherit; text-decoration: none;">博客</a>
+        <p class="footer-links">
+            <a href="/index.html">首页</a> | 
+            <a href="/blog.html">博客</a>
         </p>
     </footer>
     `;
