@@ -3,8 +3,8 @@
 function loadNavbar() {
     // 1. 获取当前路径，判断在哪里
     const path = window.location.pathname;
-    // 如果路径里有 blog.html 或者 posts/，就说明在博客区域
-    const isBlogSection = path.includes("blog.html") || path.includes("posts/");
+    // 如果路径里有 blog.html、post.html 或者 posts/，就说明在博客区域
+    const isBlogSection = path.includes("blog.html") || path.includes("post.html") || path.includes("posts/");
 
     // =========================================
     // 🔴 核心修复：全站统一的左上角 LOGO 代码

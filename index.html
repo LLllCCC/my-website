@@ -34,64 +34,9 @@
     <script src="theme-init.js"></script>
 
     <link rel="stylesheet" href="style.css?v=3" />
-
-    <style>
-      @media (max-width: 768px) {
-        /* 1. 强制让所有卡片变成一列 */
-        .grid {
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 20px !important;
-          padding: 0 20px !important;
-        }
-
-        /* 2. 英雄卡片：头像在上，文字在下 */
-        .card-hero {
-          display: flex !important;
-          flex-direction: column-reverse !important;
-          text-align: center !important;
-          padding: 40px 20px !important;
-          height: auto !important;
-        }
-
-        /* 调整头像和文字的间距 */
-        .card-hero .avatar {
-          margin-bottom: 25px !important;
-        }
-        .hero-text h1 {
-          font-size: 2.2rem !important;
-          margin-top: 10px !important;
-        }
-
-        /* 3. 让所有卡片都占满宽度 */
-        .card,
-        .card-project,
-        .card-social-container,
-        .card-blog,
-        .card-skills {
-          width: 100% !important;
-          grid-column: auto !important;
-        }
-
-        /* 4. 修复图片卡片的高度 */
-        .card-project,
-        .card-blog {
-          min-height: 240px !important;
-          background-attachment: scroll !important;
-        }
-
-        /* 5. 允许上下滑，禁止左右乱晃 */
-        html,
-        body {
-          overflow-x: hidden !important;
-          width: 100% !important;
-          position: relative;
-        }
-      }
-    </style>
   </head>
 
-  <body>
+  <body class="index-page">
     <div id="global-nav"></div>
 
     <main class="container">
@@ -197,10 +142,10 @@
       </a>
 
       <div id="global-footer"></div>
-      <script src="/footer.js"></script>
+      <script src="/footer.js" defer></script>
     </main>
 
-    <script src="/nav.js"></script>
-    <script src="main.js"></script>
+    <script src="/nav.js" defer></script>
+    <script src="main.js" defer></script>
   </body>
 </html>

@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const res = await fetch(`https://yopoo.888431.xyz/api/posts/${postId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const post = await res.json();
 
     document.title = post.title;

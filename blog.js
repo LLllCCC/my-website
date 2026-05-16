@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   const listContainer = document.getElementById("dynamic-article-list");
   const searchInput = document.getElementById("blog-search");
   const API_URL = "https://yopoo.888431.xyz/api/posts";
+  if (!listContainer) return;
 
   let allPosts = []; // 用来存放原始数据
 
@@ -36,11 +37,15 @@ document.addEventListener("DOMContentLoaded", async function() {
   // 2. 初始化加载
   try {
     const response = await fetch(API_URL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     allPosts = await response.json();
     allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
     renderPosts(allPosts);
   } catch (error) {
-    listContainer.innerHTML = `<p class="blog-empty-state blog-empty-state--error" role="status" aria-live="polite">加载失败，请检查 API 状态。</p>`;
+    if (listContainer) {
+      listContainer.innerHTML = `<p class="blog-empty-state blog-empty-state--error" role="status" aria-live="polite">加载失败，请检查 API 状态。</p>`;
+    }
+    console.error('博客加载失败:', error);
   }
 
   // 3. 🌟 搜索监听逻辑

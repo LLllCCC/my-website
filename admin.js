@@ -32,8 +32,8 @@ async function loadPosts() {
                   <div class="admin-post-meta">📅 ${post.date.substring(0, 10)} | 🏷️ ${post.tags || '无标签'}</div>
               </div>
               <div class="admin-post-actions">
-                  <button class="admin-action-btn admin-action-btn--edit" onclick="editPost(${post.id})">✎ 修改</button>
-                  <button class="admin-action-btn admin-action-btn--delete" onclick="deletePost(${post.id})">🗑️ 删除</button>
+                  <button type="button" class="admin-action-btn admin-action-btn--edit" data-action="edit" data-id="${post.id}">✎ 修改</button>
+                  <button type="button" class="admin-action-btn admin-action-btn--delete" data-action="delete" data-id="${post.id}">🗑️ 删除</button>
               </div>
           </div>
       `,
@@ -148,9 +148,28 @@ window.deletePost = async function (id) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-  const publishButton = document.getElementById('publish-button');
-  if (publishButton) {
-    publishButton.addEventListener('click', publishPost);
+  const adminForm = document.getElementById('admin-form');
+  if (adminForm) {
+    adminForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      publishPost();
+    });
   }
+
+  const adminList = document.getElementById('admin-post-list');
+  if (adminList) {
+    adminList.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const id = button.dataset.id;
+      if (!id) return;
+      if (button.dataset.action === 'edit') {
+        editPost(id);
+      } else if (button.dataset.action === 'delete') {
+        deletePost(id);
+      }
+    });
+  }
+
   loadPosts();
 });

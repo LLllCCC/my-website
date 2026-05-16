@@ -5,31 +5,13 @@
     <title>Yopo - 秘密发布后台</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
-    <style>
-        .admin-box { max-width: 800px; margin: 50px auto; padding: 20px; background: var(--card-bg); border-radius: 15px; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--card-border); background: var(--bg-color); color: var(--text-primary); }
-        textarea { min-height: 220px; resize: vertical; }
-        button { background: #007aff; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; }
-        .admin-divider { margin: 40px 0; border: 0; border-top: 1px solid #333; }
-        .admin-list-section { max-width: 800px; margin: 0 auto; padding-bottom: 50px; }
-        .admin-section-title { color: #fff; margin-bottom: 20px; }
-        .admin-placeholder { color: #666; }
-        .admin-post-card { background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
-        .admin-post-summary { flex: 1; overflow: hidden; }
-        .admin-post-title { color: #fff; font-weight: bold; font-size: 16px; }
-        .admin-post-meta { color: #666; font-size: 12px; margin-top: 4px; }
-        .admin-post-actions { min-width: 140px; text-align: right; margin-left: 10px; }
-        .admin-action-btn { background: #2196F3; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px; }
-        .admin-action-btn--delete { background: #F44336; }
-        .admin-error { color: #ff4444; }
-    </style>
-</head>
-<body>
+  </head>
+<body class="admin-page">
     <main class="admin-main">
-      <div class="admin-box">
+      <form id="admin-form" class="admin-box" novalidate>
           <h2>🚀 发布新文章</h2>
           <label for="title" class="sr-only">文章标题</label>
-          <input type="text" id="title" placeholder="文章标题">
+          <input type="text" id="title" placeholder="文章标题" required>
           <label for="tags" class="sr-only">标签</label>
           <input type="text" id="tags" placeholder="标签 (用逗号隔开)">
           <label for="cover" class="sr-only">封面图链接</label>
@@ -37,9 +19,9 @@
           <label for="markdown-editor" class="sr-only">文章内容</label>
           <textarea id="markdown-editor"></textarea>
           <label for="admin-token" class="sr-only">发布口令</label>
-          <input type="password" id="admin-token" placeholder="输入发布口令">
-          <button id="publish-button">立即发布到服务器</button>
-      </div>
+          <input type="password" id="admin-token" placeholder="输入发布口令" required>
+          <button type="submit" id="publish-button">立即发布到服务器</button>
+      </form>
 
       <hr class="admin-divider">
 
@@ -51,8 +33,7 @@
     </div>
     </main>
     
-<script src="/admin.js"></script>
-
+    <script src="/admin.js" defer></script>
 
 </body>
 </html>

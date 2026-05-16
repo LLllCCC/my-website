@@ -55,29 +55,8 @@ setInterval(updateTime, 1000);
 updateTime();
 
 // =========================================================
-// 4. 深色模式切换 (保持不变)
+// 4. 深色模式切换由 nav.js 负责，避免重复绑定
 // =========================================================
-const themeToggle = document.getElementById("theme-toggle");
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const root = document.documentElement;
-    const isLight = root.getAttribute("data-theme") === "light";
-
-    if (isLight) {
-      root.removeAttribute("data-theme"); // 移除 light 回到默认 dark
-      try {
-        localStorage.removeItem("theme");
-      } catch (e) {}
-      showToast("已开启深色模式 🌙");
-    } else {
-      root.setAttribute("data-theme", "light"); // 开启清新蓝模式
-      try {
-        localStorage.setItem("theme", "light");
-      } catch (e) {}
-      showToast("已开启清新模式 ✨");
-    }
-  });
-}
 
 // =========================================================
 // 5. 鼠标停止检测 (保持不变)

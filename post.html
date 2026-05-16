@@ -5,26 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>正在加载文章...</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-      .post-content {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 20px;
-        line-height: 1.8;
-      }
-      /* 给 Markdown 转换出来的代码块加点样式 */
-      pre {
-        background: #f4f4f4;
-        padding: 15px;
-        border-radius: 8px;
-        overflow-x: auto;
-      }
-      code {
-        font-family: "Courier New", Courier, monospace;
-        color: #d63384;
-      }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
   </head>
   <body>
     <div id="global-nav"></div>
@@ -38,9 +19,11 @@
 
       <div id="article-body" class="post-content"></div>
       </article>
+      <div id="global-footer"></div>
     </main>
 
-    <script src="/nav.js"></script>
-    <script src="post.js"></script>
+    <script src="/footer.js" defer></script>
+    <script src="/nav.js" defer></script>
+    <script src="post.js" defer></script>
   </body>
 </html>

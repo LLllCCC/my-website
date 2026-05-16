@@ -251,7 +251,10 @@ function toggleGame() {
   }
 }
 
-document.getElementById("startBtn").addEventListener("click", toggleGame);
+const startBtn = document.getElementById("startBtn");
+if (startBtn) {
+  startBtn.addEventListener("click", toggleGame);
+}
 
 document.addEventListener("keydown", (event) => {
   if (isPaused && event.keyCode !== 32) return;

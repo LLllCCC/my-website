@@ -651,6 +651,73 @@ nav {
   color: #ff4d4d;
 }
 
+.blog-post-card {
+  position: relative;
+  min-height: 240px;
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  background-color: rgba(255, 255, 255, 0.08);
+  background-size: cover;
+  background-position: center;
+  color: var(--text-primary);
+}
+.blog-post-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+}
+.blog-post-card .card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  gap: 18px;
+}
+.blog-post-card .post-meta,
+.blog-post-card .post-date,
+.blog-post-card .post-tag,
+.blog-post-card .post-title,
+.blog-post-card .read-more {
+  color: inherit;
+}
+.blog-post-card .post-date {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: monospace;
+}
+.blog-post-card .post-tag {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+}
+.blog-post-card .post-title {
+  font-size: 1.7rem;
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.blog-post-card .read-more {
+  align-self: flex-start;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+.blog-post-card .read-more:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
 /* 文章卡片 */
 .article-card {
   margin-bottom: 30px; /* 文章之间的间距 */
@@ -683,11 +750,6 @@ nav {
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 20px;
-}
-
-.article-card:hover {
-  transform: translateY(-5px) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* 博客列表元数据 (日期 + 标签) */
@@ -777,7 +839,10 @@ nav {
 }
 
 /* 正文排版 (核心) */
+.post-content,
 .article-content {
+  max-width: 860px;
+  margin: 40px auto;
   line-height: 1.8; /* 字间距宽松一点 */
   font-size: 1.1rem;
   color: var(--text-primary);
@@ -788,13 +853,29 @@ nav {
   box-shadow: none !important;
   border: 1px solid var(--border-color);
 }
+.post-content pre,
+.article-content pre {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  padding: 18px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 24px 0;
+}
+.post-content code,
+.article-content code {
+  font-family: "Courier New", Courier, monospace;
+  color: #d63384;
+}
 /* 禁止文章卡片悬停变色 */
+.post-content:hover,
 .article-content:hover {
   transform: none !important;
   box-shadow: none !important;
 }
 
 /* 正文里的标题 */
+.post-content h2,
 .article-content h2 {
   font-size: 1.5rem;
   margin-top: 30px;
@@ -804,6 +885,7 @@ nav {
 }
 
 /* 正文里的引用块 */
+.post-content blockquote,
 .article-content blockquote {
   border-left: 4px solid var(--accent-color);
   margin: 20px 0;
@@ -815,11 +897,11 @@ nav {
   border-radius: 0 8px 8px 0;
 }
 
+.post-content img,
 .article-content img {
   width: 100%;
   border-radius: 12px;
   margin: 20px 0;
-}
 }
 
 /* 底部按钮 */
@@ -855,24 +937,321 @@ nav {
   }
 }
 
-/* --- 🌗 自动切换日/月图标 (修复深色模式看不见的问题) --- */
-
-/* 1. 图标基础设置 */
-.theme-icon-img {
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+/* --- 页面专用样式 --- */
+body.index-page .grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
-/* 2. 默认模式 (深色模式) */
-/* 逻辑：背景是黑的，我们要显示“太阳”图标，并把它反转成白色 */
-.icon-sun {
-  display: inline-block;
-  filter: invert(1); /* 核心代码：把黑色图片变成白色！ */
+@media (max-width: 768px) {
+  body.index-page .grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    padding: 0 20px !important;
+  }
+  body.index-page .card-hero {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    text-align: center !important;
+    padding: 40px 20px !important;
+    height: auto !important;
+  }
+  body.index-page .card-hero .avatar {
+    margin-bottom: 25px !important;
+  }
+  body.index-page .hero-text h1 {
+    font-size: 2.2rem !important;
+    margin-top: 10px !important;
+  }
+  body.index-page .card,
+  body.index-page .card-project,
+  body.index-page .card-social-container,
+  body.index-page .card-blog,
+  body.index-page .card-skills {
+    width: 100% !important;
+    grid-column: auto !important;
+  }
+  body.index-page .card-project,
+  body.index-page .card-blog {
+    min-height: 240px !important;
+    background-attachment: scroll !important;
+  }
+  body.index-page {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    position: relative;
+  }
 }
-.icon-moon {
+
+body.admin-page {
+  min-height: 100vh;
+  background: var(--bg-color);
+  color: var(--text-primary);
+}
+body.admin-page .admin-main {
+  padding: 100px 20px 80px;
+}
+body.admin-page .admin-box {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background: var(--card-bg);
+  border-radius: 15px;
+  border: 1px solid var(--border-color);
+}
+body.admin-page input,
+body.admin-page select,
+body.admin-page textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+body.admin-page textarea {
+  min-height: 220px;
+  resize: vertical;
+}
+body.admin-page button {
+  background: #007aff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+}
+body.admin-page .admin-divider {
+  margin: 40px 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+body.admin-page .admin-list-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+}
+body.admin-page .admin-section-title {
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+body.admin-page .admin-placeholder {
+  color: var(--text-secondary);
+}
+body.admin-page .admin-post-card {
+  background: #1a1a1a;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+body.admin-page .admin-post-summary {
+  flex: 1;
+  overflow: hidden;
+}
+body.admin-page .admin-post-title {
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 16px;
+}
+body.admin-page .admin-post-meta {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 4px;
+}
+body.admin-page .admin-post-actions {
+  min-width: 140px;
+  text-align: right;
+  margin-left: 10px;
+}
+body.admin-page .admin-action-btn {
+  background: #2196f3;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+body.admin-page .admin-action-btn--delete {
+  background: #f44336;
+}
+body.admin-page .admin-error {
+  color: #ff4444;
+}
+
+body.tetris-page {
+  overflow: hidden;
+  touch-action: none;
+  background: #1a1a1a;
+  color: #fff;
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Courier New", monospace;
+  user-select: none;
+  -webkit-user-select: none;
+}
+body.tetris-page .game-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+body.tetris-page .game-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  background: #2c2c2e;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+body.tetris-page canvas#game {
+  background: #000;
+  display: block;
+  border-radius: 4px;
+  width: 240px;
+  height: 400px;
+}
+body.tetris-page .info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 90px;
+}
+body.tetris-page .score-box {
+  background: #3a3a3c;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+body.tetris-page .score-title {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 5px;
+}
+body.tetris-page .score-num {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4cd964;
+}
+body.tetris-page .btn-start {
+  background: #0a84ff;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  width: 100%;
+}
+body.tetris-page .btn-start:active {
+  opacity: 0.8;
+}
+body.tetris-page .controls-tip {
+  font-size: 12px;
+  color: #666;
+  margin-top: auto;
+  line-height: 1.5;
+}
+body.tetris-page .mobile-controls {
   display: none;
+}
+
+@media (max-width: 600px) {
+  body.tetris-page .game-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: transparent;
+    box-shadow: none;
+  }
+  body.tetris-page .info-panel {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 240px;
+    min-width: auto;
+  }
+  body.tetris-page .score-box {
+    flex: 1;
+    padding: 5px;
+  }
+  body.tetris-page #next-box {
+    display: none;
+  }
+  body.tetris-page .controls-tip {
+    display: none;
+  }
+  body.tetris-page .btn-start {
+    width: auto;
+    padding: 8px 20px;
+  }
+  body.tetris-page .mobile-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+    width: 280px;
+  }
+  body.tetris-page .m-btn {
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    backdrop-filter: blur(5px);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.tetris-page .m-btn:active {
+    background: rgba(10, 132, 255, 0.6);
+    transform: scale(0.95);
+  }
+  body.tetris-page .return-link {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    z-index: 10;
+  }
+  body.tetris-page .next-canvas {
+    background: transparent;
+    margin: 0 auto;
+  }
+  body.tetris-page #btn-up {
+    grid-column: 2;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  body.tetris-page #btn-left {
+    grid-column: 1;
+  }
+  body.tetris-page #btn-right {
+    grid-column: 3;
+  }
+  body.tetris-page #btn-down {
+    grid-column: 2;
+  }
 }
 
 /* 3. 浅色模式 (清新蓝) */
