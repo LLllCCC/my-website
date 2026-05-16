@@ -80,11 +80,76 @@ nav {
   margin-left: 10px;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 .logo a {
   color: var(--text-primary);
   text-decoration: none;
   border: none;
   transition: opacity 0.2s;
+}
+.logo span {
+  color: var(--text-secondary);
+}
+.logo-icon {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.logo-icon:hover {
+  background: rgba(128, 128, 128, 0.15);
+}
+.logo-icon svg {
+  display: block;
+}
+
+/* 下拉菜单容器 */
+.menu-wrapper {
+  position: relative;
+}
+
+/* 下拉菜单 */
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 140px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 300;
+}
+.nav-dropdown.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.nav-dropdown-link {
+  display: block;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.nav-dropdown-link:hover {
+  background: rgba(128, 128, 128, 0.1);
 }
 .logo a:hover {
   opacity: 0.6;
@@ -634,7 +699,7 @@ nav {
   background-color: rgba(255, 255, 255, 0.08);
   background-size: cover;
   background-position: center;
-  color: var(--text-primary);
+  color: #fff;
 }
 .blog-post-card::before {
   content: "";
@@ -683,12 +748,18 @@ nav {
   margin: 0;
   font-weight: 700;
   line-height: 1.2;
+  color: #fff;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: currentColor;
 }
 .blog-post-card .read-more {
   align-self: flex-start;
   padding: 10px 16px;
   background: rgba(255, 255, 255, 0.14);
   border-radius: 999px;
+  color: #fff;
   text-decoration: none;
   transition: background 0.3s ease;
 }
@@ -1383,66 +1454,6 @@ body.tetris-page .mobile-controls {
   font-weight: 600;
 }
 
-.card-game {
-  text-decoration: none;
-  grid-column: span 1;
-  margin-top: 20px;
-  background: #1a1a1a;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  border: none;
-}
-.card-game .game-background {
-  position: absolute;
-  opacity: 0.1;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.card-game .game-dot {
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  border-radius: 50%;
-}
-.card-game .game-dot--pink {
-  background: #ff0d72;
-  top: 20px;
-  left: 20px;
-}
-.card-game .game-dot--blue {
-  background: #0dc2ff;
-  bottom: 30px;
-  right: 20px;
-}
-.card-game .game-dot--green {
-  background: #0dff72;
-  top: 40px;
-  right: 40px;
-}
-.card-game-content {
-  z-index: 2;
-  text-align: center;
-}
-.card-game-icon {
-  font-size: 3rem;
-  color: #fff;
-  margin-bottom: 10px;
-}
-.card-game-title {
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-.card-game-subtitle {
-  color: #888;
-  font-size: 0.8rem;
-}
-
 /* =========================================
    手机端强制适配
    ========================================= */
@@ -1469,8 +1480,7 @@ body.tetris-page .mobile-controls {
   .card-social,
   .card-blog,
   .card-skills,
-  #my-skills,
-  .card-game {
+  #my-skills {
     grid-column: span 1;
     width: 100%;
   }

@@ -8,15 +8,12 @@
     />
     <title>俄罗斯方块 - Yopo</title>
     <link rel="icon" href="assets/my-avatar.jpg" />
-    <link
-      href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet" />
+    <script src="theme-init.js"></script>
+    <link rel="stylesheet" href="style.css?v=7" />
   </head>
   <body class="tetris-page">
-    <a href="index.html" class="return-link">
-      <i class="ri-arrow-left-line"></i> 返回
-    </a>
+    <div id="global-nav"></div>
 
     <main class="game-main">
       <div class="game-wrapper">
@@ -62,6 +59,8 @@
     </div>
     </main>
 
+    <script src="/config.js" defer></script>
+    <script src="/nav.js" defer></script>
     <script src="/tetris.js" defer></script>
   </body>
 </html>

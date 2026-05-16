@@ -1,81 +1,73 @@
-// nav.js - 全站统一导航栏 (修复主页蓝色链接问题)
-
+// nav.js - 全站统一导航栏
 function loadNavbar() {
-    // 1. 获取当前路径，判断在哪里
-    const path = window.location.pathname;
-    // 如果路径里有 blog.html、post.html 或者 posts/，就说明在博客区域
-    const isBlogSection = path.includes("blog.html") || path.includes("post.html") || path.includes("posts/");
+  var path = window.location.pathname;
+  var isBlogSection = path.includes("blog.html") || path.includes("post.html") || path.includes("posts/");
 
-    // =========================================
-    // 🔴 核心修复：全站统一的左上角 LOGO 代码
-    // 这里给 <a> 标签加上了 style="color: inherit; text-decoration: none;"
-    // 这就是解决主页蓝色链接的关键！无论在哪里，它都长这样。
-    // =========================================
-    let logoHtml = '';
-    if (isBlogSection) {
-        logoHtml = `
-            <div class="logo">
-                <a href="/index.html">YOPO</a>
-                <span>/</span>
-                <a href="/blog.html">BLOG</a>
-            </div>
-        `;
-    } else {
-        // 主页只显示站点名，避免显示博客专属面包屑
-        logoHtml = `
-            <div class="logo">
-                <a href="/index.html">YOPO</a>
-            </div>
-        `;
-    }
+  var menuIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h10"/><path d="M7 12h10"/><path d="M7 16h10"/></svg>';
 
-    // 3. 右上角菜单链接
-    let linksHtml = '';
+  var navHTML =
+    '<nav>' +
+    '  <div class="nav-container">' +
+    '    <div class="logo">' +
+    '      <a href="/index.html">YOPO</a>' +
+    (isBlogSection ? '<span>/</span><a href="/blog.html">BLOG</a>' : '') +
+    '    </div>' +
+    '    <div class="nav-links">' +
+    '      <div class="menu-wrapper">' +
+    '        <button class="logo-icon" id="menu-btn" type="button" aria-label="菜单">' + menuIcon + '</button>' +
+    '        <div class="nav-dropdown" id="nav-dropdown">' +
+    '          <a href="/index.html" class="nav-dropdown-link">主页</a>' +
+    '          <a href="/blog.html" class="nav-dropdown-link">博客</a>' +
+    '        </div>' +
+    '      </div>' +
+    '      <button id="theme-toggle" class="nav-theme-toggle" type="button" aria-label="切换主题" aria-pressed="false">' +
+    '        <img src="/assets/sun.png" class="icon-sun theme-icon-img" alt="Light Mode">' +
+    '        <img src="/assets/moon.png" class="icon-moon theme-icon-img" alt="Dark Mode">' +
+    '      </button>' +
+    '    </div>' +
+    '  </div>' +
+    '</nav>';
 
-    // 4. 组装最终 HTML — 对博客页面使用更窄的容器以与文章宽度对齐
-    const containerClass = isBlogSection ? 'nav-container narrow' : 'nav-container';
-    const navHTML = `
-    <nav>
-        <div class="${containerClass}">
-            ${logoHtml}
+  var navPlaceholder = document.getElementById("global-nav");
+  if (navPlaceholder) {
+    navPlaceholder.innerHTML = navHTML;
+  }
 
-            <div class="nav-links">
-                ${linksHtml}
-                
-                <button id="theme-toggle" class="nav-theme-toggle" type="button" aria-label="切换主题" aria-pressed="false">
-                    <img src="/assets/sun.png" class="icon-sun theme-icon-img" alt="Light Mode">
-                    <img src="/assets/moon.png" class="icon-moon theme-icon-img" alt="Dark Mode">
-                </button>
-            </div>
-        </div>
-    </nav>
-    `;
+  // 菜单下拉
+  var menuBtn = document.getElementById("menu-btn");
+  var dropdown = document.getElementById("nav-dropdown");
 
-    // 5. 插入页面
-    const navPlaceholder = document.getElementById("global-nav");
-    if (navPlaceholder) {
-        navPlaceholder.innerHTML = navHTML;
-    }
+  if (menuBtn && dropdown) {
+    menuBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      dropdown.classList.toggle("open");
+    });
 
-    // 6. 重新绑定点击事件
-    const toggleBtn = document.getElementById('theme-toggle');
-    if (toggleBtn) {
-        const updateToggleState = () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const isLight = currentTheme === 'light';
-            toggleBtn.setAttribute('aria-pressed', isLight.toString());
-        };
+    document.addEventListener("click", function (e) {
+      if (!dropdown.contains(e.target) && e.target !== menuBtn) {
+        dropdown.classList.remove("open");
+      }
+    });
+  }
 
-        updateToggleState();
+  // 主题切换
+  var toggleBtn = document.getElementById("theme-toggle");
+  if (toggleBtn) {
+    var updateToggleState = function () {
+      var currentTheme = document.documentElement.getAttribute("data-theme");
+      toggleBtn.setAttribute("aria-pressed", (currentTheme === "light").toString());
+    };
 
-        toggleBtn.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateToggleState();
-        });
-    }
+    updateToggleState();
+
+    toggleBtn.addEventListener("click", function () {
+      var currentTheme = document.documentElement.getAttribute("data-theme");
+      var newTheme = currentTheme === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      updateToggleState();
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", loadNavbar);
