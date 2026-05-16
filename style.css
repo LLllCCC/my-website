@@ -59,12 +59,26 @@ nav {
 }
 
 /* .nav-container.narrow 已移除 — 导航保持统一容器宽度以简化样式 */
-.nav-links a {
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.nav-links a,
+.nav-links button {
   color: var(--text-primary); /* 使用 Primary 确保文字清晰 */
   text-decoration: none;
-  margin-left: 20px;
   font-size: 0.95rem;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+.nav-links a {
+  margin-left: 0;
+}
+.nav-links button {
+  margin-left: 10px;
 }
 
 /* 强制修复左上角 Logo 链接颜色，确保全站一致 */
@@ -322,6 +336,22 @@ nav {
 .nav-theme-toggle:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 3px;
+}
+
+.theme-icon-img {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon-sun {
+  display: inline-block;
+  filter: invert(1);
+}
+
+.icon-moon {
+  display: none;
 }
 
 .sr-only {

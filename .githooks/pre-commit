@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Generate posts manifest before commit; add the file to the index if changed
+python scripts/generate_posts.py || exit 0
+if [ -f "posts/posts.json" ]; then
+  git add posts/posts.json || true
+fi
