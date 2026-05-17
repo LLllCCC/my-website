@@ -2,7 +2,6 @@
 var CONFIG = {
   API_BASE: "https://yopoo.888431.xyz/api",
   POSTS_URL: "https://yopoo.888431.xyz/api/posts",
-  LOCAL_POSTS_URL: "posts/posts.json",
   SITE_NAME: "Yopo",
   SITE_URL: "https://yopo.888431.xyz",
 };

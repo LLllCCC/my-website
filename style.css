@@ -42,7 +42,7 @@ nav {
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 15px 0;
+  padding: 0;
   background: var(--nav-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -63,8 +63,8 @@ nav {
   align-items: center;
   gap: 18px;
 }
-.nav-links a,
-.nav-links button {
+.nav-links > a,
+.nav-links > button {
   color: var(--text-primary);
   text-decoration: none;
   font-size: 0.95rem;
@@ -73,10 +73,10 @@ nav {
   align-items: center;
   line-height: 1;
 }
-.nav-links a {
+.nav-links > a {
   margin-left: 0;
 }
-.nav-links button {
+.nav-links > button {
   margin-left: 10px;
 }
 
@@ -84,6 +84,11 @@ nav {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+.logo-svg {
+  height: 60px;
+  width: auto;
+  display: block;
 }
 .logo a {
   color: var(--text-primary);
@@ -344,17 +349,17 @@ nav {
 
 /* 背景图类 */
 .bg-project-1 {
-  background-image: url("assets/project-1.jpg");
+  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/project-1.jpg");
   background-size: cover;
   background-position: center;
 }
 .bg-project-3 {
-  background-image: url("assets/project-3.jpg");
+  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/project-3.jpg");
   background-size: cover;
   background-position: center;
 }
 .bg-map {
-  background-image: url("assets/map.jpg");
+  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/map.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -1371,7 +1376,7 @@ body.tetris-page .mobile-controls {
 
 .card-blog {
   grid-column: span 2;
-  background-image: url("assets/map.jpg");
+  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/map.jpg");
   background-size: cover;
   background-position: center;
   border: none;
@@ -1496,6 +1501,37 @@ body.tetris-page .mobile-controls {
   }
   .logo a {
     font-size: 1.1rem;
+  }
+
+  /* 博客移动端适配 */
+  .blog-container {
+    padding: 0 12px;
+    margin-top: 80px;
+  }
+  .blog-post-card {
+    padding: 18px;
+    min-height: 200px;
+    margin-bottom: 16px;
+  }
+  .blog-post-card .post-title {
+    font-size: 1.25rem;
+  }
+  .blog-post-card .post-date {
+    font-size: 0.75rem;
+  }
+  .blog-post-card .post-tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+  }
+  .blog-post-card .read-more {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+  .search-container {
+    margin: 10px auto 24px;
+  }
+  .blog-header h1 {
+    font-size: 2rem;
   }
 
   html,
