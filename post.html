@@ -19,7 +19,7 @@
 
     <script src="theme-init.js"></script>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=10" />
     <script src="https://cdn.staticfile.net/marked/4.3.0/marked.min.js" defer></script>
   </head>
   <body>
@@ -32,7 +32,16 @@
         <p id="article-meta" class="post-meta"></p>
       </div>
 
-      <div id="article-body" class="post-content"></div>
+      <div class="article-layout">
+        <aside class="article-toc" id="article-toc"></aside>
+        <div class="article-main">
+          <div id="article-body" class="post-content"></div>
+          <div id="article-comments">
+            <div class="comments-title">评论</div>
+            <div class="giscus"></div>
+          </div>
+        </div>
+      </div>
       </article>
       <div id="global-footer"></div>
     </main>
@@ -41,5 +50,43 @@
     <script src="/config.js" defer></script>
     <script src="/nav.js" defer></script>
     <script src="post.js" defer></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var theme = document.documentElement.getAttribute("data-theme") || "dark";
+        var giscusTheme = theme === "light" ? "light" : "dark_dimmed";
+
+        var script = document.createElement("script");
+        script.src = "https://giscus.app/client.js";
+        script.setAttribute("data-repo", "LLllCCC/my-website");
+        script.setAttribute("data-repo-id", "R_kgDOQrwQEw");
+        script.setAttribute("data-category", "Announcements");
+        script.setAttribute("data-category-id", "DIC_kwDOQrwQE84C9RWe");
+        script.setAttribute("data-mapping", "title");
+        script.setAttribute("data-strict", "0");
+        script.setAttribute("data-reactions-enabled", "1");
+        script.setAttribute("data-emit-metadata", "0");
+        script.setAttribute("data-input-position", "bottom");
+        script.setAttribute("data-theme", giscusTheme);
+        script.setAttribute("data-lang", "zh-CN");
+        script.crossOrigin = "anonymous";
+        script.async = true;
+
+        var giscusEl = document.querySelector(".giscus");
+        if (giscusEl) giscusEl.appendChild(script);
+
+        var observer = new MutationObserver(function () {
+          var newTheme = document.documentElement.getAttribute("data-theme") || "dark";
+          var giscusFrame = document.querySelector("iframe.giscus-frame");
+          if (giscusFrame) {
+            giscusFrame.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: newTheme === "light" ? "light" : "dark_dimmed" } } },
+              "https://giscus.app"
+            );
+          }
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+      });
+    </script>
   </body>
 </html>
