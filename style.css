@@ -1,4 +1,4 @@
-/* --- 1. 变量与主题定义 (清新蓝 #98F5F9) --- */
+﻿/* --- 1. 鍙橀噺涓庝富棰樺畾涔?(娓呮柊钃?#98F5F9) --- */
 :root {
   --bg-color: #000000;
   --card-bg: #1c1c1e;
@@ -21,7 +21,7 @@
   --accent-color: #0071d4;
 }
 
-/* --- 2. 基础布局 --- */
+/* --- 2. 鍩虹甯冨眬 --- */
 html {
   scroll-behavior: smooth;
 }
@@ -37,7 +37,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- 3. 导航栏 --- */
+/* --- 3. 瀵艰埅鏍?--- */
 nav {
   position: fixed;
   top: 0;
@@ -117,12 +117,12 @@ nav {
   display: block;
 }
 
-/* 下拉菜单容器 */
+/* 涓嬫媺鑿滃崟瀹瑰櫒 */
 .menu-wrapper {
   position: relative;
 }
 
-/* 下拉菜单 */
+/* 涓嬫媺鑿滃崟 */
 .nav-dropdown {
   position: absolute;
   top: calc(100% + 12px);
@@ -164,7 +164,7 @@ nav {
   color: var(--text-secondary);
 }
 
-/* --- 4. Bento Grid 核心系统 --- */
+/* --- 4. Bento Grid 鏍稿績绯荤粺 --- */
 .container {
   max-width: 980px;
   margin: 100px auto 50px;
@@ -207,7 +207,7 @@ nav {
   background-color: var(--card-hover);
 }
 
-/* --- 5. 英雄卡片 --- */
+/* --- 5. 鑻遍泟鍗＄墖 --- */
 .card-hero {
   grid-column: span 4;
   flex-direction: row;
@@ -233,7 +233,7 @@ nav {
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- 6. 社交卡片 --- */
+/* --- 6. 绀句氦鍗＄墖 --- */
 .card-social {
   grid-column: span 1;
   aspect-ratio: 1/1;
@@ -265,7 +265,7 @@ nav {
   }
 }
 
-/* --- 7. 项目卡片 --- */
+/* --- 7. 椤圭洰鍗＄墖 --- */
 .card-project {
   grid-column: span 2;
   min-height: 280px;
@@ -304,7 +304,7 @@ nav {
   opacity: 0.9;
 }
 
-/* 淡入效果 */
+/* 娣″叆鏁堟灉 */
 .fade-in {
   opacity: 0;
   transform: translateY(8px);
@@ -317,7 +317,7 @@ nav {
   }
 }
 
-/* Toast 通知 */
+/* Toast 閫氱煡 */
 .toast-notification {
   position: fixed;
   left: 50%;
@@ -347,7 +347,7 @@ nav {
 .delay-06 { animation-delay: 0.6s; }
 .delay-07 { animation-delay: 0.7s; }
 
-/* 背景图类 */
+/* 鑳屾櫙鍥剧被 */
 .bg-project-1 {
   background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/project-1.jpg");
   background-size: cover;
@@ -364,13 +364,13 @@ nav {
   background-position: center;
 }
 
-/* Email 卡片专用样式 */
+/* Email 鍗＄墖涓撶敤鏍峰紡 */
 .card-email {
   background-color: #2997ff;
   color: white;
 }
 
-/* 导航主题切换按钮 */
+/* 瀵艰埅涓婚鍒囨崲鎸夐挳 */
 .nav-theme-toggle {
   font-size: 1.2rem;
   margin-left: 10px;
@@ -405,7 +405,7 @@ nav {
   display: none;
 }
 
-/* 屏幕阅读器专用 —— 业界标准写法，!important 是必须的 */
+/* 灞忓箷闃呰鍣ㄤ笓鐢?鈥斺€?涓氱晫鏍囧噯鍐欐硶锛?important 鏄繀椤荤殑 */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -466,7 +466,7 @@ nav {
   margin-bottom: 5px;
 }
 
-/* 页脚 */
+/* 椤佃剼 */
 .site-footer {
   text-align: center;
   margin-top: 50px;
@@ -489,9 +489,9 @@ nav {
   text-decoration: underline;
 }
 
-/* --- 3D 翻转卡片 --- */
+/* --- 3D 缈昏浆鍗＄墖 --- */
 
-/* 舞台容器 */
+/* 鑸炲彴瀹瑰櫒 */
 .card-social-container {
   padding: 0;
   border: none;
@@ -509,7 +509,7 @@ nav {
   transform: none;
 }
 
-/* 翻转主体 */
+/* 缈昏浆涓讳綋 */
 .card-social-flip {
   width: 100%;
   height: 100%;
@@ -529,7 +529,7 @@ nav {
   transform: rotateY(180deg);
 }
 
-/* 正面与背面 */
+/* 姝ｉ潰涓庤儗闈?*/
 .flip-front,
 .flip-back {
   position: absolute;
@@ -572,7 +572,7 @@ nav {
   border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Email 卡片配色 */
+/* Email 鍗＄墖閰嶈壊 */
 .email-card .flip-front {
   background-color: #2997ff;
   color: white;
@@ -586,7 +586,7 @@ nav {
   text-align: center;
 }
 
-/* 头像呼吸灯 */
+/* 澶村儚鍛煎惛鐏?*/
 @keyframes avatar-breathe {
   0%,
   100% {
@@ -603,7 +603,7 @@ nav {
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- 卡片悬停逻辑：动静分离 --- */
+/* --- 鍗＄墖鎮仠閫昏緫锛氬姩闈欏垎绂?--- */
 
 .card {
   transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -626,7 +626,7 @@ nav {
   background: transparent;
 }
 
-/* --- 博客页面 --- */
+/* --- 鍗氬椤甸潰 --- */
 
 .blog-container {
   max-width: 800px;
@@ -683,7 +683,7 @@ nav {
   font-size: 20px;
 }
 
-/* 标签云 */
+/* 鏍囩浜?*/
 .tag-cloud {
   display: flex;
   flex-wrap: wrap;
@@ -800,7 +800,7 @@ nav {
   background: rgba(255, 255, 255, 0.24);
 }
 
-/* 文章卡片 */
+/* 鏂囩珷鍗＄墖 */
 .article-card {
   margin-bottom: 30px;
   align-items: flex-start;
@@ -876,7 +876,7 @@ nav {
   }
 }
 
-/* --- 文章详情页 --- */
+/* --- 鏂囩珷璇︽儏椤?--- */
 
 .blog-post-container {
   max-width: 720px;
@@ -915,7 +915,7 @@ nav {
   -webkit-text-fill-color: transparent;
 }
 
-/* 正文排版 */
+/* 姝ｆ枃鎺掔増 */
 .post-content,
 .article-content {
   max-width: 860px;
@@ -1008,7 +1008,7 @@ nav {
   }
 }
 
-/* --- 页面专用样式 --- */
+/* --- 椤甸潰涓撶敤鏍峰紡 --- */
 body.index-page .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1039,15 +1039,15 @@ body.index-page .grid {
   body.index-page .card,
   body.index-page .card-project,
   body.index-page .card-social-container,
-  body.index-page .card-blog,
+
   body.index-page .card-skills,
   body.index-page .card-friends,
   body.index-page .card-timeline {
     width: 100%;
     grid-column: auto;
   }
-  body.index-page .card-project,
-  body.index-page .card-blog {
+  body.index-page .card-project {
+
     min-height: 240px;
     background-attachment: scroll;
   }
@@ -1058,276 +1058,8 @@ body.index-page .grid {
   }
 }
 
-body.admin-page {
-  min-height: 100vh;
-  background: var(--bg-color);
-  color: var(--text-primary);
-}
-body.admin-page .admin-main {
-  padding: 100px 20px 80px;
-}
-body.admin-page .admin-box {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 20px;
-  background: var(--card-bg);
-  border-radius: 15px;
-  border: 1px solid var(--border-color);
-}
-body.admin-page input,
-body.admin-page select,
-body.admin-page textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  background: var(--card-bg);
-  color: var(--text-primary);
-}
-body.admin-page textarea {
-  min-height: 220px;
-  resize: vertical;
-}
-body.admin-page button {
-  background: #007aff;
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 16px;
-}
-body.admin-page .admin-divider {
-  margin: 40px 0;
-  border: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
-body.admin-page .admin-list-section {
-  max-width: 800px;
-  margin: 0 auto;
-  padding-bottom: 50px;
-}
-body.admin-page .admin-section-title {
-  color: var(--text-primary);
-  margin-bottom: 20px;
-}
-body.admin-page .admin-placeholder {
-  color: var(--text-secondary);
-}
-body.admin-page .admin-post-card {
-  background: #1a1a1a;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-body.admin-page .admin-post-summary {
-  flex: 1;
-  overflow: hidden;
-}
-body.admin-page .admin-post-title {
-  color: var(--text-primary);
-  font-weight: bold;
-  font-size: 16px;
-}
-body.admin-page .admin-post-meta {
-  color: var(--text-secondary);
-  font-size: 12px;
-  margin-top: 4px;
-}
-body.admin-page .admin-post-actions {
-  min-width: 140px;
-  text-align: right;
-  margin-left: 10px;
-}
-body.admin-page .admin-action-btn {
-  background: #2196f3;
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-left: 5px;
-}
-body.admin-page .admin-action-btn--delete {
-  background: #f44336;
-}
-body.admin-page .admin-error {
-  color: #ff4444;
-}
 
-body.tetris-page {
-  overflow: hidden;
-  touch-action: none;
-  background: #1a1a1a;
-  color: #fff;
-  min-height: 100vh;
-  margin: 0;
-  font-family: "Courier New", monospace;
-  user-select: none;
-  -webkit-user-select: none;
-}
-body.tetris-page .game-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-}
-body.tetris-page .game-wrapper {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 20px;
-  background: #2c2c2e;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-body.tetris-page canvas#game {
-  background: #000;
-  display: block;
-  border-radius: 4px;
-  width: 240px;
-  height: 400px;
-}
-body.tetris-page .info-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  min-width: 90px;
-}
-body.tetris-page .score-box {
-  background: #3a3a3c;
-  padding: 10px;
-  border-radius: 10px;
-  text-align: center;
-}
-body.tetris-page .score-title {
-  font-size: 12px;
-  color: #888;
-  margin-bottom: 5px;
-}
-body.tetris-page .score-num {
-  font-size: 20px;
-  font-weight: bold;
-  color: #4cd964;
-}
-body.tetris-page .btn-start {
-  background: #0a84ff;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  width: 100%;
-}
-body.tetris-page .btn-start:active {
-  opacity: 0.8;
-}
-body.tetris-page .controls-tip {
-  font-size: 12px;
-  color: #666;
-  margin-top: auto;
-  line-height: 1.5;
-}
-body.tetris-page .mobile-controls {
-  display: none;
-}
-
-@media (max-width: 600px) {
-  body.tetris-page .game-wrapper {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    background: transparent;
-    box-shadow: none;
-  }
-  body.tetris-page .info-panel {
-    flex-direction: row;
-    justify-content: space-between;
-    width: 240px;
-    min-width: auto;
-  }
-  body.tetris-page .score-box {
-    flex: 1;
-    padding: 5px;
-  }
-  body.tetris-page #next-box {
-    display: none;
-  }
-  body.tetris-page .controls-tip {
-    display: none;
-  }
-  body.tetris-page .btn-start {
-    width: auto;
-    padding: 8px 20px;
-  }
-  body.tetris-page .mobile-controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 15px;
-    margin-top: 10px;
-    width: 280px;
-  }
-  body.tetris-page .m-btn {
-    width: 70px;
-    height: 70px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    border: none;
-    color: white;
-    font-size: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    backdrop-filter: blur(5px);
-    -webkit-tap-highlight-color: transparent;
-  }
-  body.tetris-page .m-btn:active {
-    background: rgba(10, 132, 255, 0.6);
-    transform: scale(0.95);
-  }
-  body.tetris-page .return-link {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    color: rgba(255, 255, 255, 0.5);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
-    z-index: 10;
-  }
-  body.tetris-page .next-canvas {
-    background: transparent;
-    margin: 0 auto;
-  }
-  body.tetris-page #btn-up {
-    grid-column: 2;
-    background: rgba(255, 255, 255, 0.2);
-  }
-  body.tetris-page #btn-left {
-    grid-column: 1;
-  }
-  body.tetris-page #btn-right {
-    grid-column: 3;
-  }
-  body.tetris-page #btn-down {
-    grid-column: 2;
-  }
-}
-
-/* 3. 浅色模式主题图标切换 */
+/* 3. 娴呰壊妯″紡涓婚鍥炬爣鍒囨崲 */
 [data-theme="light"] .icon-sun {
   display: none;
 }
@@ -1336,7 +1068,7 @@ body.tetris-page .mobile-controls {
   filter: none;
 }
 
-/* 4. 悬停旋转特效 */
+/* 4. 鎮仠鏃嬭浆鐗规晥 */
 .nav-theme-toggle:hover .theme-icon-img {
   transform: rotate(30deg) scale(1.1);
   filter: invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
@@ -1346,20 +1078,20 @@ body.tetris-page .mobile-controls {
   transform: rotate(-30deg) scale(1.1);
 }
 
-/* --- Email 卡片尺寸一致性 --- */
+/* --- Email 鍗＄墖灏哄涓€鑷存€?--- */
 
 * {
   box-sizing: border-box;
 }
 
-/* 统一边框厚度 */
+/* 缁熶竴杈规鍘氬害 */
 .email-card .flip-front,
 .email-card .flip-back {
   border: 1px solid rgba(255, 255, 255, 0.01);
   background-clip: padding-box;
 }
 
-/* --- 博客封面图 --- */
+/* --- 鍗氬灏侀潰鍥?--- */
 
 .article-card {
   padding: 0;
@@ -1402,7 +1134,7 @@ body.tetris-page .mobile-controls {
   }
 }
 
-/* --- 首页博客卡片 --- */
+/* --- 棣栭〉鍗氬鍗＄墖 --- */
 
 .card-blog {
   grid-column: span 2;
@@ -1454,12 +1186,12 @@ body.tetris-page .mobile-controls {
   font-size: 0.95rem;
 }
 
-/* 技能卡片 */
+/* 鎶€鑳藉崱鐗?*/
 .card-skills {
   grid-column: span 2;
 }
 
-/* 时间线 */
+/* 鏃堕棿绾?*/
 .card-timeline {
   grid-column: span 2;
 }
@@ -1500,7 +1232,7 @@ body.tetris-page .mobile-controls {
   font-size: 0.92rem;
 }
 
-/* 友情链接 */
+/* 鍙嬫儏閾炬帴 */
 .card-friends {
   grid-column: span 1;
 }
@@ -1557,7 +1289,7 @@ body.tetris-page .mobile-controls {
 }
 
 /* =========================================
-   手机端强制适配
+   鎵嬫満绔己鍒堕€傞厤
    ========================================= */
 @media (max-width: 768px) {
   .grid {
@@ -1602,7 +1334,7 @@ body.tetris-page .mobile-controls {
     font-size: 1.1rem;
   }
 
-  /* 博客移动端适配 */
+  /* 鍗氬绉诲姩绔€傞厤 */
   .blog-container {
     padding: 0 12px;
     margin-top: 80px;
@@ -1641,7 +1373,7 @@ body.tetris-page .mobile-controls {
   }
 }
 
-/* 文章目录 + 侧边栏布局 */
+/* 鏂囩珷鐩綍 + 渚ц竟鏍忓竷灞€ */
 .article-layout {
   max-width: 920px;
   margin: 0 auto;
@@ -1693,7 +1425,7 @@ body.tetris-page .mobile-controls {
   font-size: 0.82rem;
 }
 
-/* 文章主体 */
+/* 鏂囩珷涓讳綋 */
 .article-main {
   flex: 1;
   min-width: 0;
@@ -1705,7 +1437,7 @@ body.tetris-page .mobile-controls {
   border: none;
 }
 
-/* 评论区 */
+/* 璇勮鍖?*/
 #article-comments {
   max-width: none;
   margin: 60px 0 0;
@@ -1730,7 +1462,7 @@ body.tetris-page .mobile-controls {
   color: var(--text-primary);
   margin-bottom: 16px;
 }
-/* 回到顶部按钮 */
+/* 鍥炲埌椤堕儴鎸夐挳 */
 .back-to-top {
   position: fixed;
   bottom: 28px;
@@ -1765,7 +1497,7 @@ body.tetris-page .mobile-controls {
   border-color: var(--accent-color);
 }
 
-/* --- 3D 卡片高光扫光 --- */
+/* --- 3D 鍗＄墖楂樺厜鎵厜 --- */
 .card {
   transform-style: preserve-3d;
   will-change: transform;
@@ -1794,7 +1526,7 @@ body.tetris-page .mobile-controls {
   opacity: 1;
 }
 
-/* --- 翻转卡片最终保障 --- */
+/* --- 缈昏浆鍗＄墖鏈€缁堜繚闅?--- */
 .card-social-container,
 .card-social-container:hover,
 .card-social-container:focus-within,
@@ -1823,7 +1555,7 @@ body.tetris-page .mobile-controls {
   transform: rotateY(180deg);
 }
 
-/* 清除翻转卡片的 ::after 残留光泽 */
+/* 娓呴櫎缈昏浆鍗＄墖鐨?::after 娈嬬暀鍏夋辰 */
 .card-social-container::after {
   display: none !important;
   content: none !important;
