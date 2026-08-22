@@ -1,114 +1,67 @@
-// =========================================================
-// 1. Email 卡片点击监听
-// =========================================================
-const mailtoLink = document.querySelector('a[href^="mailto:"]');
-if (mailtoLink) {
-  mailtoLink.addEventListener("click", function (e) {
-    // 逻辑 B: 时间判断与问候
-    const now = new Date();
-    const hour = now.getHours();
-    let greeting = "";
+// main.js — Apple-style interactions
 
-    if (hour >= 5 && hour < 11) greeting = "早上好！☀️";
-    else if (hour >= 11 && hour < 13) greeting = "中午好！🍽️";
-    else if (hour >= 13 && hour < 18) greeting = "下午好！☕";
-    else if (hour >= 18 && hour < 22) greeting = "晚上好！🌙";
-    else greeting = "夜深了，注意休息哦！🌃";
-
-    showToast(`${greeting} 正在为您唤起邮件客户端...`);
+// 1. Email card greeting
+(function () {
+  var link = document.querySelector('a[href^="mailto:"]');
+  if (!link) return;
+  link.addEventListener("click", function () {
+    var h = new Date().getHours();
+    var g =
+      h >= 5 && h < 11
+        ? "早上好！☀️"
+        : h >= 11 && h < 13
+          ? "中午好！🍽️"
+          : h >= 13 && h < 18
+            ? "下午好！☕"
+            : h >= 18 && h < 22
+              ? "晚上好！🌙"
+              : "夜深了，注意休息哦！🌃";
+    showToast(g + " 正在为您唤起邮件客户端...");
   });
-} else {
-  console.warn(
-    '邮件链接元素未找到：a[href^="mailto:"] — 未绑定点击音效/问候逻辑。',
+})();
+
+// 2. Scroll-reveal for .reveal elements
+(function () {
+  var items = document.querySelectorAll(".reveal");
+  if (!items.length) return;
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 },
   );
-}
 
-// =========================================================
-// 2. 实时时间
-// =========================================================
-(function () {
-  const timeElement = document.getElementById("local-time");
-  if (!timeElement) return;
-
-  function updateTime() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, "0");
-    const m = String(now.getMinutes()).padStart(2, "0");
-    const s = String(now.getSeconds()).padStart(2, "0");
-    timeElement.textContent = `${h}:${m}:${s}`;
-  }
-
-  const timer = setInterval(updateTime, 1000);
-  updateTime();
-
-  window.addEventListener("beforeunload", () => clearInterval(timer));
-})();
-
-// =========================================================
-// 3. 鼠标停止检测
-// =========================================================
-(function () {
-  const els = document.querySelectorAll(".card-social");
-  els.forEach((el) => {
-    let timer = null;
-    el.addEventListener("mousemove", () => {
-      if (timer) clearTimeout(timer);
-      if (el.classList.contains("stopped")) el.classList.remove("stopped");
-      timer = setTimeout(() => {
-        el.classList.add("stopped");
-      }, 600);
-    });
-    el.addEventListener("mouseleave", () => {
-      if (timer) {
-        clearTimeout(timer);
-        timer = null;
-      }
-      el.classList.remove("stopped");
-    });
-    // 支持键盘焦点触发
-    el.setAttribute("tabindex", "0");
-    el.addEventListener("focus", () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => el.classList.add("stopped"), 600);
-    });
-    el.addEventListener("blur", () => {
-      if (timer) {
-        clearTimeout(timer);
-        timer = null;
-      }
-      el.classList.remove("stopped");
-    });
+  items.forEach(function (el) {
+    observer.observe(el);
   });
 })();
 
-// =========================================================
-// 4. 高级 3D 视差悬停特效
-// =========================================================
-document.addEventListener("DOMContentLoaded", function () {
-  const cards = document.querySelectorAll(".card:not(.card-social-container)");
+// 3. Back-to-top button
+(function () {
+  var btn = document.createElement("button");
+  btn.className = "back-to-top";
+  btn.setAttribute("aria-label", "回到顶部");
+  btn.innerHTML = '<i class="ri-arrow-up-line"></i>';
+  document.body.appendChild(btn);
 
-  cards.forEach((card) => {
-    card.addEventListener("mousemove", (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const limit = 8;
-      const rotateX = -((y - centerY) / centerY) * limit;
-      const rotateY = ((x - centerX) / centerX) * limit;
-
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    });
-
-    card.addEventListener("mouseenter", () => {
-      card.style.transition = "none";
-    });
-
-    card.addEventListener("mouseleave", () => {
-      card.style.transition = "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)";
-      card.style.transform =
-        "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
-    });
+  btn.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
-});
+
+  var ticking = false;
+  window.addEventListener("scroll", function () {
+    if (!ticking) {
+      requestAnimationFrame(function () {
+        btn.classList.toggle("visible", window.scrollY > 400);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+})();
