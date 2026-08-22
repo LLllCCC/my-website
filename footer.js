@@ -5,8 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     '<footer class="site-footer">' +
     '<p>© ' + year + ' Yopo. Designed with Apple Style.</p>' +
     '<p class="footer-links">' +
-    '<a href="/index.html">首页</a> | ' +
-    '<a href="/blog.html">博客</a>' +
+    '<a href="/index.html">首页</a>' +
     '</p>' +
     '</footer>';
 

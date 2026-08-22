@@ -1,5 +1,5 @@
 // =========================================================
-// 1. Email 卡片点击监听 (保持不变)
+// 1. Email 卡片点击监听
 // =========================================================
 const mailtoLink = document.querySelector('a[href^="mailto:"]');
 if (mailtoLink) {
@@ -24,7 +24,7 @@ if (mailtoLink) {
 }
 
 // =========================================================
-// 3. 实时时间 (保持不变)
+// 2. 实时时间
 // =========================================================
 (function () {
   const timeElement = document.getElementById("local-time");
@@ -45,11 +45,7 @@ if (mailtoLink) {
 })();
 
 // =========================================================
-// 4. 深色模式切换由 nav.js 负责，避免重复绑定
-// =========================================================
-
-// =========================================================
-// 5. 鼠标停止检测 (保持不变)
+// 3. 鼠标停止检测
 // =========================================================
 (function () {
   const els = document.querySelectorAll(".card-social");
@@ -86,67 +82,10 @@ if (mailtoLink) {
 })();
 
 // =========================================================
-// 🌟 核心修改：C 计划 - API 自动对接逻辑 + 3D 卡片特效
+// 4. 高级 3D 视差悬停特效
 // =========================================================
-document.addEventListener("DOMContentLoaded", async function () {
-  // 你的 API 地址
-  try {
-    console.log("正在尝试连接 API:", CONFIG.POSTS_URL);
-
-    // 1. 发起请求
-    const response = await fetch(CONFIG.POSTS_URL);
-
-    // 2. 检查响应
-    if (!response.ok) {
-      throw new Error(`网络错误: ${response.status}`);
-    }
-
-    // 3. 解析 JSON 数据
-    const posts = await response.json();
-    console.log("成功获取文章数据:", posts);
-
-    // 4. 如果有数据，取出最新的一篇（通常是数组第一个，或者按日期排序）
-    if (posts && posts.length > 0) {
-      // 简单排序：确保显示日期最新的那一篇
-      // (假设 date 格式是 'YYYY-MM-DD')
-      posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      const latestPost = posts[0]; // 取出排序后的第一篇
-
-      // 5. 更新网页元素
-      const card = document.getElementById("home-blog-card");
-      const title = document.getElementById("home-blog-title");
-      const desc = document.getElementById("home-blog-desc");
-      // 如果你有给卡片加链接的需求，可以把下面这行解开
-      // const link = document.getElementById("home-blog-link");
-
-      if (card && title && desc) {
-        // 更新标题
-        title.textContent = latestPost.title;
-        // 更新简介
-        desc.textContent = latestPost.description;
-        // 更新背景图
-        if (latestPost.cover) {
-          card.style.backgroundImage = `url('${latestPost.cover}')`;
-        }
-        // 更新链接跳转 (如果有)
-        // if (link) link.href = latestPost.link;
-
-        console.log("首页卡片已更新为:", latestPost.title);
-      }
-    } else {
-      console.warn("API 返回了空数组");
-    }
-  } catch (error) {
-    console.error("无法获取博客数据:", error);
-    // 可选：如果失败，显示一个 Toast 提示
-    // showToast("博客数据加载失败，请检查后端服务");
-  }
-
-  // =========================================================
-  // 8. 高级 3D 视差悬停特效 (保持不变)
-  // =========================================================
-  const cards = document.querySelectorAll(".card:not(.card-social-container):not(.blog-post-card):not(.article-card):not(.post-content):not(.article-content)");
+document.addEventListener("DOMContentLoaded", function () {
+  const cards = document.querySelectorAll(".card:not(.card-social-container)");
 
   cards.forEach((card) => {
     card.addEventListener("mousemove", (e) => {

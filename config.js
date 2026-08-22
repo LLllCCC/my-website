@@ -1,7 +1,5 @@
 // 全站统一配置
 var CONFIG = {
-  API_BASE: "https://yopoo.888431.xyz/api",
-  POSTS_URL: "https://yopoo.888431.xyz/api/posts",
   SITE_NAME: "Yopo",
   SITE_URL: "https://yopo.888431.xyz",
 };
