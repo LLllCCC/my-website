@@ -4,31 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Yopo 的主页</title>
+    <title>Yopo 的主页 - Web 开发与生活随笔</title>
     <meta
       name="description"
-      content="你好，我是 Yopo。一名热爱 Web 开发的探索者。"
+      content="你好，我是 Yopo。分享 HTML/CSS 前端开发、Docker 运维教程以及生活中的思维碎片。"
     />
-    <meta name="keywords" content="Yopo, 个人主页, Web 开发" />
+    <meta name="keywords" content="Yopo, 个人主页, Web 开发, Docker 教程" />
     <meta name="author" content="Yopo" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yopo.888431.xyz/" />
-    <meta property="og:title" content="Yopo 的主页" />
+    <meta property="og:title" content="Yopo 的主页 - 创意无限，代码不止" />
     <meta
       property="og:description"
-      content="基于 Apple Style 打造的极简个人主页。"
+      content="基于 Apple Style 打造的极简个人便当盒主页。"
     />
     <meta
       property="og:image"
       content="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/map.jpg"
     />
 
-    <link
-      rel="icon"
-      href="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg"
-      type="image/jpeg"
-    />
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" type="image/jpeg" />
 
     <link
       href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css"
@@ -36,79 +32,113 @@
     />
 
     <script src="theme-init.js"></script>
-    <link rel="stylesheet" href="style.css" />
+
+    <link rel="stylesheet" href="style.css?v=3" />
   </head>
 
-  <body>
+  <body class="index-page">
     <div id="global-nav"></div>
 
-    <main>
-      <!-- Hero -->
-      <section class="hero" id="hero">
-        <div class="hero-content">
-          <h1 class="hero-title fade-up" style="--delay: 0.15s">
-            创意无限，<br />代码不止。
-          </h1>
-          <p class="hero-subtitle fade-up" style="--delay: 0.35s">
-            你好，我是 Yopo。一名热爱 Web 开发的探索者
-          </p>
-          <div class="hero-avatar-wrap fade-up" style="--delay: 0.55s">
-            <img
-              src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg"
-              alt="Yopo"
-              class="hero-avatar"
-            />
+    <main class="container">
+      <div class="grid">
+        <div id="home" class="card card-hero fade-in delay-01">
+          <div class="hero-text">
+            <h1>创意无限，<br />代码不止。</h1>
+            <p>你好，我是 Yopo。一名热爱 Web 开发的探索者</p>
           </div>
+          <img src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" alt="Yopo's Avatar" class="avatar" />
         </div>
-        <div class="scroll-indicator fade-up" style="--delay: 0.75s">
-          <i class="ri-arrow-down-line"></i>
-        </div>
-      </section>
 
-      <!-- Cards -->
-      <section class="cards-section" id="cards">
-        <div class="cards-grid">
+        <div class="card card-social-container fade-in delay-02">
           <a
             href="https://github.com/LLllCCC"
             target="_blank"
-            rel="noopener"
-            class="bento-card reveal"
+            class="card-social-flip"
           >
-            <i class="ri-github-fill card-icon"></i>
-            <div class="card-body">
-              <div class="card-title">GitHub</div>
-              <div class="card-desc">@LLllCCC</div>
+            <div class="flip-front">
+              <i class="ri-github-fill"></i>
+              <span>GitHub</span>
             </div>
-          </a>
-
-          <a href="mailto:z.daisy-cn@foxmail.com" class="bento-card reveal">
-            <i class="ri-mail-send-fill card-icon"></i>
-            <div class="card-body">
-              <div class="card-title">Email</div>
-              <div class="card-desc">z.daisy-cn@foxmail.com</div>
+            <div class="flip-back">
+              <img
+                src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/github-back.jpg"
+                alt="Avatar"
+                class="mini-avatar"
+              />
+              <span>LLllCCC</span>
             </div>
           </a>
         </div>
-      </section>
 
-      <!-- Friends -->
-      <section class="friends-section reveal">
-        <span class="friends-label">友情链接</span>
-        <div class="friends-links">
-          <a href="https://github.com" target="_blank" rel="noopener"
-            >GitHub</a
+        <div class="card card-social-container fade-in delay-03">
+          <a
+            href="mailto:z.daisy-cn@foxmail.com"
+            class="card-social-flip email-card"
           >
-          <span class="dot">·</span>
-          <a href="https://www.cloudflare.com" target="_blank" rel="noopener"
-            >Cloudflare</a
-          >
+            <div class="flip-front">
+              <i class="ri-mail-send-fill"></i>
+              <span>Email</span>
+            </div>
+            <div class="flip-back email-back">
+              <i class="ri-at-line email-back-icon"></i>
+              <span class="email-back-note">点击此卡片发送Email</span>
+              <span class="email-back-address">z.daisy-cn<br />@foxmail.com</span>
+            </div>
+          </a>
         </div>
-      </section>
 
-      <!-- Footer -->
-      <footer class="site-footer">
-        <p>&copy; 2026 Yopo. Designed with Apple Style.</p>
-      </footer>
+        <div
+          id="my-projects"
+          class="card card-project fade-in bg-project-3 delay-04"
+        >
+          <div class="project-info">
+            <div class="project-title">个人网站项目</div>
+            <div class="project-desc">基于 Cloudflare Pages 部署</div>
+          </div>
+        </div>
+
+        <div id="skills" class="card card-skills fade-in delay-07">
+          <div class="project-title project-title--mb">技术栈</div>
+          <div class="project-desc">我目前正在使用的工具</div>
+          <div class="skill-tags">
+            <span class="tag">HTML5</span>
+            <span class="tag">CSS3</span>
+            <span class="tag">Git</span>
+            <span class="tag">VS Code</span>
+            <span class="tag">Cloudflare</span>
+            <span class="tag">GitHub Desktop</span>
+          </div>
+        </div>
+
+        <div class="card card-timeline fade-in delay-06">
+          <div class="project-title project-title--mb">学习之路</div>
+          <div class="timeline-list">
+            <div class="timeline-item">
+              <span class="timeline-date">2025.12</span>
+              <span class="timeline-text">搭建第一个个人网站</span>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-date">2026.01</span>
+              <span class="timeline-text">学习 Docker 部署与 API 开发</span>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-date">2026.05</span>
+              <span class="timeline-text">持续迭代优化中</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-friends fade-in delay-06">
+          <div class="project-title project-title--mb">友情链接</div>
+          <div class="friends-list">
+            <a href="https://github.com" target="_blank" rel="noopener" class="friend-link">GitHub</a>
+            <a href="https://www.cloudflare.com" target="_blank" rel="noopener" class="friend-link">Cloudflare</a>
+          </div>
+        </div>
+      </div>
+
+      <div id="global-footer"></div>
+      <script src="/footer.js" defer></script>
     </main>
 
     <script src="/config.js" defer></script>
