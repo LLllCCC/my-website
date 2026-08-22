@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "generate-posts": "python scripts/generate_posts.py",
-    "precommit": "npm run generate-posts"
+    "generate-posts": "python scripts/generate_posts.py"
   }
 }
