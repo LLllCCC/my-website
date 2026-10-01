@@ -12,38 +12,49 @@
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" type="image/jpeg">
     <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet">
     <script src="theme-init.js"></script>
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 
 <div id="global-nav"></div>
 
-    <main class="container blog-container">
-        
-        <div class="blog-header fade-in">
-            <h1>思维碎片</h1>
-            <p>记录代码旅程与生活点滴。</p>
-        </div>
+    <main class="container blog-container blog-page">
+        <header class="blog-hero fade-in">
+            <div class="blog-eyebrow"><span class="blog-eyebrow-mark"></span> YOPO · NOTES</div>
+            <h1>思维碎片<span>。</span></h1>
+            <p>关于代码、设计与日常的记录。<br class="blog-mobile-break">慢慢写，慢慢积累。</p>
+            <div class="blog-hero-foot">
+                <span class="blog-hero-rule" aria-hidden="true"></span>
+                <span>随笔与开发记录</span>
+                <span class="blog-hero-total"><strong id="blog-total-count">—</strong> 篇文章</span>
+            </div>
+        </header>
 
-        <div class="search-container fade-in">
-            <i class="ri-search-line search-icon" aria-hidden="true"></i>
-            <input type="text" id="blog-search" class="search-input" placeholder="搜索文章标题或内容..." aria-label="搜索文章标题或内容">
-        </div>
+        <section class="blog-library fade-in" aria-label="博客文章">
+            <div class="blog-toolbar">
+                <label class="blog-search">
+                    <i class="ri-search-line" aria-hidden="true"></i>
+                    <input type="search" id="blog-search" placeholder="搜索标题或摘要…" aria-label="搜索文章标题或摘要">
+                    <span class="blog-search-hint" aria-hidden="true">⌕</span>
+                </label>
+                <p class="blog-list-status" id="blog-result-count" role="status" aria-live="polite">正在载入文章</p>
+            </div>
 
-        <div class="tag-cloud" id="tag-cloud"></div>
+            <div class="tag-cloud" id="tag-cloud" aria-label="按标签筛选"></div>
 
-        <div class="article-list" id="dynamic-article-list">
-            <p class="blog-empty-state" role="status" aria-live="polite">正在加载中... 🚀</p>
-        </div>
+            <div class="article-list" id="dynamic-article-list">
+                <p class="blog-empty-state" role="status" aria-live="polite">正在加载文章…</p>
+            </div>
+        </section>
 
         <div id="global-footer"></div>
-        <script src="/footer.js" defer></script>
+        <script src="/footer.js?v=3" defer></script>
     </main>
 
     <script src="/config.js?v=3" defer></script>
     <script src="/nav.js" defer></script>
     <script src="main.js" defer></script>
 
-    <script src="/blog.js?v=1" defer></script>
+    <script src="/blog.js?v=2" defer></script>
 </body>
 </html>

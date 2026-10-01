@@ -80,3 +80,36 @@ if (canTiltCards) {
     });
   });
 }
+
+// 首页博客卡片始终展示最近发布文章的标题和封面。
+document.addEventListener("DOMContentLoaded", async function () {
+  const card = document.getElementById("home-blog-card");
+  if (!card || !window.CONFIG) return;
+  try {
+    const response = await fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } });
+    if (!response.ok) return;
+    const posts = await response.json();
+    if (!Array.isArray(posts) || !posts.length) return;
+    const newest = posts.filter((post) => post && post.id != null).sort((a, b) => {
+      const dateDiff = (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0);
+      return dateDiff || Number(b.id) - Number(a.id);
+    })[0];
+    if (!newest) return;
+
+    const title = document.getElementById("home-blog-title");
+    const desc = document.getElementById("home-blog-desc");
+    if (title && typeof newest.title === "string" && newest.title.trim()) title.textContent = newest.title;
+    if (desc) desc.textContent = typeof newest.description === "string" && newest.description.trim() && newest.description !== newest.title
+      ? newest.description
+      : "最新发布 · 点击阅读全文";
+    if (typeof newest.cover === "string" && newest.cover.trim()) {
+      const coverUrl = new URL(newest.cover, window.location.href);
+      if (coverUrl.protocol === "https:" || coverUrl.protocol === "http:") {
+        card.style.backgroundImage = "url(" + JSON.stringify(coverUrl.href) + ")";
+      }
+    }
+    card.setAttribute("aria-label", "打开最新博客文章：" + (newest.title || "博客"));
+  } catch (error) {
+    console.warn("首页博客卡片未能更新:", error);
+  }
+});

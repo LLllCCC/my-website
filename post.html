@@ -19,7 +19,7 @@
 
     <script src="theme-init.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=10" />
+    <link rel="stylesheet" href="style.css?v=13" />
     <script src="https://cdn.staticfile.net/marked/4.3.0/marked.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
   </head>
@@ -27,22 +27,30 @@
     <div id="global-nav"></div>
 
     <main>
-      <article class="container" role="main">
-      <div class="blog-header">
-        <h1 id="article-title">加载中...</h1>
-        <p id="article-meta" class="post-meta"></p>
-      </div>
+      <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
+      <article class="article-page" role="main">
+        <header class="article-hero">
+          <a class="article-back" href="/blog.html">← 返回博客</a>
+          <p class="article-eyebrow">YOPO · JOURNAL</p>
+          <h1 id="article-title">加载中...</h1>
+          <div class="article-meta-row">
+            <time id="article-date"></time><span class="article-meta-dot">·</span>
+            <span id="article-read-time">阅读时间计算中</span>
+            <span id="article-tags" class="article-tag-list"></span>
+          </div>
+        </header>
 
-      <div class="article-layout">
-        <aside class="article-toc" id="article-toc"></aside>
-        <div class="article-main">
-          <div id="article-body" class="post-content"></div>
+        <div class="article-layout">
+          <aside class="article-toc" id="article-toc"></aside>
+          <div class="article-main">
+            <div id="article-body" class="post-content"></div>
           <div id="article-comments">
             <div class="comments-title">评论</div>
             <div class="giscus"></div>
           </div>
         </div>
-      </div>
+          </div>
+        </div>
       </article>
       <div id="global-footer"></div>
     </main>
@@ -50,7 +58,7 @@
     <script src="/footer.js" defer></script>
     <script src="/config.js?v=3" defer></script>
     <script src="/nav.js" defer></script>
-    <script src="post.js?v=1" defer></script>
+    <script src="post.js?v=2" defer></script>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
