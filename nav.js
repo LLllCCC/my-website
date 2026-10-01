@@ -12,8 +12,8 @@ function loadNavbar() {
     '    </div>' +
     '    <div class="nav-links">' +
     '      <div class="menu-wrapper">' +
-    '        <button class="logo-icon" id="menu-btn" type="button" aria-label="菜单">' + menuIcon + '</button>' +
-    '        <div class="nav-dropdown" id="nav-dropdown">' +
+    '        <button class="logo-icon" id="menu-btn" type="button" aria-label="菜单" aria-expanded="false" aria-controls="nav-dropdown">' + menuIcon + '</button>' +
+    '        <div class="nav-dropdown" id="nav-dropdown" aria-hidden="true" inert>' +
     '          <a href="/index.html" class="nav-dropdown-link">主页</a>' +
     '        </div>' +
     '      </div>' +
@@ -35,14 +35,32 @@ function loadNavbar() {
   var dropdown = document.getElementById("nav-dropdown");
 
   if (menuBtn && dropdown) {
+    var closeMenu = function () {
+      dropdown.classList.remove("open");
+      dropdown.setAttribute("aria-hidden", "true");
+      dropdown.setAttribute("inert", "");
+      menuBtn.setAttribute("aria-expanded", "false");
+    };
+
     menuBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      dropdown.classList.toggle("open");
+      var isOpen = dropdown.classList.toggle("open");
+      dropdown.setAttribute("aria-hidden", (!isOpen).toString());
+      if (isOpen) dropdown.removeAttribute("inert");
+      else dropdown.setAttribute("inert", "");
+      menuBtn.setAttribute("aria-expanded", isOpen.toString());
     });
 
     document.addEventListener("click", function (e) {
       if (!dropdown.contains(e.target) && e.target !== menuBtn) {
-        dropdown.classList.remove("open");
+        closeMenu();
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && dropdown.classList.contains("open")) {
+        closeMenu();
+        menuBtn.focus();
       }
     });
   }
@@ -61,7 +79,11 @@ function loadNavbar() {
       var currentTheme = document.documentElement.getAttribute("data-theme");
       var newTheme = currentTheme === "light" ? "dark" : "light";
       document.documentElement.setAttribute("data-theme", newTheme);
-      localStorage.setItem("theme", newTheme);
+      try {
+        localStorage.setItem("theme", newTheme);
+      } catch (error) {
+        // Theme still changes for this visit when storage is unavailable.
+      }
       updateToggleState();
     });
   }

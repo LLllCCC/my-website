@@ -10,6 +10,12 @@
   --accent-color: #29a5ff;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 [data-theme="light"] {
   --bg-color: #98f5f9;
   --card-bg: rgba(255, 255, 255, 0.7);
@@ -182,7 +188,10 @@ nav {
   padding: 30px;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-color);
@@ -205,6 +214,68 @@ nav {
 .card:hover {
   transform: translateY(-8px);
   background-color: var(--card-hover);
+}
+
+.card-motion-web {
+  grid-column: span 2;
+  min-height: 280px;
+  justify-content: space-between;
+  overflow: hidden;
+  color: #f6f1e7;
+  text-decoration: none;
+  background:
+    radial-gradient(ellipse at 84% 18%, rgba(215, 104, 47, 0.62), transparent 34%),
+    linear-gradient(135deg, #1b211e 0%, #101411 58%, #25241e 100%);
+  border-color: rgba(236, 204, 163, 0.2);
+}
+.card-motion-web::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(245, 229, 199, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 229, 199, 0.08) 1px, transparent 1px);
+  background-size: 30px 30px;
+  mask-image: linear-gradient(110deg, #000 0%, transparent 88%);
+  pointer-events: none;
+}
+.motion-web-index,
+.motion-web-title,
+.motion-web-description,
+.motion-web-arrow {
+  position: relative;
+  z-index: 1;
+}
+.motion-web-index {
+  color: #d3ae83;
+  font: 0.68rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.13em;
+}
+.motion-web-title {
+  margin-top: 28px;
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+.motion-web-description {
+  color: rgba(246, 241, 231, 0.76);
+  font-size: 0.92rem;
+}
+.motion-web-arrow {
+  position: absolute;
+  right: 28px;
+  bottom: 24px;
+  color: #edb17e;
+  font-size: 1.6rem;
+  transition: transform 0.25s ease;
+}
+.card-motion-web:hover .motion-web-arrow,
+.card-motion-web:focus-visible .motion-web-arrow {
+  transform: translate(4px, -4px);
+}
+.card-motion-web:focus-visible {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 4px;
 }
 
 /* --- 5. 鑻遍泟鍗＄墖 --- */
@@ -244,25 +315,6 @@ nav {
 .card-social i {
   font-size: 3.5rem;
   color: var(--text-primary);
-}
-
-.card-social.stopped i {
-  animation: social-pulse 1.2s ease-in-out infinite;
-  transform-origin: center;
-}
-@keyframes social-pulse {
-  0% {
-    transform: translateY(0) scale(1);
-    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
-  }
-  50% {
-    transform: translateY(-8px) scale(1.06);
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.25));
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
-  }
 }
 
 /* --- 7. 椤圭洰鍗＄墖 --- */
@@ -1500,7 +1552,41 @@ body.index-page .grid {
 /* --- 3D 鍗＄墖楂樺厜鎵厜 --- */
 .card {
   transform-style: preserve-3d;
-  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .card.is-tilting {
+    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg))
+      rotateY(var(--tilt-y, 0deg)) scale3d(1.02, 1.02, 1.02);
+    transition: none;
+  }
+
+  .card:hover {
+    will-change: transform;
+  }
+}
+
+.logo-icon:focus-visible,
+.nav-theme-toggle:focus-visible,
+.back-to-top:focus-visible,
+.card-social-flip:focus-visible {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .card::after {

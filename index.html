@@ -13,7 +13,7 @@
     <meta name="author" content="Yopo" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yopo.888431.xyz/" />
+    <meta property="og:url" content="https://yopoo.888431.xyz/" />
     <meta property="og:title" content="Yopo 的主页 - 创意无限，代码不止" />
     <meta
       property="og:description"
@@ -31,9 +31,9 @@
       rel="stylesheet"
     />
 
-    <script src="theme-init.js"></script>
+    <script src="theme-init.js?v=2"></script>
 
-    <link rel="stylesheet" href="style.css?v=3" />
+    <link rel="stylesheet" href="style.css?v=4" />
   </head>
 
   <body class="index-page">
@@ -53,6 +53,7 @@
           <a
             href="https://github.com/LLllCCC"
             target="_blank"
+            rel="noopener noreferrer"
             class="card-social-flip"
           >
             <div class="flip-front">
@@ -62,7 +63,7 @@
             <div class="flip-back">
               <img
                 src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/github-back.jpg"
-                alt="Avatar"
+                alt="个人头像"
                 class="mini-avatar"
               />
               <span>LLllCCC</span>
@@ -96,6 +97,32 @@
             <div class="project-desc">基于 Cloudflare Pages 部署</div>
           </div>
         </div>
+
+        <a
+          id="home-blog-card"
+          class="card card-blog fade-in delay-05"
+          href="/blog.html"
+          aria-label="打开 Yopo 的博客"
+        >
+          <div class="project-info">
+            <div class="project-title">思维碎片</div>
+            <div class="project-desc">记录代码旅程与生活点滴</div>
+            <div class="home-blog-badge-wrap">
+              <span class="home-blog-badge">阅读博客 ↗</span>
+            </div>
+          </div>
+        </a>
+
+        <a
+          class="card card-motion-web fade-in delay-05"
+          href="/motion-web/cases/"
+          aria-label="打开 Motion Web 动效案例展示"
+        >
+          <span class="motion-web-index" aria-hidden="true">07 / INTERACTIVE STUDIES</span>
+          <span class="motion-web-title">Motion<br />is material.</span>
+          <span class="motion-web-description">七个可交互的动效实验 · 点击探索</span>
+          <span class="motion-web-arrow" aria-hidden="true">↗</span>
+        </a>
 
         <div id="skills" class="card card-skills fade-in delay-07">
           <div class="project-title project-title--mb">技术栈</div>
@@ -138,11 +165,11 @@
       </div>
 
       <div id="global-footer"></div>
-      <script src="/footer.js" defer></script>
+      <script src="/footer.js?v=2" defer></script>
     </main>
 
-    <script src="/config.js" defer></script>
-    <script src="/nav.js" defer></script>
-    <script src="main.js" defer></script>
+    <script src="/config.js?v=3" defer></script>
+    <script src="/nav.js?v=2" defer></script>
+    <script src="main.js?v=2" defer></script>
   </body>
 </html>

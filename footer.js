@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // 回到顶部按钮
   var topBtn = document.createElement("button");
   topBtn.className = "back-to-top";
+  topBtn.type = "button";
   topBtn.setAttribute("aria-label", "回到顶部");
   topBtn.innerHTML = '<i class="ri-arrow-up-line"></i>';
   document.body.appendChild(topBtn);

@@ -39,5 +39,6 @@ for p in files:
     posts.append(post)
 
 # write
+POSTS_DIR.mkdir(parents=True, exist_ok=True)
 OUT_FILE.write_text(json.dumps(posts, ensure_ascii=False, indent=2), encoding='utf-8')
 print(f'Wrote {len(posts)} posts to {OUT_FILE}')

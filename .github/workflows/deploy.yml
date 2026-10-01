@@ -11,13 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 远程连接服务器并更新
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
         with:
           host: ${{ secrets.SERVER_IP }}
-          username: root
-          password: ${{ secrets.SERVER_PASSWORD }}
-          # 这一行就是你平时手动敲的命令，现在由机器人代劳
+          username: ${{ vars.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: DEPLOY_PATH
+          script_stop: true
           script: |
-            cd /root/myweb
-            git pull
-            docker restart my-nginx
+            set -eu
+            test -n "$DEPLOY_PATH"
+            cd -- "$DEPLOY_PATH"
+            git pull --ff-only
+            sudo -n /usr/bin/docker restart my-nginx

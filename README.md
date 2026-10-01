@@ -20,4 +20,18 @@
 
 ## 📸 预览地址
 
-🔗 [yopo.888431.xyz](https://yopo.888431.xyz)
+🔗 [yopoo.888431.xyz](https://yopoo.888431.xyz)
+
+## Motion Web 案例
+
+主页的 Motion Web 卡片会打开 `motion-web/cases/` 下的七个交互案例。案例来自
+[feitangyuan/motion-web](https://github.com/feitangyuan/motion-web)，依照
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) 标注来源，仅限非商业使用；详情见
+`motion-web/ATTRIBUTION.md`。
+
+## 自动部署配置
+
+`.github/workflows/deploy.yml` 使用固定版本的 SSH Action 和专用部署账号。GitHub Actions
+需要仓库变量 `SERVER_USER`、`DEPLOY_PATH`，以及密钥 `SERVER_IP`、`SERVER_SSH_KEY`。
+服务器上的账号需要能更新该目录，并且只能通过 sudo 执行 `docker restart my-nginx`。
+首次启用前需在服务器上创建并配置这个账号；工作流不会继续使用 root 密码。

@@ -1,7 +1,9 @@
 // 全站统一配置
 var CONFIG = {
+  API_BASE: "/api",
+  POSTS_URL: "/api/posts",
   SITE_NAME: "Yopo",
-  SITE_URL: "https://yopo.888431.xyz",
+  SITE_URL: "https://yopoo.888431.xyz",
 };
 
 // HTML 转义 —— 防止 XSS 攻击

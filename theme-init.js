@@ -2,6 +2,8 @@
 (function(){
     try{
         const t = localStorage.getItem('theme');
-        if (t) document.documentElement.setAttribute('data-theme', t);
+        if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-theme', t);
+        }
     }catch(e){ /* ignore */ }
 })();
