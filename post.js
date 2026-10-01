@@ -37,6 +37,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     var markdownRaw = post.content || "这篇文章还没有正文内容哦。";
+    var coverFromBody = findFirstMarkdownImage(markdownRaw);
+    var coverUrl = safeImageUrl(post.cover) || (coverFromBody && safeImageUrl(coverFromBody.url));
+    var cover = document.getElementById("article-cover");
+    if (cover && coverUrl) {
+      cover.src = coverUrl;
+      cover.alt = (post.title || "文章") + " 封面";
+      cover.hidden = false;
+    }
+    if (coverFromBody && coverFromBody.standalone) {
+      markdownRaw = markdownRaw.replace(coverFromBody.line, "");
+    }
+    markdownRaw = convertBareImageLinks(markdownRaw);
     var count = (markdownRaw.match(/[\u3400-\u9fff]/g) || []).length +
       (markdownRaw.match(/[A-Za-z0-9]+/g) || []).length;
     var minutes = Math.max(1, Math.ceil(count / 450));
@@ -55,6 +67,47 @@ document.addEventListener("DOMContentLoaded", async function () {
     showMessage("文章加载失败，请稍后重试；如果问题持续，请检查博客服务是否运行。");
   }
 });
+
+function safeImageUrl(value) {
+  if (typeof value !== "string" || !value.trim()) return "";
+  try {
+    var url = new URL(value.trim(), window.location.href);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+  } catch (_) {
+    return "";
+  }
+}
+
+function isImageUrl(value) {
+  try {
+    var pathname = new URL(value, window.location.href).pathname;
+    return /\.(?:avif|gif|jpe?g|png|svg|webp|bmp)$/i.test(pathname);
+  } catch (_) {
+    return false;
+  }
+}
+
+function findFirstMarkdownImage(markdown) {
+  var lines = markdown.split(/\r?\n/);
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    var markdownMatch = line.match(/^!\[[^\]]*\]\(<?(https?:\/\/[^\s)>]+)>?(?:\s+[^)]*)?\)$/i);
+    if (markdownMatch) return { url: markdownMatch[1], line: lines[i], standalone: true };
+    var bareMatch = line.match(/^(https?:\/\/\S+)$/i);
+    if (bareMatch && isImageUrl(bareMatch[1])) return { url: bareMatch[1], line: lines[i], standalone: true };
+  }
+  var inline = markdown.match(/!\[[^\]]*\]\(<?(https?:\/\/[^\s)>]+)>?(?:\s+[^)]*)?\)/i);
+  return inline ? { url: inline[1], line: "", standalone: false } : null;
+}
+
+function convertBareImageLinks(markdown) {
+  return markdown.split(/\r?\n/).map(function (line) {
+    var trimmed = line.trim();
+    var match = trimmed.match(/^(https?:\/\/\S+)$/i);
+    if (!match || !isImageUrl(match[1])) return line;
+    return "![](" + match[1] + ")";
+  }).join("\n");
+}
 
 function buildTOC(articleBody) {
   var tocContainer = document.getElementById("article-toc");
