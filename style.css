@@ -1,13 +1,13 @@
 ﻿/* --- 1. 鍙橀噺涓庝富棰樺畾涔?(娓呮柊钃?#98F5F9) --- */
 :root {
-  --bg-color: #000000;
-  --card-bg: #1c1c1e;
+  --bg-color: #08090b;
+  --card-bg: #17181b;
   --card-hover: #2c2c2e;
   --text-primary: #f5f5f7;
-  --text-secondary: #86868b;
-  --nav-bg: rgba(0, 0, 0, 0.3);
-  --border-color: rgba(255, 255, 255, 0.1);
-  --accent-color: #29a5ff;
+  --text-secondary: #a1a1a8;
+  --nav-bg: rgba(8, 9, 11, 0.82);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --accent-color: #58b5ff;
 }
 
 *,
@@ -17,19 +17,21 @@
 }
 
 [data-theme="light"] {
-  --bg-color: #98f5f9;
-  --card-bg: rgba(255, 255, 255, 0.7);
-  --card-hover: rgba(255, 255, 255, 0.9);
+  color-scheme: light;
+  --bg-color: #eaf6f7;
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-hover: #ffffff;
   --text-primary: #1d1d1f;
-  --text-secondary: #48484a;
-  --nav-bg: rgba(152, 245, 249, 0.3);
-  --border-color: rgba(0, 0, 0, 0.05);
-  --accent-color: #0071d4;
+  --text-secondary: #45535b;
+  --nav-bg: rgba(234, 246, 247, 0.88);
+  --border-color: rgba(21, 46, 55, 0.11);
+  --accent-color: #006ba7;
 }
 
 /* --- 2. 鍩虹甯冨眬 --- */
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 body {
   background-color: var(--bg-color);
@@ -41,6 +43,7 @@ body {
     background-color 0.4s ease,
     color 0.4s ease;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* --- 3. 瀵艰埅鏍?--- */
@@ -56,7 +59,7 @@ nav {
   border-bottom: 1px solid var(--border-color);
 }
 .nav-container {
-  max-width: 980px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -84,6 +87,29 @@ nav {
 }
 .nav-links > button {
   margin-left: 10px;
+}
+
+/* 跳至正文（键盘用户专用的可达性入口，聚焦时才出现） */
+.skip-link {
+  position: fixed;
+  top: -64px;
+  left: 20px;
+  z-index: 200;
+  padding: 12px 20px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 14px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  transition: top 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.skip-link:focus-visible {
+  top: 0;
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
 }
 
 .logo {
@@ -133,7 +159,7 @@ nav {
   position: absolute;
   top: calc(100% + 12px);
   right: 0;
-  min-width: 140px;
+  min-width: 176px;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -162,6 +188,10 @@ nav {
 .nav-dropdown-link:hover {
   background: rgba(128, 128, 128, 0.1);
 }
+.nav-dropdown-link[aria-current="page"] {
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+  color: var(--accent-color);
+}
 .logo a:hover {
   opacity: 0.6;
   color: var(--text-primary);
@@ -172,13 +202,13 @@ nav {
 
 /* --- 4. Bento Grid 鏍稿績绯荤粺 --- */
 .container {
-  max-width: 980px;
+  max-width: 1200px;
   margin: 100px auto 50px;
   padding: 20px;
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -189,9 +219,10 @@ nav {
   display: flex;
   flex-direction: column;
   transition:
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    background-color 0.3s ease,
-    box-shadow 0.3s ease;
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-color);
@@ -212,12 +243,12 @@ nav {
   transition: 0.1s;
 }
 .card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   background-color: var(--card-hover);
 }
 
 .card-motion-web {
-  grid-column: span 2;
+  grid-column: span 6;
   min-height: 280px;
   justify-content: space-between;
   overflow: hidden;
@@ -280,21 +311,20 @@ nav {
 
 /* --- 5. 鑻遍泟鍗＄墖 --- */
 .card-hero {
-  grid-column: span 4;
+  grid-column: span 12;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 50px;
 }
 .hero-text h1 {
-  font-size: 3.5rem;
+  font-size: clamp(3rem, 5vw, 4.6rem);
   font-weight: 700;
+  line-height: 1.08;
   margin: 0;
-  letter-spacing: -2px;
-  background: linear-gradient(to right, var(--text-primary), #888);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.035em;
+  color: var(--text-primary);
+  text-wrap: balance;
 }
 .avatar {
   width: 150px;
@@ -319,7 +349,7 @@ nav {
 
 /* --- 7. 椤圭洰鍗＄墖 --- */
 .card-project {
-  grid-column: span 2;
+  grid-column: span 6;
   min-height: 280px;
   justify-content: flex-end;
   background-size: cover;
@@ -522,14 +552,14 @@ nav {
 .site-footer {
   text-align: center;
   margin-top: 50px;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   padding-bottom: 20px;
 }
 .site-footer .footer-links {
   font-size: 0.8rem;
   margin-top: 5px;
-  opacity: 0.75;
+  opacity: 1;
 }
 .site-footer .footer-links a {
   color: inherit;
@@ -545,6 +575,7 @@ nav {
 
 /* 鑸炲彴瀹瑰櫒 */
 .card-social-container {
+  grid-column: span 3;
   padding: 0;
   border: none;
   background: transparent;
@@ -567,13 +598,10 @@ nav {
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
   cursor: pointer;
   text-decoration: none;
   border-radius: 28px;
-  will-change: transform;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
 }
 
 .card-social-container:hover .card-social-flip,
@@ -658,18 +686,22 @@ nav {
 /* --- 鍗＄墖鎮仠閫昏緫锛氬姩闈欏垎绂?--- */
 
 .card {
-  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
 .card:not(.card-social-container):hover {
-  box-shadow: 0 30px 60px rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.3);
+  border-color: color-mix(in srgb, var(--accent-color), var(--border-color) 58%);
   z-index: 10;
 }
 
 [data-theme="light"] .card:not(.card-social-container):hover {
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 18px 36px rgba(24, 48, 58, 0.13);
+  border-color: color-mix(in srgb, var(--accent-color), var(--border-color) 66%);
 }
 
 .card-social-container:hover {
@@ -1063,7 +1095,7 @@ nav {
 /* --- 椤甸潰涓撶敤鏍峰紡 --- */
 body.index-page .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -1189,7 +1221,7 @@ body.index-page .grid {
 /* --- 棣栭〉鍗氬鍗＄墖 --- */
 
 .card-blog {
-  grid-column: span 2;
+  grid-column: span 6;
   background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/map.jpg");
   background-size: cover;
   background-position: center;
@@ -1476,12 +1508,41 @@ body.index-page .grid {
 
 /* 鎶€鑳藉崱鐗?*/
 .card-skills {
-  grid-column: span 2;
+  grid-column: span 4;
+}
+
+/* 技术栈标签 */
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.skill-tags .tag {
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--text-primary), transparent 95%);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.skill-tags .tag:hover {
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color), transparent 92%);
+  border-color: color-mix(in srgb, var(--accent-color), transparent 55%);
+  transform: translateY(-1px);
 }
 
 /* 鏃堕棿绾?*/
 .card-timeline {
-  grid-column: span 2;
+  grid-column: span 4;
 }
 .timeline-list {
   display: flex;
@@ -1522,7 +1583,7 @@ body.index-page .grid {
 
 /* 鍙嬫儏閾炬帴 */
 .card-friends {
-  grid-column: span 1;
+  grid-column: span 4;
 }
 .friends-list {
   display: flex;
@@ -1599,7 +1660,8 @@ body.index-page .grid {
   }
 
   .card-project,
-  .card-social,
+  .card-social-container,
+  .card-motion-web,
   .card-blog,
   .card-skills,
   .card-friends,
@@ -1815,13 +1877,30 @@ body.index-page .grid {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+  .fade-in {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .avatar {
+    animation: none !important;
+  }
+
+  .card-social-flip,
+  .nav-dropdown,
+  .nav-theme-toggle,
+  .blog-page .blog-post-card,
+  .blog-page .blog-post-link,
+  .back-to-top {
+    transition: none !important;
+  }
+
+  .card:not(.card-social-container):hover,
+  .card.is-tilting,
+  .card-social-container:hover .card-social-flip,
+  .card-social-container:focus-within .card-social-flip {
+    transform: none;
   }
 }
 
@@ -2050,7 +2129,7 @@ body.index-page .grid {
 }
 
 .blog-page .tag-btn {
-  min-height: 34px;
+  min-height: 44px;
   padding: 6px 12px;
   border-color: transparent;
   background: transparent;
@@ -2204,6 +2283,18 @@ body.index-page .grid {
 
 .blog-post-card--cover .blog-post-excerpt {
   color: rgba(255, 255, 255, 0.78);
+}
+
+/* 封面卡片底部是深色渐变，链接固定用白色保证两种主题下都可读 */
+.blog-post-card--cover .blog-post-link {
+  color: #fff;
+  border-top-color: rgba(255, 255, 255, 0.25);
+}
+.blog-post-card--cover .blog-post-link-arrow {
+  color: #fff;
+}
+.blog-post-card--cover .blog-post-link:hover {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .blog-post-link {

@@ -19,7 +19,6 @@ jobs:
           username: ${{ vars.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           envs: DEPLOY_PATH
-          script_stop: true
           script: |
             set -eu
             test -n "$DEPLOY_PATH"
