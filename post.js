@@ -37,16 +37,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     var markdownRaw = post.content || "这篇文章还没有正文内容哦。";
+    markdownRaw = joinWrappedImageUrls(markdownRaw);
     var coverFromBody = findFirstMarkdownImage(markdownRaw);
     var coverUrl = safeImageUrl(post.cover) || (coverFromBody && safeImageUrl(coverFromBody.url));
     var cover = document.getElementById("article-cover");
+    var coverImage = document.getElementById("article-cover-image");
     if (cover && coverUrl) {
-      cover.src = coverUrl;
-      cover.alt = (post.title || "文章") + " 封面";
-      cover.hidden = false;
-    }
-    if (coverFromBody && coverFromBody.standalone) {
-      markdownRaw = markdownRaw.replace(coverFromBody.line, "");
+      coverImage.alt = (post.title || "文章") + " 封面";
+      coverImage.addEventListener("load", function () {
+        cover.querySelector(".article-hero-cover-backdrop").style.backgroundImage = "url(" + JSON.stringify(coverUrl) + ")";
+        cover.hidden = false;
+        enableCoverReposition(cover, coverImage, postId);
+      }, { once: true });
+      coverImage.addEventListener("error", function () { cover.hidden = true; }, { once: true });
+      coverImage.src = coverUrl;
     }
     markdownRaw = convertBareImageLinks(markdownRaw);
     var count = (markdownRaw.match(/[\u3400-\u9fff]/g) || []).length +
@@ -57,6 +61,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (articleBody && window.marked && window.DOMPurify) {
       articleBody.innerHTML = DOMPurify.sanitize(marked.parse(markdownRaw));
+      replaceImageLinks(articleBody);
       buildTOC(articleBody);
       initReadingProgress();
     } else {
@@ -87,6 +92,33 @@ function isImageUrl(value) {
   }
 }
 
+function joinWrappedImageUrls(markdown) {
+  var lines = markdown.split(/\r?\n/);
+  var output = [];
+  for (var i = 0; i < lines.length; i++) {
+    var current = lines[i].trim();
+    if (!/^https?:\/\/\S+$/i.test(current) || isImageUrl(current)) {
+      output.push(lines[i]);
+      continue;
+    }
+    var combined = current;
+    var joined = false;
+    for (var next = i + 1; next < lines.length && next <= i + 4; next++) {
+      var continuation = lines[next].trim();
+      if (!continuation || /^https?:\/\//i.test(continuation)) break;
+      combined += continuation;
+      if (isImageUrl(combined)) {
+        output.push(combined);
+        i = next;
+        joined = true;
+        break;
+      }
+    }
+    if (!joined) output.push(lines[i]);
+  }
+  return output.join("\n");
+}
+
 function findFirstMarkdownImage(markdown) {
   var lines = markdown.split(/\r?\n/);
   for (var i = 0; i < lines.length; i++) {
@@ -97,7 +129,10 @@ function findFirstMarkdownImage(markdown) {
     if (bareMatch && isImageUrl(bareMatch[1])) return { url: bareMatch[1], line: lines[i], standalone: true };
   }
   var inline = markdown.match(/!\[[^\]]*\]\(<?(https?:\/\/[^\s)>]+)>?(?:\s+[^)]*)?\)/i);
-  return inline ? { url: inline[1], line: "", standalone: false } : null;
+  if (inline) return { url: inline[1], line: "", standalone: false };
+  var urls = markdown.match(/https?:\/\/[^\s<>]+/gi) || [];
+  var imageUrl = urls.map(function (url) { return url.replace(/[.,;!?]+$/, ""); }).find(isImageUrl);
+  return imageUrl ? { url: imageUrl, line: "", standalone: false } : null;
 }
 
 function convertBareImageLinks(markdown) {
@@ -107,6 +142,116 @@ function convertBareImageLinks(markdown) {
     if (!match || !isImageUrl(match[1])) return line;
     return "![](" + match[1] + ")";
   }).join("\n");
+}
+
+function replaceImageLinks(articleBody) {
+  articleBody.querySelectorAll("a[href]").forEach(function (link) {
+    var imageUrl = safeImageUrl(link.href);
+    if (!imageUrl || !isImageUrl(imageUrl)) return;
+    var label = link.textContent.trim();
+    var labelIsUrl = /^https?:\/\//i.test(label);
+    var image = document.createElement("img");
+    image.src = imageUrl;
+    image.alt = labelIsUrl ? "文章图片" : label || "文章图片";
+    image.loading = "lazy";
+    image.decoding = "async";
+    link.replaceWith(image);
+  });
+
+  var walker = document.createTreeWalker(articleBody, NodeFilter.SHOW_TEXT, {
+    acceptNode: function (node) {
+      return node.parentElement && !node.parentElement.closest("a, code, pre, script, style") &&
+        /https?:\/\/\S+/i.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+  var textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+  textNodes.forEach(function (node) {
+    var value = node.nodeValue;
+    var pattern = /https?:\/\/[^\s<>"']+/gi;
+    var match;
+    var lastIndex = 0;
+    var fragment = document.createDocumentFragment();
+    var replaced = false;
+    while ((match = pattern.exec(value))) {
+      var candidate = match[0].replace(/[.,;!?]+$/, "");
+      var imageUrl = safeImageUrl(candidate);
+      if (!imageUrl || !isImageUrl(imageUrl)) continue;
+      if (match.index > lastIndex) fragment.appendChild(document.createTextNode(value.slice(lastIndex, match.index)));
+      var image = document.createElement("img");
+      image.src = imageUrl;
+      image.alt = "文章图片";
+      image.loading = "lazy";
+      image.decoding = "async";
+      fragment.appendChild(image);
+      lastIndex = match.index + candidate.length;
+      replaced = true;
+    }
+    if (replaced) {
+      if (lastIndex < value.length) fragment.appendChild(document.createTextNode(value.slice(lastIndex)));
+      node.replaceWith(fragment);
+    }
+  });
+}
+
+function enableCoverReposition(frame, image, postId) {
+  var storageKey = "yopo-cover-position-" + postId;
+  var position = { x: 50, y: 50 };
+  try {
+    var saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+    if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) position = saved;
+  } catch (_) {}
+
+  function renderPosition() {
+    image.style.objectPosition = position.x + "% " + position.y + "%";
+  }
+  function savePosition() {
+    try { localStorage.setItem(storageKey, JSON.stringify(position)); } catch (_) {}
+  }
+  function clamp(value) { return Math.max(0, Math.min(100, value)); }
+  function drag(event) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    frame.setPointerCapture(event.pointerId);
+    frame.classList.add("is-dragging-cover");
+    var startX = event.clientX;
+    var startY = event.clientY;
+    var startPosition = { x: position.x, y: position.y };
+    var rect = frame.getBoundingClientRect();
+    var scale = Math.max(rect.width / image.naturalWidth, rect.height / image.naturalHeight);
+    var overflowX = Math.max(0, image.naturalWidth * scale - rect.width);
+    var overflowY = Math.max(0, image.naturalHeight * scale - rect.height);
+
+    function move(moveEvent) {
+      position.x = overflowX ? clamp(startPosition.x - (moveEvent.clientX - startX) / overflowX * 100) : 50;
+      position.y = overflowY ? clamp(startPosition.y - (moveEvent.clientY - startY) / overflowY * 100) : 50;
+      renderPosition();
+    }
+    function finish() {
+      frame.classList.remove("is-dragging-cover");
+      frame.removeEventListener("pointermove", move);
+      frame.removeEventListener("pointerup", finish);
+      frame.removeEventListener("pointercancel", finish);
+      savePosition();
+    }
+    frame.addEventListener("pointermove", move);
+    frame.addEventListener("pointerup", finish, { once: true });
+    frame.addEventListener("pointercancel", finish, { once: true });
+  }
+
+  frame.addEventListener("pointerdown", drag);
+  frame.addEventListener("keydown", function (event) {
+    var step = event.shiftKey ? 10 : 3;
+    if (event.key === "ArrowLeft") position.x = clamp(position.x - step);
+    else if (event.key === "ArrowRight") position.x = clamp(position.x + step);
+    else if (event.key === "ArrowUp") position.y = clamp(position.y - step);
+    else if (event.key === "ArrowDown") position.y = clamp(position.y + step);
+    else return;
+    event.preventDefault();
+    renderPosition();
+    savePosition();
+  });
+  renderPosition();
 }
 
 function buildTOC(articleBody) {

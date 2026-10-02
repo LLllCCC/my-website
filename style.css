@@ -1272,7 +1272,8 @@ body.index-page .grid {
   font-size: .9rem;
 }
 .article-back:hover { color: var(--accent-color); }
-.article-cover {
+.article-hero-cover {
+  position: relative;
   display: block;
   width: 100%;
   max-height: 460px;
@@ -1281,9 +1282,44 @@ body.index-page .grid {
   border: 1px solid var(--border-color);
   border-radius: 22px;
   background: var(--card-bg);
-  object-fit: cover;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  outline-offset: 4px;
 }
-.article-cover[hidden] { display: none; }
+.article-hero-cover.is-dragging-cover { cursor: grabbing; }
+.article-hero-cover[hidden] { display: none; }
+.article-hero-cover-backdrop {
+  position: absolute;
+  inset: -24px;
+  background-position: center;
+  background-size: cover;
+  filter: blur(24px) brightness(.48);
+  transform: scale(1.08);
+}
+.article-hero-cover img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.article-cover-hint {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 1;
+  padding: 7px 11px;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  background: rgba(0,0,0,.52);
+  color: #fff;
+  font-size: .75rem;
+  pointer-events: none;
+}
 .article-eyebrow {
   margin: 0 0 16px;
   color: var(--accent-color);
@@ -1390,7 +1426,7 @@ body.index-page .grid {
   .post-content h2 { font-size: 1.55rem; }
   .post-content h3 { font-size: 1.22rem; }
   .post-content pre { padding: 16px; border-radius: 10px; font-size: .8rem; }
-  .article-cover { aspect-ratio: 1.65 / 1; margin-bottom: 30px; border-radius: 15px; }
+  .article-hero-cover { max-height: 300px; margin-bottom: 30px; border-radius: 15px; }
 }
 
 /* Final article layout overrides: keep the reading column balanced with the title. */
