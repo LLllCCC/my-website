@@ -109,6 +109,136 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  var commentList = document.getElementById("admin-comment-list");
+  var commentFilter = document.getElementById("admin-comment-filter");
+  var commentCount = document.getElementById("admin-comment-count");
+  var commentStatus = document.getElementById("admin-comment-status");
+  var commentLabels = { pending: "待审核", approved: "已显示", rejected: "已拒绝" };
+
+  function formatCommentTime(value) {
+    if (!value) return "";
+    var date = new Date(value);
+    if (isNaN(date.getTime())) return String(value);
+    function pad(part) { return String(part).padStart(2, "0"); }
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) +
+      " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+  }
+
+  function renderComments(comments) {
+    commentList.replaceChildren();
+    commentCount.textContent = String(comments.length).padStart(2, "0");
+    if (!comments.length) {
+      var empty = document.createElement("p");
+      empty.className = "admin-list-placeholder";
+      empty.textContent = commentFilter.value === "pending" ? "没有待审核的评论。" : "这个状态下还没有评论。";
+      commentList.appendChild(empty);
+      return;
+    }
+
+    comments.forEach(function (comment) {
+      var item = document.createElement("article");
+      item.className = "admin-comment-item" + (comment.status === "pending" ? " is-pending" : "");
+
+      var main = document.createElement("div");
+      main.className = "admin-comment-main";
+
+      var head = document.createElement("div");
+      head.className = "admin-comment-head";
+      var name = document.createElement("span");
+      name.className = "admin-comment-name";
+      name.textContent = comment.nickname || "匿名访客";
+      var time = document.createElement("span");
+      time.className = "admin-comment-time";
+      time.textContent = formatCommentTime(comment.created_at);
+      var badge = document.createElement("span");
+      badge.className = "admin-comment-badge is-" + comment.status;
+      badge.textContent = commentLabels[comment.status] || comment.status;
+      head.append(name, time, badge);
+
+      var body = document.createElement("p");
+      body.className = "admin-comment-body";
+      body.textContent = comment.content || "";
+
+      var source = document.createElement("p");
+      source.className = "admin-comment-source";
+      if (comment.post_id) {
+        var link = document.createElement("a");
+        link.href = "post.html?id=" + encodeURIComponent(String(comment.post_id));
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = comment.post_title || "文章 #" + comment.post_id;
+        source.appendChild(link);
+      } else {
+        source.textContent = "来源文章已删除";
+      }
+
+      main.append(head, body, source);
+
+      var actions = document.createElement("div");
+      actions.className = "admin-comment-actions";
+      function action(label, className, handler) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = className;
+        button.textContent = label;
+        button.addEventListener("click", handler);
+        actions.appendChild(button);
+      }
+      if (comment.status !== "approved") {
+        action("通过", "admin-action-button", function () { reviewComment(comment.id, "approved"); });
+      }
+      if (comment.status !== "rejected") {
+        action("拒绝", "admin-action-button", function () { reviewComment(comment.id, "rejected"); });
+      }
+      action("删除", "admin-action-button admin-action-button--danger", function () { removeComment(comment); });
+
+      item.append(main, actions);
+      commentList.appendChild(item);
+    });
+  }
+
+  async function loadComments() {
+    commentList.innerHTML = '<p class="admin-list-placeholder">正在读取评论…</p>';
+    try {
+      var query = commentFilter.value === "all" ? "" : "?status=" + encodeURIComponent(commentFilter.value);
+      var comments = await apiRequest("/admin/comments" + query);
+      renderComments(Array.isArray(comments) ? comments : []);
+    } catch (error) {
+      commentList.replaceChildren();
+      var message = document.createElement("p");
+      message.className = "admin-list-placeholder is-error";
+      message.textContent = error.status === 401 ? "令牌已失效，请退出后重新验证。" : "评论读取失败，请检查 API 服务与评论数据表。";
+      commentList.appendChild(message);
+      if (error.status === 401) lockWorkspace();
+    }
+  }
+
+  async function reviewComment(id, status) {
+    setStatus(commentStatus, "正在处理…", false);
+    try {
+      await apiRequest("/admin/comments/" + encodeURIComponent(String(id)), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: status }),
+      });
+      setStatus(commentStatus, status === "approved" ? "评论已通过，会显示在文章页。" : "评论已拒绝。", false);
+      await loadComments();
+    } catch (error) {
+      setStatus(commentStatus, error.status === 401 ? "令牌无效，请重新验证。" : "操作失败，请检查 API 服务。", true);
+    }
+  }
+
+  async function removeComment(comment) {
+    if (!window.confirm("确定删除这条评论吗？此操作无法撤销。")) return;
+    try {
+      await apiRequest("/admin/comments/" + encodeURIComponent(String(comment.id)), { method: "DELETE" });
+      setStatus(commentStatus, "评论已删除。", false);
+      await loadComments();
+    } catch (error) {
+      setStatus(commentStatus, error.status === 401 ? "令牌无效，请重新验证。" : "删除失败，请检查 API 服务。", true);
+    }
+  }
+
   async function editPost(id) {
     setStatus(formStatus, "正在载入文章…", false);
     try {
@@ -149,6 +279,7 @@ document.addEventListener("DOMContentLoaded", function () {
     tokenInput.value = "";
     setStatus(authStatus, "", false);
     loadPosts();
+    loadComments();
   }
 
   function lockWorkspace() {
@@ -156,6 +287,9 @@ document.addEventListener("DOMContentLoaded", function () {
     workspace.hidden = true;
     authSection.hidden = false;
     resetEditor();
+    commentList.innerHTML = '<p class="admin-list-placeholder">登录后显示评论。</p>';
+    commentCount.textContent = "—";
+    setStatus(commentStatus, "", false);
     tokenInput.focus();
   }
 
@@ -223,4 +357,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("admin-reset").addEventListener("click", resetEditor);
   document.getElementById("admin-cancel-edit").addEventListener("click", resetEditor);
   document.getElementById("admin-lock").addEventListener("click", lockWorkspace);
+  commentFilter.addEventListener("change", loadComments);
+  document.getElementById("admin-comments-refresh").addEventListener("click", loadComments);
 });

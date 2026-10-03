@@ -1442,6 +1442,71 @@ body.index-page .grid {
 .post-content th { background: rgba(127, 127, 127, .12); }
 #article-comments { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--border-color); }
 .comments-title { margin-bottom: 20px; color: var(--text-primary); font-size: 1.2rem; font-weight: 700; }
+.comments-count { margin-left: 8px; color: var(--text-secondary); font-size: .82rem; font-weight: 500; }
+.comment-form { position: relative; display: grid; gap: 9px; margin-bottom: 34px; }
+.comment-label { color: var(--text-secondary); font-size: .8rem; font-weight: 600; }
+.comment-form .comment-nickname,
+.comment-form .comment-content {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--bg-color), var(--card-bg) 45%);
+  color: var(--text-primary);
+  font: inherit;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.comment-form .comment-nickname { min-height: 44px; padding: 0 13px; }
+.comment-form .comment-content { min-height: 112px; padding: 13px 14px; resize: vertical; line-height: 1.75; }
+.comment-form .comment-nickname:focus,
+.comment-form .comment-content:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent-color), transparent 25%);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-color), transparent 88%);
+}
+.comment-form .comment-nickname::placeholder,
+.comment-form .comment-content::placeholder { color: var(--text-secondary); opacity: .65; }
+/* 蜜罐字段：真人看不到，只用来识别自动提交的脚本 */
+.comment-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.comment-form-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 2px; }
+.comment-status { color: var(--text-secondary); font-size: .84rem; }
+.comment-status.is-error { color: #e0533f; }
+[data-theme="light"] .comment-status.is-error { color: #b3261e; }
+.comment-submit {
+  flex: none;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent-color);
+  color: #06121c;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+  transition: transform .18s ease, opacity .18s ease;
+}
+.comment-submit:hover { transform: translateY(-1px); }
+.comment-submit:disabled { opacity: .55; cursor: progress; transform: none; }
+.comment-list { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.comment-item { padding: 15px 17px; border: 1px solid var(--border-color); border-radius: 13px; background: var(--card-bg); }
+.comment-item-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 7px; }
+.comment-item-name { color: var(--text-primary); font-size: .9rem; font-weight: 700; }
+.comment-item-time { color: var(--text-secondary); font-size: .75rem; }
+.comment-item-body { margin: 0; color: var(--text-primary); font-size: .95rem; line-height: 1.78; white-space: pre-wrap; overflow-wrap: anywhere; }
+.comment-item--notice { color: var(--text-secondary); font-size: .88rem; background: transparent; border-style: dashed; }
+@media (max-width: 850px) {
+  .comment-form-footer { flex-direction: column; align-items: stretch; gap: 10px; }
+  .comment-submit { width: 100%; }
+}
 @media (max-width: 850px) {
   .article-page { width: min(740px, calc(100% - 36px)); padding-top: 58px; }
   .article-hero { margin-bottom: 36px; }
@@ -2474,7 +2539,8 @@ body.index-page .grid {
 
 .admin-auth-card,
 .admin-editor-card,
-.admin-list-card {
+.admin-list-card,
+.admin-comments-card {
   border: 1px solid var(--border-color);
   border-radius: 20px;
   background: color-mix(in srgb, var(--card-bg), transparent 5%);
@@ -2851,6 +2917,136 @@ body.index-page .grid {
   }
 
   .admin-editor-actions button {
+    flex: 1;
+  }
+}
+
+/* 评论审核面板 */
+.admin-comments-card {
+  min-width: 0;
+  margin-top: 16px;
+  padding: clamp(20px, 3vw, 28px);
+}
+
+.admin-comments-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-comments-tools select {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--bg-color), var(--card-bg) 45%);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+.admin-comment-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-comment-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 17px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.admin-comment-item.is-pending {
+  padding-left: 14px;
+  border-left: 2px solid color-mix(in srgb, #e0a33a, transparent 45%);
+}
+
+.admin-comment-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.admin-comment-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.admin-comment-name {
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.admin-comment-time {
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.admin-comment-badge {
+  padding: 2px 9px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.admin-comment-badge.is-pending {
+  border-color: color-mix(in srgb, #e0a33a, transparent 55%);
+  background: color-mix(in srgb, #e0a33a, transparent 90%);
+  color: #e0a33a;
+}
+
+.admin-comment-badge.is-approved {
+  border-color: color-mix(in srgb, var(--accent-color), transparent 55%);
+  color: var(--accent-color);
+}
+
+.admin-comment-body {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.admin-comment-source {
+  margin: 8px 0 0;
+  font-size: 0.76rem;
+}
+
+.admin-comment-source a {
+  color: var(--accent-color);
+}
+
+.admin-comment-actions {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+
+@media (max-width: 760px) {
+  .admin-comments-tools {
+    flex-wrap: wrap;
+  }
+
+  .admin-comment-item {
+    flex-direction: column;
+  }
+
+  .admin-comment-actions {
+    width: 100%;
+  }
+
+  .admin-comment-actions .admin-action-button {
     flex: 1;
   }
 }

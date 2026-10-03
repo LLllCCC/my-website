@@ -9,7 +9,7 @@
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" type="image/jpeg" />
     <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet" />
     <script src="/theme-init.js?v=2"></script>
-    <link rel="stylesheet" href="/style.css?v=12" />
+    <link rel="stylesheet" href="/style.css?v=13" />
   </head>
   <body class="admin-page">
     <div id="global-nav"></div>
@@ -95,6 +95,29 @@
             </div>
           </section>
         </div>
+
+        <section class="admin-comments-card" aria-labelledby="admin-comments-title">
+          <div class="admin-section-heading">
+            <div>
+              <p class="admin-card-kicker">MODERATION</p>
+              <h3 id="admin-comments-title">评论审核</h3>
+            </div>
+            <div class="admin-comments-tools">
+              <select id="admin-comment-filter" aria-label="评论状态筛选">
+                <option value="pending">待审核</option>
+                <option value="approved">已显示</option>
+                <option value="rejected">已拒绝</option>
+                <option value="all">全部</option>
+              </select>
+              <button id="admin-comments-refresh" class="admin-text-button" type="button">刷新</button>
+              <span id="admin-comment-count" class="admin-count">—</span>
+            </div>
+          </div>
+          <div id="admin-comment-list" class="admin-comment-list" aria-live="polite">
+            <p class="admin-list-placeholder">正在读取评论…</p>
+          </div>
+          <p id="admin-comment-status" class="admin-status" role="status" aria-live="polite"></p>
+        </section>
       </section>
 
       <div id="global-footer"></div>
@@ -103,6 +126,6 @@
 
     <script src="/config.js?v=3" defer></script>
     <script src="/nav.js?v=2" defer></script>
-    <script src="/admin.js?v=1" defer></script>
+    <script src="/admin.js?v=2" defer></script>
   </body>
 </html>

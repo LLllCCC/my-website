@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
+  initComments(postId);
+
   try {
     var res = await fetch(CONFIG.API_BASE + "/posts/" + postId, { headers: { Accept: "application/json" } });
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -301,4 +303,150 @@ function initReadingProgress() {
     }
   }, { passive: true });
   update();
+}
+
+var COMMENT_NICKNAME_KEY = "yopo-comment-nickname";
+var COMMENT_NICKNAME_WORDS = {
+  adjectives: ["青柠", "晚风", "雾蓝", "海盐", "雪松", "薄荷", "琥珀", "青苔", "远山", "微光"],
+  nouns: ["水母", "信天翁", "柴犬", "风铃", "苔原", "云豹", "刺猬", "灯塔", "游隼", "小鹿"],
+};
+
+function randomNickname() {
+  function pick(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+  return pick(COMMENT_NICKNAME_WORDS.adjectives) +
+    pick(COMMENT_NICKNAME_WORDS.nouns) +
+    String(100 + Math.floor(Math.random() * 900));
+}
+
+function rememberedNickname() {
+  try {
+    var saved = localStorage.getItem(COMMENT_NICKNAME_KEY);
+    var value = typeof saved === "string" ? saved.trim() : "";
+    return value && [...value].length <= 30 ? value : "";
+  } catch (_) {
+    return "";
+  }
+}
+
+function rememberNickname(value) {
+  try {
+    localStorage.setItem(COMMENT_NICKNAME_KEY, value);
+  } catch (_) {}
+}
+
+function formatCommentDate(value) {
+  if (!value) return "";
+  var date = new Date(value);
+  if (isNaN(date.getTime())) return "";
+  function pad(part) { return String(part).padStart(2, "0"); }
+  return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) +
+    " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+}
+
+function initComments(postId) {
+  var form = document.getElementById("comment-form");
+  var nicknameField = document.getElementById("comment-nickname");
+  var contentField = document.getElementById("comment-content");
+  var statusField = document.getElementById("comment-status");
+  var list = document.getElementById("comment-list");
+  var countField = document.getElementById("comments-count");
+  var submitButton = document.getElementById("comment-submit");
+  var commentsUrl = CONFIG.API_BASE + "/posts/" + encodeURIComponent(postId) + "/comments";
+  if (!form || !list || !nicknameField || !contentField) return;
+
+  nicknameField.value = rememberedNickname() || randomNickname();
+
+  function setStatus(message, isError) {
+    if (!statusField) return;
+    statusField.textContent = message || "";
+    statusField.classList.toggle("is-error", Boolean(isError));
+  }
+
+  function appendListMessage(message) {
+    list.replaceChildren();
+    var row = document.createElement("li");
+    row.className = "comment-item comment-item--notice";
+    row.textContent = message;
+    list.appendChild(row);
+  }
+
+  function render(items) {
+    list.replaceChildren();
+    if (countField) countField.textContent = items.length ? " · " + items.length + " 条" : "";
+    if (!items.length) {
+      appendListMessage("还没有留言，可以说两句。");
+      return;
+    }
+    items.forEach(function (item) {
+      var row = document.createElement("li");
+      row.className = "comment-item";
+      var head = document.createElement("div");
+      head.className = "comment-item-head";
+      var name = document.createElement("span");
+      name.className = "comment-item-name";
+      name.textContent = item.nickname || "匿名访客";
+      var time = document.createElement("time");
+      time.className = "comment-item-time";
+      time.textContent = formatCommentDate(item.created_at);
+      head.append(name, time);
+      var body = document.createElement("p");
+      body.className = "comment-item-body";
+      body.textContent = item.content || "";
+      row.append(head, body);
+      list.appendChild(row);
+    });
+  }
+
+  async function load() {
+    try {
+      var res = await fetch(commentsUrl, { headers: { Accept: "application/json" }, cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      var items = await res.json();
+      render(Array.isArray(items) ? items : []);
+    } catch (err) {
+      console.error(err);
+      appendListMessage("评论暂时读取失败，稍后刷新页面即可。");
+    }
+  }
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    var nickname = nicknameField.value.trim();
+    var content = contentField.value.trim();
+    if (!nickname || !content) {
+      setStatus("昵称和留言都要填写。", true);
+      return;
+    }
+
+    rememberNickname(nickname);
+    submitButton.disabled = true;
+    setStatus("正在提交…", false);
+    try {
+      var res = await fetch(commentsUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          nickname: nickname,
+          content: content,
+          website: form.website ? form.website.value : "",
+        }),
+      });
+      if (res.status === 429) throw Object.assign(new Error("限流"), { status: 429 });
+      if (res.status === 400) throw Object.assign(new Error("内容不合规"), { status: 400 });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      contentField.value = "";
+      setStatus("已提交，通过审核后会显示在这里。", false);
+    } catch (err) {
+      console.error(err);
+      setStatus(err.status === 429 ? "留言太快了，请稍后再试。"
+        : err.status === 400 ? "留言太长或内容为空，改一下再提交。"
+        : "提交失败，博客服务可能暂时不可用。", true);
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  load();
 }
