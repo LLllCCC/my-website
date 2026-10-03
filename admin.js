@@ -359,4 +359,14 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("admin-lock").addEventListener("click", lockWorkspace);
   commentFilter.addEventListener("change", loadComments);
   document.getElementById("admin-comments-refresh").addEventListener("click", loadComments);
+  document.getElementById("admin-comments-clear").addEventListener("click", async function () {
+    if (!window.confirm("确定清空所有「待审核」评论吗？已显示和已拒绝的不受影响，此操作无法撤销。")) return;
+    try {
+      var result = await apiRequest("/admin/comments?status=pending", { method: "DELETE" });
+      setStatus(commentStatus, "已清空 " + (result.deleted || 0) + " 条待审评论。", false);
+      await loadComments();
+    } catch (error) {
+      setStatus(commentStatus, error.status === 401 ? "令牌无效，请重新验证。" : "清空失败，请检查 API 服务。", true);
+    }
+  });
 });

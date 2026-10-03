@@ -70,6 +70,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       tag.textContent = normalizeTags(post.tags).split(",")[0].trim();
       meta.append(date, tag);
 
+      var commentCount = Number(post.comment_count) || 0;
+      if (commentCount > 0) {
+        var comments = document.createElement("span");
+        comments.className = "blog-post-comments";
+        comments.textContent = "评论 " + commentCount;
+        comments.title = "已有 " + commentCount + " 条通过审核的评论";
+        meta.appendChild(comments);
+      }
+
       var title = document.createElement("h2");
       title.className = "blog-post-title";
       title.textContent = typeof post.title === "string" && post.title.trim() ? post.title : "未命名文章";
