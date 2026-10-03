@@ -367,6 +367,28 @@ function tappedReactions() {
   }
 }
 
+var COMMENT_SORTS = [
+  { key: "old", label: "最早" },
+  { key: "new", label: "最新" },
+  { key: "hot", label: "最热" },
+];
+var COMMENT_SORT_KEY = "yopo-comment-sort";
+
+function savedCommentSort() {
+  try {
+    var saved = localStorage.getItem(COMMENT_SORT_KEY);
+    return COMMENT_SORTS.some(function (item) { return item.key === saved; }) ? saved : "old";
+  } catch (_) {
+    return "old";
+  }
+}
+
+function rememberCommentSort(value) {
+  try {
+    localStorage.setItem(COMMENT_SORT_KEY, value);
+  } catch (_) {}
+}
+
 function formatCommentDate(value) {
   if (!value) return "";
   var date = new Date(value);
@@ -385,8 +407,10 @@ function initComments(postId) {
   var countField = document.getElementById("comments-count");
   var submitButton = document.getElementById("comment-submit");
   var commentsUrl = CONFIG.API_BASE + "/posts/" + encodeURIComponent(postId) + "/comments";
+  var sortBox = document.getElementById("comment-sort");
   if (!form || !list || !nicknameField || !contentField) return;
 
+  var sort = savedCommentSort();
   nicknameField.value = rememberedNickname() || randomNickname();
 
   function setStatus(message, isError) {
@@ -474,17 +498,17 @@ function initComments(postId) {
       time.className = "comment-item-time";
       time.textContent = formatCommentDate(item.created_at);
       head.append(name, time);
-      var body = document.createElement("p");
-      body.className = "comment-item-body";
-      body.textContent = item.content || "";
-      row.append(head, body, reactionRow(item));
+      row.append(head, renderCommentMarkdown(item.content || "", document), reactionRow(item));
       list.appendChild(row);
     });
   }
 
   async function load() {
     try {
-      var res = await fetch(commentsUrl, { headers: { Accept: "application/json" }, cache: "no-store" });
+      var res = await fetch(commentsUrl + "?sort=" + encodeURIComponent(sort), {
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("HTTP " + res.status);
       var items = await res.json();
       render(Array.isArray(items) ? items : []);
@@ -492,6 +516,30 @@ function initComments(postId) {
       console.error(err);
       appendListMessage("评论暂时读取失败，稍后刷新页面即可。");
     }
+  }
+
+  function renderSortButtons() {
+    if (!sortBox) return;
+    sortBox.replaceChildren();
+    COMMENT_SORTS.forEach(function (option) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "comment-sort-btn";
+      button.dataset.sort = option.key;
+      button.textContent = option.label;
+      if (option.key === sort) {
+        button.classList.add("is-active");
+        button.setAttribute("aria-disabled", "true");
+      }
+      button.addEventListener("click", function () {
+        if (sort === option.key) return;
+        sort = option.key;
+        rememberCommentSort(sort);
+        renderSortButtons();
+        load();
+      });
+      sortBox.appendChild(button);
+    });
   }
 
   form.addEventListener("submit", async function (event) {
@@ -531,5 +579,6 @@ function initComments(postId) {
     }
   });
 
+  renderSortButtons();
   load();
 }
