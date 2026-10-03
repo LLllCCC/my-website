@@ -19,7 +19,7 @@
 
     <script src="theme-init.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=19" />
+    <link rel="stylesheet" href="style.css?v=20" />
     <script src="https://cdn.staticfile.net/marked/4.3.0/marked.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
   </head>
@@ -50,10 +50,7 @@
           <div class="article-main">
             <div id="article-body" class="post-content"></div>
           <div id="article-comments">
-            <div class="comments-head">
-              <div class="comments-title">评论<span id="comments-count" class="comments-count"></span></div>
-              <div class="comment-sort" id="comment-sort" role="group" aria-label="评论排序"></div>
-            </div>
+            <div class="comments-title">评论<span id="comments-count" class="comments-count"></span></div>
             <form id="comment-form" class="comment-form" autocomplete="off">
               <label class="comment-label" for="comment-nickname">昵称</label>
               <input id="comment-nickname" class="comment-nickname" name="nickname" maxlength="30" required placeholder="已经帮你取好了，可以改" />
@@ -65,6 +62,7 @@
                 <button id="comment-submit" class="comment-submit" type="submit">提交评论<span aria-hidden="true"> ↗</span></button>
               </div>
             </form>
+            <div class="comment-sort" id="comment-sort" role="group" aria-label="评论排序"></div>
             <ul id="comment-list" class="comment-list" aria-live="polite"></ul>
           </div>
         </div>
