@@ -336,6 +336,37 @@ function rememberNickname(value) {
   } catch (_) {}
 }
 
+var COMMENT_REACTION_EMOJIS = ["\u{1F44D}", "\u2764\uFE0F", "\u{1F604}", "\u{1F525}"];
+var COMMENT_VISITOR_KEY = "yopo-comment-visitor";
+var COMMENT_REACTION_KEY = "yopo-comment-reactions";
+
+function randomVisitorId() {
+  return window.crypto && window.crypto.randomUUID
+    ? window.crypto.randomUUID()
+    : String(Date.now()) + "-" + Math.random().toString(16).slice(2);
+}
+
+function visitorId() {
+  try {
+    var saved = localStorage.getItem(COMMENT_VISITOR_KEY);
+    if (typeof saved === "string" && /^[0-9a-zA-Z-]{8,64}$/.test(saved)) return saved;
+    var created = randomVisitorId();
+    localStorage.setItem(COMMENT_VISITOR_KEY, created);
+    return created;
+  } catch (_) {
+    return randomVisitorId();
+  }
+}
+
+function tappedReactions() {
+  try {
+    var list = JSON.parse(localStorage.getItem(COMMENT_REACTION_KEY) || "[]");
+    return new Set(Array.isArray(list) ? list.filter(function (item) { return typeof item === "string"; }) : []);
+  } catch (_) {
+    return new Set();
+  }
+}
+
 function formatCommentDate(value) {
   if (!value) return "";
   var date = new Date(value);
@@ -372,6 +403,58 @@ function initComments(postId) {
     list.appendChild(row);
   }
 
+  var visitor = visitorId();
+  var tapped = tappedReactions();
+
+  function saveTapped() {
+    try {
+      localStorage.setItem(COMMENT_REACTION_KEY, JSON.stringify(Array.from(tapped).slice(-500)));
+    } catch (_) {}
+  }
+
+  async function respond(item, emoji, button) {
+    if (button.classList.contains("is-busy")) return;
+    button.classList.add("is-busy");
+    try {
+      var res = await fetch(CONFIG.API_BASE + "/comments/" + encodeURIComponent(item.id) + "/reactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ emoji: emoji, visitor: visitor }),
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      var data = await res.json();
+      item.reactions = Array.isArray(data.reactions) ? data.reactions : [];
+      if (data.active) tapped.add(item.id + "|" + emoji);
+      else tapped.delete(item.id + "|" + emoji);
+      saveTapped();
+      button.parentElement.replaceWith(reactionRow(item));
+    } catch (err) {
+      console.error("表情回应失败:", err);
+      button.classList.remove("is-busy");
+    }
+  }
+
+  function reactionRow(item) {
+    var row = document.createElement("div");
+    row.className = "comment-reactions";
+    var counts = new Map();
+    (item.reactions || []).forEach(function (reaction) {
+      counts.set(reaction.emoji, Number(reaction.count) || 0);
+    });
+    COMMENT_REACTION_EMOJIS.forEach(function (emoji) {
+      var count = counts.get(emoji) || 0;
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "comment-reaction";
+      button.textContent = emoji + (count ? " " + count : "");
+      button.setAttribute("aria-label", "用" + emoji + "回应，目前 " + count + " 个");
+      if (tapped.has(item.id + "|" + emoji)) button.classList.add("is-tapped");
+      button.addEventListener("click", function () { respond(item, emoji, button); });
+      row.appendChild(button);
+    });
+    return row;
+  }
+
   function render(items) {
     list.replaceChildren();
     if (countField) countField.textContent = items.length ? " · " + items.length + " 条" : "";
@@ -394,7 +477,7 @@ function initComments(postId) {
       var body = document.createElement("p");
       body.className = "comment-item-body";
       body.textContent = item.content || "";
-      row.append(head, body);
+      row.append(head, body, reactionRow(item));
       list.appendChild(row);
     });
   }
