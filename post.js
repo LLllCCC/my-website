@@ -436,6 +436,30 @@ function initComments(postId) {
     } catch (_) {}
   }
 
+  var replyingBox = document.getElementById("comment-replying");
+  var replyingText = document.getElementById("comment-replying-text");
+  var replyingCancel = document.getElementById("comment-replying-cancel");
+  var replyingTo = null;
+
+  function setReplying(item) {
+    replyingTo = item;
+    if (!replyingBox) return;
+    replyingBox.hidden = !item;
+    if (item && replyingText) replyingText.textContent = "正在回复 @" + (item.nickname || "匿名访客");
+  }
+
+  function startReply(item) {
+    setReplying(replyingTo && replyingTo.id === item.id ? null : item);
+    if (contentField) contentField.focus();
+  }
+
+  if (replyingCancel) {
+    replyingCancel.addEventListener("click", function () {
+      setReplying(null);
+      if (contentField) contentField.focus();
+    });
+  }
+
   async function respond(item, emoji, button) {
     if (button.classList.contains("is-busy")) return;
     button.classList.add("is-busy");
@@ -476,6 +500,12 @@ function initComments(postId) {
       button.addEventListener("click", function () { respond(item, emoji, button); });
       row.appendChild(button);
     });
+    var reply = document.createElement("button");
+    reply.type = "button";
+    reply.className = "comment-reply-btn";
+    reply.textContent = "回复";
+    reply.addEventListener("click", function () { startReply(item); });
+    row.appendChild(reply);
     return row;
   }
 
@@ -488,7 +518,7 @@ function initComments(postId) {
     }
     items.forEach(function (item) {
       var row = document.createElement("li");
-      row.className = "comment-item";
+      row.className = item.parent_id ? "comment-item comment-item--reply" : "comment-item";
       var head = document.createElement("div");
       head.className = "comment-item-head";
       var name = document.createElement("span");
@@ -498,6 +528,12 @@ function initComments(postId) {
       time.className = "comment-item-time";
       time.textContent = formatCommentDate(item.created_at);
       head.append(name, time);
+      if (item.parent_id && item.reply_to) {
+        var replyTo = document.createElement("span");
+        replyTo.className = "comment-item-replyto";
+        replyTo.textContent = "回复 @" + item.reply_to;
+        head.appendChild(replyTo);
+      }
       row.append(head, renderCommentMarkdown(item.content || "", document), reactionRow(item));
       list.appendChild(row);
     });
@@ -561,6 +597,7 @@ function initComments(postId) {
         body: JSON.stringify({
           nickname: nickname,
           content: content,
+          parent_id: replyingTo ? replyingTo.id : null,
           website: form.website ? form.website.value : "",
         }),
       });
@@ -568,7 +605,13 @@ function initComments(postId) {
       if (res.status === 400) throw Object.assign(new Error("内容不合规"), { status: 400 });
       if (!res.ok) throw new Error("HTTP " + res.status);
       contentField.value = "";
-      setStatus("已提交，通过审核后会显示在这里。", false);
+      setStatus(
+        replyingTo
+          ? "已提交，通过审核后会显示在那条留言下面。"
+          : "已提交，通过审核后会显示在这里。",
+        false,
+      );
+      setReplying(null);
     } catch (err) {
       console.error(err);
       setStatus(err.status === 429 ? "留言太快了，请稍后再试。"
