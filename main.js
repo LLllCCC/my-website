@@ -4,18 +4,7 @@
 const mailtoLink = document.querySelector('a[href^="mailto:"]');
 if (mailtoLink) {
   mailtoLink.addEventListener("click", function (e) {
-    // 逻辑 B: 时间判断与问候
-    const now = new Date();
-    const hour = now.getHours();
-    let greeting = "";
-
-    if (hour >= 5 && hour < 11) greeting = "早上好！☀️";
-    else if (hour >= 11 && hour < 13) greeting = "中午好！🍽️";
-    else if (hour >= 13 && hour < 18) greeting = "下午好！☕";
-    else if (hour >= 18 && hour < 22) greeting = "晚上好！🌙";
-    else greeting = "夜深了，注意休息哦！🌃";
-
-    showToast(`${greeting} 正在为您唤起邮件客户端...`);
+    showToast("正在打开邮件客户端");
   });
 } else {
   console.warn(
