@@ -1,4 +1,4 @@
-﻿/* --- 1. 鍙橀噺涓庝富棰樺畾涔?(娓呮柊钃?#98F5F9) --- */
+﻿/* --- 1. 变量与主题定义 (清新蓝 #98F5F9) --- */
 :root {
   --bg-color: #08090b;
   --card-bg: #17181b;
@@ -28,7 +28,7 @@
   --accent-color: #006ba7;
 }
 
-/* --- 2. 鍩虹甯冨眬 --- */
+/* --- 2. 基础布局 --- */
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
@@ -46,7 +46,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* --- 3. 瀵艰埅鏍?--- */
+/* --- 3. 导航栏 --- */
 nav {
   position: fixed;
   top: 0;
@@ -149,12 +149,12 @@ nav {
   display: block;
 }
 
-/* 涓嬫媺鑿滃崟瀹瑰櫒 */
+/* 下拉菜单容器 */
 .menu-wrapper {
   position: relative;
 }
 
-/* 涓嬫媺鑿滃崟 */
+/* 下拉菜单 */
 .nav-dropdown {
   position: absolute;
   top: calc(100% + 12px);
@@ -200,7 +200,7 @@ nav {
   color: var(--text-secondary);
 }
 
-/* --- 4. Bento Grid 鏍稿績绯荤粺 --- */
+/* --- 4. Bento Grid 核心系统 --- */
 .container {
   max-width: 1200px;
   margin: 100px auto 50px;
@@ -290,7 +290,7 @@ nav {
   outline-offset: 4px;
 }
 
-/* --- 5. 鑻遍泟鍗＄墖 --- */
+/* --- 5. 英雄卡片 --- */
 .card-hero {
   grid-column: span 12;
   flex-direction: row;
@@ -315,7 +315,7 @@ nav {
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- 6. 绀句氦鍗＄墖 --- */
+/* --- 6. 社交卡片 --- */
 .card-social {
   grid-column: span 1;
   aspect-ratio: 1/1;
@@ -328,7 +328,7 @@ nav {
   color: var(--text-primary);
 }
 
-/* --- 7. 椤圭洰鍗＄墖 --- */
+/* --- 7. 项目卡片 --- */
 .card-project {
   grid-column: span 6;
   min-height: 280px;
@@ -367,7 +367,7 @@ nav {
   opacity: 0.9;
 }
 
-/* 娣″叆鏁堟灉 */
+/* 淡入效果 */
 .fade-in {
   opacity: 0;
   transform: translateY(8px);
@@ -380,7 +380,7 @@ nav {
   }
 }
 
-/* Toast 閫氱煡 */
+/* Toast 通知 */
 .toast-notification {
   position: fixed;
   left: 50%;
@@ -410,7 +410,7 @@ nav {
 .delay-06 { animation-delay: 0.6s; }
 .delay-07 { animation-delay: 0.7s; }
 
-/* 鑳屾櫙鍥剧被 */
+/* 背景图类 */
 .bg-project-1 {
   background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/project-1.jpg");
   background-size: cover;
@@ -427,13 +427,13 @@ nav {
   background-position: center;
 }
 
-/* Email 鍗＄墖涓撶敤鏍峰紡 */
+/* Email 卡片专用样式 */
 .card-email {
   background-color: #2997ff;
   color: white;
 }
 
-/* 瀵艰埅涓婚鍒囨崲鎸夐挳 */
+/* 导航主题切换按钮 */
 .nav-theme-toggle {
   font-size: 1.2rem;
   margin-left: 10px;
@@ -468,7 +468,7 @@ nav {
   display: none;
 }
 
-/* 灞忓箷闃呰鍣ㄤ笓鐢?鈥斺€?涓氱晫鏍囧噯鍐欐硶锛?important 鏄繀椤荤殑 */
+/* 屏幕阅读器专用——业界标准写法，!important 是必须的 */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -529,7 +529,7 @@ nav {
   margin-bottom: 5px;
 }
 
-/* 椤佃剼 */
+/* 页脚 */
 .site-footer {
   text-align: center;
   margin-top: 50px;
@@ -552,9 +552,9 @@ nav {
   text-decoration: underline;
 }
 
-/* --- 3D 缈昏浆鍗＄墖 --- */
+/* --- 3D 翻转卡片 --- */
 
-/* 鑸炲彴瀹瑰櫒 */
+/* 舞台容器 */
 .card-social-container {
   grid-column: span 3;
   padding: 0;
@@ -573,7 +573,7 @@ nav {
   transform: none;
 }
 
-/* 缈昏浆涓讳綋 */
+/* 翻转主体 */
 .card-social-flip {
   width: 100%;
   height: 100%;
@@ -590,7 +590,7 @@ nav {
   transform: rotateY(180deg);
 }
 
-/* 姝ｉ潰涓庤儗闈?*/
+/* 正面与背面 */
 .flip-front,
 .flip-back {
   position: absolute;
@@ -633,7 +633,7 @@ nav {
   border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Email 鍗＄墖閰嶈壊 */
+/* Email 卡片配色 */
 .email-card .flip-front {
   background-color: #2997ff;
   color: white;
@@ -647,7 +647,7 @@ nav {
   text-align: center;
 }
 
-/* 澶村儚鍛煎惛鐏?*/
+/* 头像呼吸灯 */
 @keyframes avatar-breathe {
   0%,
   100% {
@@ -664,7 +664,7 @@ nav {
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
-/* --- 鍗＄墖鎮仠閫昏緫锛氬姩闈欏垎绂?--- */
+/* --- 卡片悬停逻辑：动静分离 --- */
 
 .card {
   transition:
@@ -691,7 +691,7 @@ nav {
   background: transparent;
 }
 
-/* --- 鍗氬椤甸潰 --- */
+/* --- 博客页面 --- */
 
 .blog-container {
   max-width: 800px;
@@ -741,7 +741,7 @@ nav {
   font-size: 20px;
 }
 
-/* 鏍囩浜?*/
+/* 标签云 */
 .tag-cloud {
   display: flex;
   flex-wrap: wrap;
@@ -858,7 +858,7 @@ nav {
   background: rgba(255, 255, 255, 0.24);
 }
 
-/* 鏂囩珷鍗＄墖 */
+/* 文章卡片 */
 .article-card {
   margin-bottom: 30px;
   align-items: flex-start;
@@ -934,7 +934,7 @@ nav {
   }
 }
 
-/* --- 鏂囩珷璇︽儏椤?--- */
+/* --- 文章详情页 --- */
 
 .blog-post-container {
   max-width: 720px;
@@ -966,7 +966,7 @@ nav {
   color: var(--text-primary);
 }
 
-/* 姝ｆ枃鎺掔増 */
+/* 正文排版 */
 .post-content,
 .article-content {
   max-width: 860px;
@@ -1059,7 +1059,7 @@ nav {
   }
 }
 
-/* --- 椤甸潰涓撶敤鏍峰紡 --- */
+/* --- 页面专用样式 --- */
 body.index-page .grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -1110,7 +1110,7 @@ body.index-page .grid {
 }
 
 
-/* 3. 娴呰壊妯″紡涓婚鍥炬爣鍒囨崲 */
+/* 3. 浅色模式主题图标切换 */
 [data-theme="light"] .icon-sun {
   display: none;
 }
@@ -1119,7 +1119,7 @@ body.index-page .grid {
   filter: none;
 }
 
-/* 4. 鎮仠鏃嬭浆鐗规晥 */
+/* 4. 悬停旋转特效 */
 .nav-theme-toggle:hover .theme-icon-img {
   transform: rotate(30deg) scale(1.1);
   filter: invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
@@ -1129,20 +1129,20 @@ body.index-page .grid {
   transform: rotate(-30deg) scale(1.1);
 }
 
-/* --- Email 鍗＄墖灏哄涓€鑷存€?--- */
+/* --- Email 卡片尺寸一致性 --- */
 
 * {
   box-sizing: border-box;
 }
 
-/* 缁熶竴杈规鍘氬害 */
+/* 统一边框厚度 */
 .email-card .flip-front,
 .email-card .flip-back {
   border: 1px solid rgba(255, 255, 255, 0.01);
   background-clip: padding-box;
 }
 
-/* --- 鍗氬灏侀潰鍥?--- */
+/* --- 博客封面图 --- */
 
 .article-card {
   padding: 0;
@@ -1185,7 +1185,7 @@ body.index-page .grid {
   }
 }
 
-/* --- 棣栭〉鍗氬鍗＄墖 --- */
+/* --- 首页博客卡片 --- */
 
 .card-blog {
   grid-column: span 6;
@@ -1557,7 +1557,7 @@ body.index-page .grid {
   .article-page { width: calc(100% - 32px); }
 }
 
-/* 鎶€鑳藉崱鐗?*/
+/* 技能卡片 */
 .card-skills {
   grid-column: span 4;
 }
@@ -1591,7 +1591,7 @@ body.index-page .grid {
   transform: translateY(-1px);
 }
 
-/* 鏃堕棿绾?*/
+/* 时间线 */
 .card-timeline {
   grid-column: span 4;
 }
@@ -1632,7 +1632,7 @@ body.index-page .grid {
   font-size: 0.92rem;
 }
 
-/* 鍙嬫儏閾炬帴 */
+/* 友情链接 */
 .card-friends {
   grid-column: span 4;
 }
@@ -1683,7 +1683,7 @@ body.index-page .grid {
 }
 
 /* =========================================
-   鎵嬫満绔己鍒堕€傞厤
+   手机端强制适配
    ========================================= */
 @media (max-width: 768px) {
   .grid {
@@ -1729,7 +1729,7 @@ body.index-page .grid {
     font-size: 1.1rem;
   }
 
-  /* 鍗氬绉诲姩绔€傞厤 */
+/* 博客移动端适配 */
   .blog-container {
     padding: 0 12px;
     margin-top: 80px;
@@ -1768,7 +1768,7 @@ body.index-page .grid {
   }
 }
 
-/* 鏂囩珷鐩綍 + 渚ц竟鏍忓竷灞€ */
+/* 文章目录 + 侧边栏布局 */
 .article-layout {
   max-width: 920px;
   margin: 0 auto;
@@ -1820,7 +1820,7 @@ body.index-page .grid {
   font-size: 0.82rem;
 }
 
-/* 鏂囩珷涓讳綋 */
+/* 文章主体 */
 .article-main {
   flex: 1;
   min-width: 0;
@@ -1832,7 +1832,7 @@ body.index-page .grid {
   border: none;
 }
 
-/* 璇勮鍖?*/
+/* 评论区 */
 #article-comments {
   max-width: none;
   margin: 60px 0 0;
@@ -1857,7 +1857,7 @@ body.index-page .grid {
   color: var(--text-primary);
   margin-bottom: 16px;
 }
-/* 鍥炲埌椤堕儴鎸夐挳 */
+/* 回到顶部按钮 */
 .back-to-top {
   position: fixed;
   bottom: 28px;
@@ -1892,7 +1892,7 @@ body.index-page .grid {
   border-color: var(--accent-color);
 }
 
-/* --- 3D 鍗＄墖楂樺厜鎵厜 --- */
+/* --- 3D 卡片高光扫光 --- */
 .card {
   transform-style: preserve-3d;
 }
@@ -1972,7 +1972,7 @@ body.index-page .grid {
   opacity: 1;
 }
 
-/* --- 缈昏浆鍗＄墖鏈€缁堜繚闅?--- */
+/* --- 翻转卡片最终保障 --- */
 .card-social-container,
 .card-social-container:hover,
 .card-social-container:focus-within,
@@ -2001,7 +2001,7 @@ body.index-page .grid {
   transform: rotateY(180deg);
 }
 
-/* 娓呴櫎缈昏浆鍗＄墖鐨?::after 娈嬬暀鍏夋辰 */
+/* 清除翻转卡片的 ::after 残留光泽 */
 .card-social-container::after {
   display: none !important;
   content: none !important;
