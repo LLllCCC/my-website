@@ -9,27 +9,25 @@
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" type="image/jpeg" />
     <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet" />
     <script src="/theme-init.js?v=2"></script>
-    <link rel="stylesheet" href="/style.css?v=17" />
+    <link rel="stylesheet" href="/style.css?v=22" />
   </head>
   <body class="admin-page">
     <div id="global-nav"></div>
 
     <main id="main-content" class="container admin-container">
       <header class="admin-hero">
-        <div class="admin-eyebrow"><span></span> YOPO · STUDIO</div>
         <h1>文章管理<span>。</span></h1>
         <p>整理想法，更新你的博客。</p>
       </header>
 
       <section id="admin-auth" class="admin-auth-card" aria-labelledby="admin-auth-title">
-        <div class="admin-card-kicker">PRIVATE WORKSPACE</div>
         <h2 id="admin-auth-title">进入管理工作台</h2>
         <p>输入服务器上的管理令牌。令牌仅保存在当前页面内存中，刷新或关闭标签后会清除。</p>
         <form id="admin-auth-form" class="admin-auth-form">
           <label for="admin-token">管理令牌</label>
           <div class="admin-token-row">
             <input id="admin-token" name="token" type="password" autocomplete="current-password" required placeholder="粘贴 ADMIN_TOKEN" />
-            <button class="admin-primary-button" type="submit">验证并进入 <span aria-hidden="true">↗</span></button>
+            <button class="admin-primary-button" type="submit">验证并进入</button>
           </div>
         </form>
         <p id="admin-auth-status" class="admin-status" role="status" aria-live="polite"></p>
@@ -38,7 +36,6 @@
       <section id="admin-workspace" class="admin-workspace" hidden>
         <div class="admin-workspace-heading">
           <div>
-            <div class="admin-card-kicker">CONTENT DESK</div>
             <h2>你的文章</h2>
           </div>
           <button id="admin-lock" class="admin-quiet-button" type="button">退出管理</button>
@@ -48,7 +45,7 @@
           <section class="admin-editor-card" aria-labelledby="admin-editor-title">
             <div class="admin-section-heading">
               <div>
-                <p class="admin-card-kicker" id="admin-editor-mode">NEW ENTRY</p>
+                <p class="admin-editor-mode" id="admin-editor-mode">新文章</p>
                 <h3 id="admin-editor-title">写一篇新文章</h3>
               </div>
               <button id="admin-reset" class="admin-text-button" type="button">清空</button>
@@ -75,7 +72,7 @@
                 <span id="admin-char-count">0 字符</span>
                 <div class="admin-editor-actions">
                   <button id="admin-cancel-edit" class="admin-quiet-button" type="button" hidden>取消编辑</button>
-                  <button id="admin-save" class="admin-primary-button" type="submit">发布文章 <span aria-hidden="true">↗</span></button>
+                  <button id="admin-save" class="admin-primary-button" type="submit">发布文章</button>
                 </div>
               </div>
             </form>
@@ -85,7 +82,6 @@
           <section class="admin-list-card" aria-labelledby="admin-list-title">
             <div class="admin-section-heading">
               <div>
-                <p class="admin-card-kicker">LIBRARY</p>
                 <h3 id="admin-list-title">已发布</h3>
               </div>
               <span id="admin-post-count" class="admin-count">—</span>
@@ -99,7 +95,6 @@
         <section class="admin-comments-card" aria-labelledby="admin-comments-title">
           <div class="admin-section-heading">
             <div>
-              <p class="admin-card-kicker">MODERATION</p>
               <h3 id="admin-comments-title">评论审核</h3>
             </div>
             <div class="admin-comments-tools">
@@ -127,6 +122,6 @@
 
     <script src="/config.js?v=3" defer></script>
     <script src="/nav.js?v=2" defer></script>
-    <script src="/admin.js?v=3" defer></script>
+    <script src="/admin.js?v=4" defer></script>
   </body>
 </html>

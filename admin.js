@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
     form.reset();
     document.getElementById("admin-editor-mode").textContent = "NEW ENTRY";
     document.getElementById("admin-editor-title").textContent = "写一篇新文章";
-    saveButton.innerHTML = '发布文章 <span aria-hidden="true">↗</span>';
+    saveButton.textContent = '发布文章';
     document.getElementById("admin-cancel-edit").hidden = true;
     charCount.textContent = "0 字符";
     setStatus(formStatus, "", false);
@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("post-content").value = post.content || "";
       document.getElementById("admin-editor-mode").textContent = "EDITING · ID " + post.id;
       document.getElementById("admin-editor-title").textContent = "修改文章";
-      saveButton.innerHTML = '保存修改 <span aria-hidden="true">↗</span>';
+      saveButton.textContent = '保存修改';
       document.getElementById("admin-cancel-edit").hidden = false;
       updateCharacterCount();
       setStatus(formStatus, "文章已载入，可以开始编辑。", false);

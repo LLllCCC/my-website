@@ -269,40 +269,21 @@ nav {
   mask-image: linear-gradient(110deg, #000 0%, transparent 88%);
   pointer-events: none;
 }
-.motion-web-index,
 .motion-web-title,
-.motion-web-description,
-.motion-web-arrow {
+.motion-web-description {
   position: relative;
   z-index: 1;
 }
-.motion-web-index {
-  color: #d3ae83;
-  font: 0.68rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
-  letter-spacing: 0.13em;
-}
 .motion-web-title {
-  margin-top: 28px;
   font-size: clamp(2rem, 3.2vw, 3.1rem);
   font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.055em;
 }
 .motion-web-description {
+  margin-top: 12px;
   color: rgba(246, 241, 231, 0.76);
   font-size: 0.92rem;
-}
-.motion-web-arrow {
-  position: absolute;
-  right: 28px;
-  bottom: 24px;
-  color: #edb17e;
-  font-size: 1.6rem;
-  transition: transform 0.25s ease;
-}
-.card-motion-web:hover .motion-web-arrow,
-.card-motion-web:focus-visible .motion-web-arrow {
-  transform: translate(4px, -4px);
 }
 .card-motion-web:focus-visible {
   outline: 3px solid var(--accent-color);
@@ -724,14 +705,7 @@ nav {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 10px;
-  background: linear-gradient(
-    to right,
-    var(--text-primary),
-    var(--text-secondary)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 .blog-header p {
   color: var(--text-secondary);
@@ -989,14 +963,7 @@ nav {
   font-weight: 700;
   line-height: 1.2;
   margin-top: 10px;
-  background: linear-gradient(
-    to right,
-    var(--text-primary),
-    var(--text-secondary)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 
 /* 姝ｆ枃鎺掔増 */
@@ -1351,13 +1318,6 @@ body.index-page .grid {
   color: #fff;
   font-size: .75rem;
   pointer-events: none;
-}
-.article-eyebrow {
-  margin: 0 0 16px;
-  color: var(--accent-color);
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .18em;
 }
 .article-hero h1 {
   max-width: 850px;
@@ -1716,12 +1676,6 @@ body.index-page .grid {
   font-size: 2rem;
   margin-bottom: 5px;
 }
-.email-back-note {
-  font-size: 0.75rem;
-  opacity: 0.9;
-  margin-bottom: 2px;
-  display: block;
-}
 .email-back-address {
   font-size: 0.8rem;
   word-break: break-all;
@@ -2069,24 +2023,6 @@ body.index-page .grid {
   border-bottom: 1px solid var(--border-color);
 }
 
-.blog-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  color: var(--text-secondary);
-  font: 600 0.72rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
-  letter-spacing: 0.16em;
-}
-
-.blog-eyebrow-mark {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent-color);
-  box-shadow: 0 0 18px color-mix(in srgb, var(--accent-color), transparent 25%);
-}
-
 .blog-hero h1 {
   margin: 0;
   color: var(--text-primary);
@@ -2399,9 +2335,6 @@ body.index-page .grid {
   color: #fff;
   border-top-color: rgba(255, 255, 255, 0.25);
 }
-.blog-post-card--cover .blog-post-link-arrow {
-  color: #fff;
-}
 .blog-post-card--cover .blog-post-link:hover {
   color: rgba(255, 255, 255, 0.85);
 }
@@ -2418,11 +2351,6 @@ body.index-page .grid {
   font-weight: 600;
   text-decoration: none;
   transition: color 180ms ease, gap 180ms ease;
-}
-
-.blog-post-link-arrow {
-  color: var(--accent-color);
-  font-size: 1rem;
 }
 
 .blog-post-link:hover {
@@ -2539,26 +2467,11 @@ body.index-page .grid {
   border-bottom: 1px solid var(--border-color);
 }
 
-.admin-eyebrow,
-.admin-card-kicker {
-  color: var(--text-secondary);
-  font: 600 0.7rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
-  letter-spacing: 0.15em;
-}
-
-.admin-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.admin-eyebrow span {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent-color);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--accent-color), transparent 20%);
+.admin-editor-mode {
+  margin: 0 0 6px;
+  color: var(--accent-color);
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 .admin-hero h1 {

@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       link.className = "blog-post-link";
       link.href = "post.html?id=" + encodeURIComponent(String(post.id));
       link.setAttribute("aria-label", "阅读全文：" + title.textContent);
-      link.innerHTML = '<span>阅读全文</span><span class="blog-post-link-arrow" aria-hidden="true">↗</span>';
+      link.textContent = "阅读全文";
 
       content.append(meta, title, excerpt, link);
       card.appendChild(content);
