@@ -18,6 +18,7 @@ function loadNavbar() {
     '          <a href="/index.html" class="nav-dropdown-link">主页</a>' +
     '          <a href="/blog.html" class="nav-dropdown-link">博客</a>' +
     '          <a href="/motion-web/cases/" class="nav-dropdown-link">动效案例</a>' +
+    '          <a href="/site.html" class="nav-dropdown-link">这个网站</a>' +
     '        </div>' +
     '      </div>' +
     '      <button id="theme-toggle" class="nav-theme-toggle" type="button" aria-label="切换主题" aria-pressed="false">' +

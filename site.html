@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>这个网站是怎么搭的 - Yopo</title>
+    <meta name="description" content="这个网站的来路：技术栈、跑在哪、改一次代码要经过什么、都改过什么。" />
+    <link rel="alternate" type="application/rss+xml" title="Yopo 的博客" href="/feed.xml" />
+    <meta name="author" content="Yopo" />
+    <meta property="og:title" content="这个网站是怎么搭的" />
+    <meta property="og:description" content="手写页面 + Node/Express/MySQL + Docker，跑在自己的 VPS 上。" />
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" type="image/jpeg">
+    <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet">
+    <script src="theme-init.js?v=2"></script>
+    <link rel="stylesheet" href="style.css?v=25">
+</head>
+<body>
+
+<div id="global-nav"></div>
+
+<main id="main-content" class="container site-page">
+    <header class="blog-hero fade-in">
+        <h1>这个网站<span>。</span></h1>
+        <p>怎么搭的、跑在哪、改过什么。<br class="blog-mobile-break">没有一行是买的模板。</p>
+    </header>
+
+    <section class="card site-card fade-in" aria-labelledby="site-stack">
+        <h2 id="site-stack">用什么做的</h2>
+        <dl class="site-stack">
+            <dt>页面</dt>
+            <dd>手写的 HTML、CSS 和原生 JavaScript。没有框架，也没有构建步骤，改完推上去就是线上。</dd>
+            <dt>后端</dt>
+            <dd>Node.js + Express + MySQL 8。接口只有两组：文章和评论。</dd>
+            <dt>跑在哪</dt>
+            <dd>一台 Racknerd 的 VPS，965MB 内存，Ubuntu 20.04。Nginx、API、MySQL 各一个 Docker 容器。</dd>
+            <dt>评论</dt>
+            <dd>自己写的。不登录、不填邮箱、昵称自动生成，留言先审后发。原来用的是 Giscus，因为它要求访客有 GitHub 账号，就换掉了。</dd>
+            <dt>写作</dt>
+            <dd>文章在 Obsidian 里写，用仓库里的 <code>scripts/publish.mjs</code> 发布，正文按 Markdown 渲染。</dd>
+            <dt>订阅</dt>
+            <dd>RSS 在 <a href="/feed.xml">/feed.xml</a>，发布时自动更新。</dd>
+        </dl>
+    </section>
+
+    <section class="card site-card fade-in" aria-labelledby="site-flow">
+        <h2 id="site-flow">改一次要经过什么</h2>
+        <ol class="site-flow">
+            <li>在 VS Code 里改，本地先跑测试：后端 59 条断言，评论 Markdown 渲染器 15 条。</li>
+            <li>提交推送到 GitHub。静态站和后端是两个仓库，分开部署。</li>
+            <li>静态站由 GitHub Actions 接手：SSH 到服务器拉代码，重启 Nginx。</li>
+            <li>后端由服务器上的定时任务每 5 分钟拉一次，部署前先过一道语法检查，不通过就回滚代码、也不重启容器。</li>
+            <li>改了环境变量要另外重建容器——那些值是容器创建时烤进去的，光重启读不到。</li>
+            <li>写完文章在 Obsidian 里执行发布脚本，它会提交到数据库并重新生成 RSS。</li>
+        </ol>
+    </section>
+
+    <section class="card site-card fade-in" aria-labelledby="site-log">
+        <h2 id="site-log">更新记录</h2>
+        <div class="timeline-list">
+            <div class="timeline-item">
+                <span class="timeline-date">2025.12</span>
+                <span class="timeline-text">第一个版本上线，还是个便当盒格子页。</span>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2026.01</span>
+                <span class="timeline-text">开始学 Docker，把 API 部署到自己的服务器上。</span>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2026.02</span>
+                <span class="timeline-text">Nginx 反向代理配好，按域名分流到博客、网盘和面板。</span>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2026.05</span>
+                <span class="timeline-text">数据库被勒索扫描器清空，旧博客数据没了。原因是当时 3306 端口直接对公网开放。</span>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2026.08</span>
+                <span class="timeline-text">重建 MySQL 和文章表，从此 3306 只绑本机。</span>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2026.10.01</span>
+                <span class="timeline-text">博客后端容器化，文章接口上线。</span>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2026.10.03</span>
+                <span class="timeline-text">评论区从 Giscus 换成自己写的：免登录、蜜罐、限流、先审后发，加表情回应。后端改用连接池，并给两个仓库都配上自动部署。</span>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-date">2026.10.04</span>
+                <span class="timeline-text">评论支持排序、Markdown 和楼中楼回复；加了 RSS 和 Obsidian 一键发布；服务器端口收口，管理面板停用。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card site-card fade-in" aria-labelledby="site-todo">
+        <h2 id="site-todo">还没做的</h2>
+        <p>敏感词过滤、评论分页、文章归档页。最主要的是文章还太少——这个站现在功能比内容多。</p>
+    </section>
+
+    <div id="global-footer"></div>
+    <script src="/footer.js?v=4" defer></script>
+</main>
+
+<script src="/config.js?v=3" defer></script>
+<script src="/nav.js?v=3" defer></script>
+</body>
+</html>
