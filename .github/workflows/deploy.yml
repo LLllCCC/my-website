@@ -7,7 +7,28 @@ on:
       - main
 
 jobs:
+  lint:
+    name: 检查与测试
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: 安装 Node 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: 安装依赖
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: 格式检查
+        run: npm run format:check
+      - name: 评论渲染测试
+        run: npm test
+
   deploy:
+    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: 远程连接服务器并更新
