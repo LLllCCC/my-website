@@ -50,7 +50,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       card.dataset.index = String(chronologicalRank.get(String(post.id)) || 0).padStart(2, "0");
       var cover = safeCover(post.cover);
       if (cover) {
-        card.style.backgroundImage = "linear-gradient(145deg, rgba(0,0,0,.18), rgba(0,0,0,.72)), url(" + JSON.stringify(cover) + ")";
+        card.style.backgroundImage =
+          "linear-gradient(145deg, rgba(0,0,0,.18), rgba(0,0,0,.72)), url(" +
+          JSON.stringify(cover) +
+          ")";
         card.classList.add("blog-post-card--cover");
       }
 
@@ -81,14 +84,16 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       var title = document.createElement("h2");
       title.className = "blog-post-title";
-      title.textContent = typeof post.title === "string" && post.title.trim() ? post.title : "未命名文章";
+      title.textContent =
+        typeof post.title === "string" && post.title.trim() ? post.title : "未命名文章";
 
       var excerpt = document.createElement("p");
       excerpt.className = "blog-post-excerpt";
       var summary = typeof post.description === "string" ? post.description.trim() : "";
-      excerpt.textContent = summary && summary !== title.textContent
-        ? summary
-        : "一段关于代码与日常的记录，点开继续阅读。";
+      excerpt.textContent =
+        summary && summary !== title.textContent
+          ? summary
+          : "一段关于代码与日常的记录，点开继续阅读。";
 
       var link = document.createElement("a");
       link.className = "blog-post-link";
@@ -105,16 +110,21 @@ document.addEventListener("DOMContentLoaded", async function () {
   function filterPosts() {
     var keyword = searchInput ? searchInput.value.trim().toLocaleLowerCase() : "";
     var filtered = allPosts.filter(function (post) {
-      var tags = normalizeTags(post.tags).split(",").map(function (tag) { return tag.trim(); });
+      var tags = normalizeTags(post.tags)
+        .split(",")
+        .map(function (tag) {
+          return tag.trim();
+        });
       var matchesTag = !activeTag || tags.includes(activeTag);
       var haystack = [post.title, post.description].filter(Boolean).join(" ").toLocaleLowerCase();
       return matchesTag && haystack.includes(keyword);
     });
 
     if (resultCount) {
-      resultCount.textContent = keyword || activeTag
-        ? "找到 " + filtered.length + " 篇"
-        : "最近更新 · " + filtered.length + " 篇";
+      resultCount.textContent =
+        keyword || activeTag
+          ? "找到 " + filtered.length + " 篇"
+          : "最近更新 · " + filtered.length + " 篇";
     }
     renderPosts(filtered);
   }
@@ -123,10 +133,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!tagCloud) return;
     var counts = new Map();
     allPosts.forEach(function (post) {
-      normalizeTags(post.tags).split(",").forEach(function (value) {
-        var tag = value.trim();
-        if (tag) counts.set(tag, (counts.get(tag) || 0) + 1);
-      });
+      normalizeTags(post.tags)
+        .split(",")
+        .forEach(function (value) {
+          var tag = value.trim();
+          if (tag) counts.set(tag, (counts.get(tag) || 0) + 1);
+        });
     });
 
     tagCloud.replaceChildren();
@@ -147,27 +159,31 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
     tagCloud.appendChild(allButton);
 
-    Array.from(counts.entries()).sort(function (a, b) { return b[1] - a[1]; }).forEach(function (entry) {
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "tag-btn";
-      button.textContent = entry[0] + " " + String(entry[1]).padStart(2, "0");
-      button.setAttribute("aria-pressed", "false");
-      button.addEventListener("click", function () {
-        activeTag = activeTag === entry[0] ? null : entry[0];
-        tagCloud.querySelectorAll(".tag-btn").forEach(function (item) {
-          var active = activeTag !== null && item === button;
-          item.classList.toggle("is-active", active);
-          item.setAttribute("aria-pressed", String(active));
+    Array.from(counts.entries())
+      .sort(function (a, b) {
+        return b[1] - a[1];
+      })
+      .forEach(function (entry) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "tag-btn";
+        button.textContent = entry[0] + " " + String(entry[1]).padStart(2, "0");
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", function () {
+          activeTag = activeTag === entry[0] ? null : entry[0];
+          tagCloud.querySelectorAll(".tag-btn").forEach(function (item) {
+            var active = activeTag !== null && item === button;
+            item.classList.toggle("is-active", active);
+            item.setAttribute("aria-pressed", String(active));
+          });
+          if (!activeTag) {
+            allButton.classList.add("is-active");
+            allButton.setAttribute("aria-pressed", "true");
+          }
+          filterPosts();
         });
-        if (!activeTag) {
-          allButton.classList.add("is-active");
-          allButton.setAttribute("aria-pressed", "true");
-        }
-        filterPosts();
+        tagCloud.appendChild(button);
       });
-      tagCloud.appendChild(button);
-    });
   }
 
   if (searchInput) searchInput.addEventListener("input", debounce(filterPosts, 180));
@@ -177,17 +193,24 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!response.ok) throw new Error("HTTP " + response.status);
     var posts = await response.json();
     if (!Array.isArray(posts)) throw new Error("Invalid response");
-    allPosts = posts.filter(function (post) { return post && post.id != null; }).map(function (post) {
-      post.tags = normalizeTags(post.tags);
-      return post;
-    });
-    allPosts.slice().sort(function (a, b) {
-      var timeA = Date.parse(a.date || "") || 0;
-      var timeB = Date.parse(b.date || "") || 0;
-      return timeA - timeB || Number(a.id) - Number(b.id);
-    }).forEach(function (post, index) {
-      chronologicalRank.set(String(post.id), index + 1);
-    });
+    allPosts = posts
+      .filter(function (post) {
+        return post && post.id != null;
+      })
+      .map(function (post) {
+        post.tags = normalizeTags(post.tags);
+        return post;
+      });
+    allPosts
+      .slice()
+      .sort(function (a, b) {
+        var timeA = Date.parse(a.date || "") || 0;
+        var timeB = Date.parse(b.date || "") || 0;
+        return timeA - timeB || Number(a.id) - Number(b.id);
+      })
+      .forEach(function (post, index) {
+        chronologicalRank.set(String(post.id), index + 1);
+      });
 
     if (totalCount) totalCount.textContent = String(allPosts.length).padStart(2, "0");
     if (!allPosts.length) {

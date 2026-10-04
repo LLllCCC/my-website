@@ -1,18 +1,11 @@
-// 全站统一配置
+// 全站共享工具：各页面脚本通过经典脚本全局使用（/* exported */ 声明给 lint）。
+/* exported CONFIG, showToast, debounce */
 var CONFIG = {
   API_BASE: "/api",
   POSTS_URL: "/api/posts",
   SITE_NAME: "Yopo",
   SITE_URL: "https://yopoo.888431.xyz",
 };
-
-// HTML 转义 —— 防止 XSS 攻击
-function escapeHtml(str) {
-  if (str == null) return "";
-  var div = document.createElement("div");
-  div.appendChild(document.createTextNode(str));
-  return div.innerHTML;
-}
 
 // Toast 通知工具
 function showToast(message) {
@@ -23,7 +16,9 @@ function showToast(message) {
 
   setTimeout(function () {
     toast.classList.add("fade-out");
-    setTimeout(function () { toast.remove(); }, 500);
+    setTimeout(function () {
+      toast.remove();
+    }, 500);
   }, 3000);
 }
 
@@ -34,6 +29,8 @@ function debounce(fn, delay) {
     var ctx = this;
     var args = arguments;
     clearTimeout(timer);
-    timer = setTimeout(function () { fn.apply(ctx, args); }, delay);
+    timer = setTimeout(function () {
+      fn.apply(ctx, args);
+    }, delay);
   };
 }

@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "generate-posts": "python scripts/generate_posts.py"
+    "generate-posts": "python scripts/generate_posts.py",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"*.js\" \"scripts/*.mjs\"",
+    "format:check": "prettier --check \"*.js\" \"scripts/*.mjs\"",
+    "test": "node scripts/test-comment-markdown.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9"
   }
 }

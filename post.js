@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   initComments(postId);
 
   try {
-    var res = await fetch(CONFIG.API_BASE + "/posts/" + postId, { headers: { Accept: "application/json" } });
+    var res = await fetch(CONFIG.API_BASE + "/posts/" + postId, {
+      headers: { Accept: "application/json" },
+    });
     if (!res.ok) throw new Error("HTTP " + res.status);
     var post = await res.json();
 
@@ -30,12 +32,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     var tags = document.getElementById("article-tags");
     if (tags) {
       var tagValues = Array.isArray(post.tags) ? post.tags : String(post.tags || "").split(",");
-      tagValues.map(function (tag) { return String(tag).trim(); }).filter(Boolean).forEach(function (tag) {
-        var chip = document.createElement("span");
-        chip.className = "article-tag";
-        chip.textContent = tag;
-        tags.appendChild(chip);
-      });
+      tagValues
+        .map(function (tag) {
+          return String(tag).trim();
+        })
+        .filter(Boolean)
+        .forEach(function (tag) {
+          var chip = document.createElement("span");
+          chip.className = "article-tag";
+          chip.textContent = tag;
+          tags.appendChild(chip);
+        });
     }
 
     var markdownRaw = post.content || "这篇文章还没有正文内容哦。";
@@ -46,16 +53,28 @@ document.addEventListener("DOMContentLoaded", async function () {
     var coverImage = document.getElementById("article-cover-image");
     if (cover && coverUrl) {
       coverImage.alt = (post.title || "文章") + " 封面";
-      coverImage.addEventListener("load", function () {
-        cover.querySelector(".article-hero-cover-backdrop").style.backgroundImage = "url(" + JSON.stringify(coverUrl) + ")";
-        cover.hidden = false;
-        enableCoverReposition(cover, coverImage, postId);
-      }, { once: true });
-      coverImage.addEventListener("error", function () { cover.hidden = true; }, { once: true });
+      coverImage.addEventListener(
+        "load",
+        function () {
+          cover.querySelector(".article-hero-cover-backdrop").style.backgroundImage =
+            "url(" + JSON.stringify(coverUrl) + ")";
+          cover.hidden = false;
+          enableCoverReposition(cover, coverImage, postId);
+        },
+        { once: true }
+      );
+      coverImage.addEventListener(
+        "error",
+        function () {
+          cover.hidden = true;
+        },
+        { once: true }
+      );
       coverImage.src = coverUrl;
     }
     markdownRaw = convertBareImageLinks(markdownRaw);
-    var count = (markdownRaw.match(/[\u3400-\u9fff]/g) || []).length +
+    var count =
+      (markdownRaw.match(/[\u3400-\u9fff]/g) || []).length +
       (markdownRaw.match(/[A-Za-z0-9]+/g) || []).length;
     var minutes = Math.max(1, Math.ceil(count / 450));
     var readTime = document.getElementById("article-read-time");
@@ -128,22 +147,30 @@ function findFirstMarkdownImage(markdown) {
     var markdownMatch = line.match(/^!\[[^\]]*\]\(<?(https?:\/\/[^\s)>]+)>?(?:\s+[^)]*)?\)$/i);
     if (markdownMatch) return { url: markdownMatch[1], line: lines[i], standalone: true };
     var bareMatch = line.match(/^(https?:\/\/\S+)$/i);
-    if (bareMatch && isImageUrl(bareMatch[1])) return { url: bareMatch[1], line: lines[i], standalone: true };
+    if (bareMatch && isImageUrl(bareMatch[1]))
+      return { url: bareMatch[1], line: lines[i], standalone: true };
   }
   var inline = markdown.match(/!\[[^\]]*\]\(<?(https?:\/\/[^\s)>]+)>?(?:\s+[^)]*)?\)/i);
   if (inline) return { url: inline[1], line: "", standalone: false };
   var urls = markdown.match(/https?:\/\/[^\s<>]+/gi) || [];
-  var imageUrl = urls.map(function (url) { return url.replace(/[.,;!?]+$/, ""); }).find(isImageUrl);
+  var imageUrl = urls
+    .map(function (url) {
+      return url.replace(/[.,;!?]+$/, "");
+    })
+    .find(isImageUrl);
   return imageUrl ? { url: imageUrl, line: "", standalone: false } : null;
 }
 
 function convertBareImageLinks(markdown) {
-  return markdown.split(/\r?\n/).map(function (line) {
-    var trimmed = line.trim();
-    var match = trimmed.match(/^(https?:\/\/\S+)$/i);
-    if (!match || !isImageUrl(match[1])) return line;
-    return "![](" + match[1] + ")";
-  }).join("\n");
+  return markdown
+    .split(/\r?\n/)
+    .map(function (line) {
+      var trimmed = line.trim();
+      var match = trimmed.match(/^(https?:\/\/\S+)$/i);
+      if (!match || !isImageUrl(match[1])) return line;
+      return "![](" + match[1] + ")";
+    })
+    .join("\n");
 }
 
 function replaceImageLinks(articleBody) {
@@ -162,9 +189,12 @@ function replaceImageLinks(articleBody) {
 
   var walker = document.createTreeWalker(articleBody, NodeFilter.SHOW_TEXT, {
     acceptNode: function (node) {
-      return node.parentElement && !node.parentElement.closest("a, code, pre, script, style") &&
-        /https?:\/\/\S+/i.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-    }
+      return node.parentElement &&
+        !node.parentElement.closest("a, code, pre, script, style") &&
+        /https?:\/\/\S+/i.test(node.nodeValue)
+        ? NodeFilter.FILTER_ACCEPT
+        : NodeFilter.FILTER_REJECT;
+    },
   });
   var textNodes = [];
   while (walker.nextNode()) textNodes.push(walker.currentNode);
@@ -179,7 +209,8 @@ function replaceImageLinks(articleBody) {
       var candidate = match[0].replace(/[.,;!?]+$/, "");
       var imageUrl = safeImageUrl(candidate);
       if (!imageUrl || !isImageUrl(imageUrl)) continue;
-      if (match.index > lastIndex) fragment.appendChild(document.createTextNode(value.slice(lastIndex, match.index)));
+      if (match.index > lastIndex)
+        fragment.appendChild(document.createTextNode(value.slice(lastIndex, match.index)));
       var image = document.createElement("img");
       image.src = imageUrl;
       image.alt = "文章图片";
@@ -190,7 +221,8 @@ function replaceImageLinks(articleBody) {
       replaced = true;
     }
     if (replaced) {
-      if (lastIndex < value.length) fragment.appendChild(document.createTextNode(value.slice(lastIndex)));
+      if (lastIndex < value.length)
+        fragment.appendChild(document.createTextNode(value.slice(lastIndex)));
       node.replaceWith(fragment);
     }
   });
@@ -208,9 +240,13 @@ function enableCoverReposition(frame, image, postId) {
     image.style.objectPosition = position.x + "% " + position.y + "%";
   }
   function savePosition() {
-    try { localStorage.setItem(storageKey, JSON.stringify(position)); } catch (_) {}
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(position));
+    } catch (_) {}
   }
-  function clamp(value) { return Math.max(0, Math.min(100, value)); }
+  function clamp(value) {
+    return Math.max(0, Math.min(100, value));
+  }
   function drag(event) {
     if (event.button !== 0) return;
     event.preventDefault();
@@ -225,8 +261,12 @@ function enableCoverReposition(frame, image, postId) {
     var overflowY = Math.max(0, image.naturalHeight * scale - rect.height);
 
     function move(moveEvent) {
-      position.x = overflowX ? clamp(startPosition.x - (moveEvent.clientX - startX) / overflowX * 100) : 50;
-      position.y = overflowY ? clamp(startPosition.y - (moveEvent.clientY - startY) / overflowY * 100) : 50;
+      position.x = overflowX
+        ? clamp(startPosition.x - ((moveEvent.clientX - startX) / overflowX) * 100)
+        : 50;
+      position.y = overflowY
+        ? clamp(startPosition.y - ((moveEvent.clientY - startY) / overflowY) * 100)
+        : 50;
       renderPosition();
     }
     function finish() {
@@ -275,7 +315,8 @@ function buildTOC(articleBody) {
   list.className = "article-toc-list";
   headings.forEach(function (heading) {
     var item = document.createElement("li");
-    item.className = "article-toc-item" + (heading.tagName === "H3" ? " article-toc-item--sub" : "");
+    item.className =
+      "article-toc-item" + (heading.tagName === "H3" ? " article-toc-item--sub" : "");
     var link = document.createElement("a");
     link.href = "#" + heading.id;
     link.textContent = heading.textContent;
@@ -296,12 +337,16 @@ function initReadingProgress() {
     bar.style.width = amount + "%";
     scheduled = false;
   }
-  window.addEventListener("scroll", function () {
-    if (!scheduled) {
-      scheduled = true;
-      window.requestAnimationFrame(update);
-    }
-  }, { passive: true });
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scheduled) {
+        scheduled = true;
+        window.requestAnimationFrame(update);
+      }
+    },
+    { passive: true }
+  );
   update();
 }
 
@@ -315,9 +360,11 @@ function randomNickname() {
   function pick(list) {
     return list[Math.floor(Math.random() * list.length)];
   }
-  return pick(COMMENT_NICKNAME_WORDS.adjectives) +
+  return (
+    pick(COMMENT_NICKNAME_WORDS.adjectives) +
     pick(COMMENT_NICKNAME_WORDS.nouns) +
-    String(100 + Math.floor(Math.random() * 900));
+    String(100 + Math.floor(Math.random() * 900))
+  );
 }
 
 function rememberedNickname() {
@@ -361,7 +408,13 @@ function visitorId() {
 function tappedReactions() {
   try {
     var list = JSON.parse(localStorage.getItem(COMMENT_REACTION_KEY) || "[]");
-    return new Set(Array.isArray(list) ? list.filter(function (item) { return typeof item === "string"; }) : []);
+    return new Set(
+      Array.isArray(list)
+        ? list.filter(function (item) {
+            return typeof item === "string";
+          })
+        : []
+    );
   } catch (_) {
     return new Set();
   }
@@ -377,7 +430,11 @@ var COMMENT_SORT_KEY = "yopo-comment-sort";
 function savedCommentSort() {
   try {
     var saved = localStorage.getItem(COMMENT_SORT_KEY);
-    return COMMENT_SORTS.some(function (item) { return item.key === saved; }) ? saved : "old";
+    return COMMENT_SORTS.some(function (item) {
+      return item.key === saved;
+    })
+      ? saved
+      : "old";
   } catch (_) {
     return "old";
   }
@@ -393,9 +450,20 @@ function formatCommentDate(value) {
   if (!value) return "";
   var date = new Date(value);
   if (isNaN(date.getTime())) return "";
-  function pad(part) { return String(part).padStart(2, "0"); }
-  return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) +
-    " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+  function pad(part) {
+    return String(part).padStart(2, "0");
+  }
+  return (
+    date.getFullYear() +
+    "-" +
+    pad(date.getMonth() + 1) +
+    "-" +
+    pad(date.getDate()) +
+    " " +
+    pad(date.getHours()) +
+    ":" +
+    pad(date.getMinutes())
+  );
 }
 
 function initComments(postId) {
@@ -445,7 +513,8 @@ function initComments(postId) {
     replyingTo = item;
     if (!replyingBox) return;
     replyingBox.hidden = !item;
-    if (item && replyingText) replyingText.textContent = "正在回复 @" + (item.nickname || "匿名访客");
+    if (item && replyingText)
+      replyingText.textContent = "正在回复 @" + (item.nickname || "匿名访客");
   }
 
   function startReply(item) {
@@ -464,11 +533,14 @@ function initComments(postId) {
     if (button.classList.contains("is-busy")) return;
     button.classList.add("is-busy");
     try {
-      var res = await fetch(CONFIG.API_BASE + "/comments/" + encodeURIComponent(item.id) + "/reactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ emoji: emoji, visitor: visitor }),
-      });
+      var res = await fetch(
+        CONFIG.API_BASE + "/comments/" + encodeURIComponent(item.id) + "/reactions",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ emoji: emoji, visitor: visitor }),
+        }
+      );
       if (!res.ok) throw new Error("HTTP " + res.status);
       var data = await res.json();
       item.reactions = Array.isArray(data.reactions) ? data.reactions : [];
@@ -497,14 +569,18 @@ function initComments(postId) {
       button.textContent = emoji + (count ? " " + count : "");
       button.setAttribute("aria-label", "用" + emoji + "回应，目前 " + count + " 个");
       if (tapped.has(item.id + "|" + emoji)) button.classList.add("is-tapped");
-      button.addEventListener("click", function () { respond(item, emoji, button); });
+      button.addEventListener("click", function () {
+        respond(item, emoji, button);
+      });
       row.appendChild(button);
     });
     var reply = document.createElement("button");
     reply.type = "button";
     reply.className = "comment-reply-btn";
     reply.textContent = "回复";
-    reply.addEventListener("click", function () { startReply(item); });
+    reply.addEventListener("click", function () {
+      startReply(item);
+    });
     row.appendChild(reply);
     return row;
   }
@@ -609,14 +685,19 @@ function initComments(postId) {
         replyingTo
           ? "已提交，通过审核后会显示在那条留言下面。"
           : "已提交，通过审核后会显示在这里。",
-        false,
+        false
       );
       setReplying(null);
     } catch (err) {
       console.error(err);
-      setStatus(err.status === 429 ? "留言太快了，请稍后再试。"
-        : err.status === 400 ? "留言太长或内容为空，改一下再提交。"
-        : "提交失败，博客服务可能暂时不可用。", true);
+      setStatus(
+        err.status === 429
+          ? "留言太快了，请稍后再试。"
+          : err.status === 400
+            ? "留言太长或内容为空，改一下再提交。"
+            : "提交失败，博客服务可能暂时不可用。",
+        true
+      );
     } finally {
       submitButton.disabled = false;
     }

@@ -60,7 +60,7 @@ async function readToken() {
   const envFile = resolve(repoRoot, "..", "myblog-api", ".env");
   if (!existsSync(envFile)) {
     throw new Error(
-      "找不到管理员令牌：请设环境变量 BLOG_ADMIN_TOKEN，或在 " + envFile + " 里写 ADMIN_TOKEN=...",
+      "找不到管理员令牌：请设环境变量 BLOG_ADMIN_TOKEN，或在 " + envFile + " 里写 ADMIN_TOKEN=..."
     );
   }
   const text = await readFile(envFile, "utf8");
@@ -71,8 +71,9 @@ async function readToken() {
 }
 
 function escapeXml(value) {
-  return String(value || "").replace(/[<>&"']/g, (ch) =>
-    ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" }[ch]),
+  return String(value || "").replace(
+    /[<>&"']/g,
+    (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[ch]
   );
 }
 
@@ -89,18 +90,20 @@ async function buildFeed() {
         "    <item>",
         "      <title>" + escapeXml(post.title) + "</title>",
         "      <link>" + link + "</link>",
-        "      <guid isPermaLink=\"false\">" + escapeXml(String(post.id)) + "</guid>",
+        '      <guid isPermaLink="false">' + escapeXml(String(post.id)) + "</guid>",
         date ? "      <pubDate>" + new Date(date + "T12:00:00Z").toUTCString() + "</pubDate>" : "",
         "      <description>" + escapeXml(post.description || post.title) + "</description>",
         post.tags ? "      <category>" + escapeXml(post.tags) + "</category>" : "",
         "    </item>",
-      ].filter(Boolean).join("\n");
+      ]
+        .filter(Boolean)
+        .join("\n");
     })
     .join("\n");
 
   const xml = [
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-    "<rss version=\"2.0\">",
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<rss version="2.0">',
     "  <channel>",
     "    <title>Yopo 的博客</title>",
     "    <link>" + SITE + "/blog.html</link>",

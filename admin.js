@@ -21,11 +21,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function apiRequest(path, options) {
     var requestOptions = Object.assign({ cache: "no-store" }, options || {});
-    requestOptions.headers = Object.assign({ Accept: "application/json" }, requestOptions.headers || {});
+    requestOptions.headers = Object.assign(
+      { Accept: "application/json" },
+      requestOptions.headers || {}
+    );
     if (token) requestOptions.headers.Authorization = "Bearer " + token;
     var response = await fetch(CONFIG.API_BASE + path, requestOptions);
     var result = {};
-    try { result = await response.json(); } catch (_) { /* API may return an empty response */ }
+    try {
+      result = await response.json();
+    } catch (_) {
+      /* API may return an empty response */
+    }
     if (!response.ok) {
       var error = new Error(result.error || "请求失败（HTTP " + response.status + "）");
       error.status = response.status;
@@ -44,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     form.reset();
     document.getElementById("admin-editor-mode").textContent = "NEW ENTRY";
     document.getElementById("admin-editor-title").textContent = "写一篇新文章";
-    saveButton.textContent = '发布文章';
+    saveButton.textContent = "发布文章";
     document.getElementById("admin-cancel-edit").hidden = true;
     charCount.textContent = "0 字符";
     setStatus(formStatus, "", false);
@@ -80,13 +87,17 @@ document.addEventListener("DOMContentLoaded", function () {
       edit.className = "admin-action-button";
       edit.textContent = "编辑";
       edit.setAttribute("aria-label", "编辑：" + (post.title || "未命名文章"));
-      edit.addEventListener("click", function () { editPost(post.id); });
+      edit.addEventListener("click", function () {
+        editPost(post.id);
+      });
       var remove = document.createElement("button");
       remove.type = "button";
       remove.className = "admin-action-button admin-action-button--danger";
       remove.textContent = "删除";
       remove.setAttribute("aria-label", "删除：" + (post.title || "未命名文章"));
-      remove.addEventListener("click", function () { deletePost(post); });
+      remove.addEventListener("click", function () {
+        deletePost(post);
+      });
       actions.append(edit, remove);
 
       item.append(info, actions);
@@ -103,7 +114,10 @@ document.addEventListener("DOMContentLoaded", function () {
       list.replaceChildren();
       var message = document.createElement("p");
       message.className = "admin-list-placeholder is-error";
-      message.textContent = error.status === 401 ? "令牌已失效，请退出后重新验证。" : "文章列表读取失败，请检查 API 服务。";
+      message.textContent =
+        error.status === 401
+          ? "令牌已失效，请退出后重新验证。"
+          : "文章列表读取失败，请检查 API 服务。";
       list.appendChild(message);
       if (error.status === 401) lockWorkspace();
     }
@@ -119,9 +133,20 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!value) return "";
     var date = new Date(value);
     if (isNaN(date.getTime())) return String(value);
-    function pad(part) { return String(part).padStart(2, "0"); }
-    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) +
-      " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+    function pad(part) {
+      return String(part).padStart(2, "0");
+    }
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      " " +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes())
+    );
   }
 
   function renderComments(comments) {
@@ -130,7 +155,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!comments.length) {
       var empty = document.createElement("p");
       empty.className = "admin-list-placeholder";
-      empty.textContent = commentFilter.value === "pending" ? "没有待审核的评论。" : "这个状态下还没有评论。";
+      empty.textContent =
+        commentFilter.value === "pending" ? "没有待审核的评论。" : "这个状态下还没有评论。";
       commentList.appendChild(empty);
       return;
     }
@@ -185,12 +211,18 @@ document.addEventListener("DOMContentLoaded", function () {
         actions.appendChild(button);
       }
       if (comment.status !== "approved") {
-        action("通过", "admin-action-button", function () { reviewComment(comment.id, "approved"); });
+        action("通过", "admin-action-button", function () {
+          reviewComment(comment.id, "approved");
+        });
       }
       if (comment.status !== "rejected") {
-        action("拒绝", "admin-action-button", function () { reviewComment(comment.id, "rejected"); });
+        action("拒绝", "admin-action-button", function () {
+          reviewComment(comment.id, "rejected");
+        });
       }
-      action("删除", "admin-action-button admin-action-button--danger", function () { removeComment(comment); });
+      action("删除", "admin-action-button admin-action-button--danger", function () {
+        removeComment(comment);
+      });
 
       item.append(main, actions);
       commentList.appendChild(item);
@@ -200,14 +232,18 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadComments() {
     commentList.innerHTML = '<p class="admin-list-placeholder">正在读取评论…</p>';
     try {
-      var query = commentFilter.value === "all" ? "" : "?status=" + encodeURIComponent(commentFilter.value);
+      var query =
+        commentFilter.value === "all" ? "" : "?status=" + encodeURIComponent(commentFilter.value);
       var comments = await apiRequest("/admin/comments" + query);
       renderComments(Array.isArray(comments) ? comments : []);
     } catch (error) {
       commentList.replaceChildren();
       var message = document.createElement("p");
       message.className = "admin-list-placeholder is-error";
-      message.textContent = error.status === 401 ? "令牌已失效，请退出后重新验证。" : "评论读取失败，请检查 API 服务与评论数据表。";
+      message.textContent =
+        error.status === 401
+          ? "令牌已失效，请退出后重新验证。"
+          : "评论读取失败，请检查 API 服务与评论数据表。";
       commentList.appendChild(message);
       if (error.status === 401) lockWorkspace();
     }
@@ -221,21 +257,35 @@ document.addEventListener("DOMContentLoaded", function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: status }),
       });
-      setStatus(commentStatus, status === "approved" ? "评论已通过，会显示在文章页。" : "评论已拒绝。", false);
+      setStatus(
+        commentStatus,
+        status === "approved" ? "评论已通过，会显示在文章页。" : "评论已拒绝。",
+        false
+      );
       await loadComments();
     } catch (error) {
-      setStatus(commentStatus, error.status === 401 ? "令牌无效，请重新验证。" : "操作失败，请检查 API 服务。", true);
+      setStatus(
+        commentStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "操作失败，请检查 API 服务。",
+        true
+      );
     }
   }
 
   async function removeComment(comment) {
     if (!window.confirm("确定删除这条评论吗？此操作无法撤销。")) return;
     try {
-      await apiRequest("/admin/comments/" + encodeURIComponent(String(comment.id)), { method: "DELETE" });
+      await apiRequest("/admin/comments/" + encodeURIComponent(String(comment.id)), {
+        method: "DELETE",
+      });
       setStatus(commentStatus, "评论已删除。", false);
       await loadComments();
     } catch (error) {
-      setStatus(commentStatus, error.status === 401 ? "令牌无效，请重新验证。" : "删除失败，请检查 API 服务。", true);
+      setStatus(
+        commentStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "删除失败，请检查 API 服务。",
+        true
+      );
     }
   }
 
@@ -250,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("post-content").value = post.content || "";
       document.getElementById("admin-editor-mode").textContent = "EDITING · ID " + post.id;
       document.getElementById("admin-editor-title").textContent = "修改文章";
-      saveButton.textContent = '保存修改';
+      saveButton.textContent = "保存修改";
       document.getElementById("admin-cancel-edit").hidden = false;
       updateCharacterCount();
       setStatus(formStatus, "文章已载入，可以开始编辑。", false);
@@ -261,14 +311,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function deletePost(post) {
-    if (!window.confirm('确定删除《' + (post.title || "未命名文章") + '》吗？此操作无法撤销。')) return;
+    if (!window.confirm("确定删除《" + (post.title || "未命名文章") + "》吗？此操作无法撤销。"))
+      return;
     try {
       await apiRequest("/posts/" + encodeURIComponent(String(post.id)), { method: "DELETE" });
       if (String(editingId) === String(post.id)) resetEditor();
       await loadPosts();
       setStatus(formStatus, "文章已删除。", false);
     } catch (error) {
-      setStatus(formStatus, error.status === 401 ? "令牌无效，请重新验证。" : "删除失败，请检查 API 服务。", true);
+      setStatus(
+        formStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "删除失败，请检查 API 服务。",
+        true
+      );
     }
   }
 
@@ -306,7 +361,10 @@ document.addEventListener("DOMContentLoaded", function () {
         cache: "no-store",
         headers: { Authorization: "Bearer " + candidate, Accept: "application/json" },
       });
-      if (!response.ok) throw new Error(response.status === 401 ? "令牌不正确。" : "验证失败（HTTP " + response.status + "）。");
+      if (!response.ok)
+        throw new Error(
+          response.status === 401 ? "令牌不正确。" : "验证失败（HTTP " + response.status + "）。"
+        );
       unlockWorkspace(candidate);
     } catch (error) {
       setStatus(authStatus, error.message || "无法连接 API，请检查网络。", true);
@@ -343,14 +401,19 @@ document.addEventListener("DOMContentLoaded", function () {
       setStatus(formStatus, wasEditing ? "文章已更新。" : "文章已发布。", false);
       await loadPosts();
     } catch (error) {
-      setStatus(formStatus, error.status === 401 ? "令牌无效，请重新验证。" : "保存失败：" + error.message, true);
+      setStatus(
+        formStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "保存失败：" + error.message,
+        true
+      );
     } finally {
       saveButton.disabled = false;
     }
   });
 
   function updateCharacterCount() {
-    charCount.textContent = document.getElementById("post-content").value.length.toLocaleString("zh-CN") + " 字符";
+    charCount.textContent =
+      document.getElementById("post-content").value.length.toLocaleString("zh-CN") + " 字符";
   }
 
   document.getElementById("post-content").addEventListener("input", updateCharacterCount);
@@ -360,13 +423,18 @@ document.addEventListener("DOMContentLoaded", function () {
   commentFilter.addEventListener("change", loadComments);
   document.getElementById("admin-comments-refresh").addEventListener("click", loadComments);
   document.getElementById("admin-comments-clear").addEventListener("click", async function () {
-    if (!window.confirm("确定清空所有「待审核」评论吗？已显示和已拒绝的不受影响，此操作无法撤销。")) return;
+    if (!window.confirm("确定清空所有「待审核」评论吗？已显示和已拒绝的不受影响，此操作无法撤销。"))
+      return;
     try {
       var result = await apiRequest("/admin/comments?status=pending", { method: "DELETE" });
       setStatus(commentStatus, "已清空 " + (result.deleted || 0) + " 条待审评论。", false);
       await loadComments();
     } catch (error) {
-      setStatus(commentStatus, error.status === 401 ? "令牌无效，请重新验证。" : "清空失败，请检查 API 服务。", true);
+      setStatus(
+        commentStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "清空失败，请检查 API 服务。",
+        true
+      );
     }
   });
 });

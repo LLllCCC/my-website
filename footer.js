@@ -3,11 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
   var year = new Date().getFullYear();
   var footerHTML =
     '<footer class="site-footer">' +
-    '<p>© ' + year + ' Yopo</p>' +
+    "<p>© " +
+    year +
+    " Yopo</p>" +
     '<p class="footer-links">' +
     '<a href="/index.html">首页</a>' +
-    '</p>' +
-    '</footer>';
+    "</p>" +
+    "</footer>";
 
   var footerPlaceholder = document.getElementById("global-footer");
   if (footerPlaceholder) {

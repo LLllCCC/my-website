@@ -75,7 +75,7 @@ const scriptBox = renderText(scriptText);
 check(
   "访客写的 script 不会变成标签",
   !elements(scriptBox).some((node) => node.tagName.toLowerCase() === "script"),
-  elements(scriptBox).map((node) => node.tagName),
+  elements(scriptBox).map((node) => node.tagName)
 );
 check("script 原文作为文字保留", allText(scriptBox) === scriptText, allText(scriptBox));
 
@@ -84,14 +84,16 @@ check(
   "img 标签与事件属性都不会出现",
   !elements(imgBox).some((node) => node.tagName.toLowerCase() === "img") &&
     elements(imgBox).every((node) => !("onerror" in node.attrs)),
-  elements(imgBox).map((node) => node.attrs),
+  elements(imgBox).map((node) => node.attrs)
 );
 
 const jsUrlBox = renderText("看 [点我](javascript:alert(1)) 和 data:text/html,<b>x</b>");
 check(
   "javascript: 与 data: 都不会被做成链接",
   !elements(jsUrlBox).some((node) => /^(javascript|data):/i.test(node.attrs.href || "")),
-  elements(jsUrlBox).filter((node) => node.tagName === "a").map((node) => node.attrs),
+  elements(jsUrlBox)
+    .filter((node) => node.tagName === "a")
+    .map((node) => node.attrs)
 );
 
 const url = "https://example.com/a?b=1&c=2";
@@ -103,7 +105,7 @@ check(
     anchor.attrs.href === url &&
     anchor.attrs.target === "_blank" &&
     anchor.attrs.rel === "nofollow noopener",
-  anchor?.attrs,
+  anchor?.attrs
 );
 
 const trailingBox = renderText("地址 https://example.com。");
@@ -112,7 +114,7 @@ check(
   "中文句号不算进链接",
   trailingAnchor?.attrs.href === "https://example.com" &&
     allText(trailingBox) === "地址 https://example.com。",
-  { href: trailingAnchor?.attrs.href, text: allText(trailingBox) },
+  { href: trailingAnchor?.attrs.href, text: allText(trailingBox) }
 );
 
 const styleBox = renderText("**粗** 和 *斜* 以及 `代码`");
@@ -126,12 +128,10 @@ check(
     allText(styled[1]) === "斜" &&
     styled[2].tagName === "code" &&
     allText(styled[2]) === "代码",
-  styled.map((node) => [node.tagName, allText(node)]),
+  styled.map((node) => [node.tagName, allText(node)])
 );
 
-const lines = elements(renderText("第一行\n第二行\n第三行")).filter(
-  (node) => node.tagName === "p",
-);
+const lines = elements(renderText("第一行\n第二行\n第三行")).filter((node) => node.tagName === "p");
 check("换行拆成多个块", lines.length === 3 && allText(lines[1]) === "第二行", lines.length);
 
 const quoteBox = renderText("> 这是引用\n普通行");
@@ -139,7 +139,7 @@ const quoteLines = elements(quoteBox).filter((node) => node.tagName === "p");
 check(
   "> 开头识别为引用行",
   quoteLines[0].className.includes("comment-md-quote") && allText(quoteLines[0]) === "这是引用",
-  quoteLines.map((node) => node.className),
+  quoteLines.map((node) => node.className)
 );
 
 const blankBox = renderText("上行\n\n下行");
@@ -147,7 +147,7 @@ check(
   "空行保留成占位行",
   elements(blankBox).filter((node) => node.tagName === "p").length === 3 &&
     elements(blankBox).some((node) => node.className.includes("comment-md-blank")),
-  elements(blankBox).map((node) => node.className),
+  elements(blankBox).map((node) => node.className)
 );
 
 const unclosedBox = renderText("**没有闭合 和 `反引号 和 > 不在行首");
@@ -155,15 +155,21 @@ check(
   "未闭合的标记原样显示，不产生节点",
   elements(unclosedBox).every((node) => ["div", "p"].includes(node.tagName)) &&
     allText(unclosedBox) === "**没有闭合 和 `反引号 和 > 不在行首",
-  allText(unclosedBox),
+  allText(unclosedBox)
 );
 
 const longBox = renderText("字".repeat(1000) + "\n" + "https://example.com/".repeat(40));
 check("超长内容不抛错且文字完整", allText(longBox).startsWith("字".repeat(1000)));
 
 const emptyBox = renderText("");
-check("空内容渲染出一个占位行", elements(emptyBox).filter((node) => node.tagName === "p").length === 1);
-check("容器是 div.comment-item-body", emptyBox.tagName === "div" && emptyBox.className === "comment-item-body");
+check(
+  "空内容渲染出一个占位行",
+  elements(emptyBox).filter((node) => node.tagName === "p").length === 1
+);
+check(
+  "容器是 div.comment-item-body",
+  emptyBox.tagName === "div" && emptyBox.className === "comment-item-body"
+);
 
 console.log(failed ? "\n失败 " + failed + " 项" : "\n全部 " + passed + " 项通过");
 process.exit(failed ? 1 : 0);

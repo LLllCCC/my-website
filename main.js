@@ -34,7 +34,7 @@ if (mailtoLink) {
 // 3. 轻量视差效果，仅在支持鼠标且未启用减少动态效果时运行
 // =========================================================
 const canTiltCards = window.matchMedia(
-  "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+  "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)"
 ).matches;
 
 if (canTiltCards) {
@@ -76,18 +76,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!response.ok) return;
     const posts = await response.json();
     if (!Array.isArray(posts) || !posts.length) return;
-    const newest = posts.filter((post) => post && post.id != null).sort((a, b) => {
-      const dateDiff = (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0);
-      return dateDiff || Number(b.id) - Number(a.id);
-    })[0];
+    const newest = posts
+      .filter((post) => post && post.id != null)
+      .sort((a, b) => {
+        const dateDiff = (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0);
+        return dateDiff || Number(b.id) - Number(a.id);
+      })[0];
     if (!newest) return;
 
     const title = document.getElementById("home-blog-title");
     const desc = document.getElementById("home-blog-desc");
-    if (title && typeof newest.title === "string" && newest.title.trim()) title.textContent = newest.title;
-    if (desc) desc.textContent = typeof newest.description === "string" && newest.description.trim() && newest.description !== newest.title
-      ? newest.description
-      : "最新发布 · 点击阅读全文";
+    if (title && typeof newest.title === "string" && newest.title.trim())
+      title.textContent = newest.title;
+    if (desc)
+      desc.textContent =
+        typeof newest.description === "string" &&
+        newest.description.trim() &&
+        newest.description !== newest.title
+          ? newest.description
+          : "最新发布 · 点击阅读全文";
     if (typeof newest.cover === "string" && newest.cover.trim()) {
       const coverUrl = new URL(newest.cover, window.location.href);
       if (coverUrl.protocol === "https:" || coverUrl.protocol === "http:") {
