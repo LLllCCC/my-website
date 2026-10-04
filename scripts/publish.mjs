@@ -51,6 +51,7 @@ function parseNote(raw, fallbackTitle) {
     cover: meta.cover || "",
     description: meta.description || firstParagraph || fallbackTitle,
     content: body.trim(),
+    postId: /^\d+$/.test(meta["post-id"] || "") ? meta["post-id"] : "",
   };
 }
 
@@ -138,8 +139,8 @@ async function main() {
   }
 
   const token = await readToken();
-  const res = await fetch(API + "/posts", {
-    method: "POST",
+  const res = await fetch(note.postId ? API + "/posts/" + note.postId : API + "/posts", {
+    method: note.postId ? "PUT" : "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -157,9 +158,10 @@ async function main() {
     throw new Error("发布失败：HTTP " + res.status + " " + JSON.stringify(result));
   }
 
-  const url = SITE + "/post.html?id=" + result.id;
+  const postId = note.postId || result.id;
+  const url = SITE + "/post.html?id=" + postId;
   const count = await buildFeed();
-  console.log("\n已发布：" + url);
+  console.log("\n" + (note.postId ? "已更新：" : "已发布：") + url);
   console.log("feed.xml 已更新（共 " + count + " 篇）");
 
   if (pushFeed) {
