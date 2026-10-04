@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var year = new Date().getFullYear();
   var footerHTML =
     '<footer class="site-footer">' +
-    '<p>© ' + year + ' Yopo. Designed with Apple Style.</p>' +
+    '<p>© ' + year + ' Yopo</p>' +
     '<p class="footer-links">' +
     '<a href="/index.html">首页</a>' +
     '</p>' +
