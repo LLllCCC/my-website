@@ -1,15 +1,12 @@
 // =========================================================
 // 1. Email 卡片点击监听
 // =========================================================
+// 邮件卡片只在首页存在，其他页面没有这个元素就什么都不做。
 const mailtoLink = document.querySelector('a[href^="mailto:"]');
 if (mailtoLink) {
   mailtoLink.addEventListener("click", function (e) {
     showToast("正在打开邮件客户端");
   });
-} else {
-  console.warn(
-    '邮件链接元素未找到：a[href^="mailto:"] — 未绑定点击音效/问候逻辑。',
-  );
 }
 
 // =========================================================

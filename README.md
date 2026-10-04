@@ -29,6 +29,10 @@
 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) 标注来源，仅限非商业使用；详情见
 `motion-web/ATTRIBUTION.md`。
 
+## 资源版本号约定
+
+静态站没有构建步骤，`?v=N` 是唯一的缓存失效手段：**所有本地 JS/CSS 引用统一用同一个版本号**（当前 `?v=26`）。改了任何 `.js`/`.css` 文件后，把五个 HTML 里全部 `?v=` 一起 +1，否则浏览器可能继续用旧文件。
+
 ## 自动部署配置
 
 `.github/workflows/deploy.yml` 使用固定版本的 SSH Action 和专用部署账号。GitHub Actions
