@@ -116,6 +116,14 @@ async function buildFeed() {
   return posts.length;
 }
 
+function stampPostId(raw, id) {
+  if (/^---\r?\n/.test(raw)) {
+    if (/^post-id\s*:/m.test(raw)) return raw;
+    return raw.replace(/^(---\r?\n)/, "$1post-id: " + id + "\n");
+  }
+  return "---\npost-id: " + id + "\n---\n\n" + raw;
+}
+
 async function main() {
   if (feedOnly) {
     const total = await buildFeed();
@@ -162,6 +170,10 @@ async function main() {
   const url = SITE + "/post.html?id=" + postId;
   const count = await buildFeed();
   console.log("\n" + (note.postId ? "已更新：" : "已发布：") + url);
+  if (!note.postId) {
+    await writeFile(notePath, stampPostId(raw, postId), "utf8");
+    console.log("已把 post-id: " + postId + " 写回笔记，下次再发就是更新而不是新增。");
+  }
   console.log("feed.xml 已更新（共 " + count + " 篇）");
 
   if (pushFeed) {
