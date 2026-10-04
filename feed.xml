@@ -6,6 +6,14 @@
     <description>自己搭的博客：代码、工具和日常。</description>
     <language>zh-CN</language>
     <item>
+      <title>我把博客评论从 Giscus 换成自己写的</title>
+      <link>https://yopoo.888431.xyz/post.html?id=7</link>
+      <guid isPermaLink="false">7</guid>
+      <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
+      <description>我把博客评论从 Giscus 换成自己写的</description>
+      <category>自建服务, 博客, Node.js</category>
+    </item>
+    <item>
       <title>测试</title>
       <link>https://yopoo.888431.xyz/post.html?id=6</link>
       <guid isPermaLink="false">6</guid>
