@@ -4,6 +4,8 @@
 //   node scripts/publish.mjs "D:\\Obsidian\\博客\\某篇文章.md"          # 发布并更新 feed.xml
 //   node scripts/publish.mjs <笔记.md> --dry                            # 只解析不提交
 //   node scripts/publish.mjs <笔记.md> --push                           # 顺带把 feed.xml 提交推送
+//   node scripts/publish.mjs <笔记.md> --host-images                    # 先把正文里的本地图片传图床再发
+//   node scripts/publish.mjs <笔记.md> --host-images --drop-assets        # 传完把本地图挪进库的 .trash
 //
 // 管理员令牌按这个顺序找：环境变量 BLOG_ADMIN_TOKEN → ../myblog-api/.env 里的 ADMIN_TOKEN。
 // 令牌不会被打印，也不会写进任何文件。
@@ -13,6 +15,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { hostLocalImages, DEFAULT_ENDPOINT } from "./host-images.mjs";
 
 const run = promisify(execFile);
 const here = dirname(fileURLToPath(import.meta.url));
@@ -24,10 +27,23 @@ const argPath = process.argv.slice(2).find((a) => !a.startsWith("--"));
 const dryRun = process.argv.includes("--dry");
 const pushFeed = process.argv.includes("--push");
 const feedOnly = process.argv.includes("--feed");
+const hostImages = process.argv.includes("--host-images");
+const dropAssets = process.argv.includes("--drop-assets");
 
 if (!argPath && !feedOnly) {
   console.error("用法：node scripts/publish.mjs <笔记.md> [--dry] [--push]");
   process.exit(1);
+}
+
+function vaultRootOf(notePath) {
+  let dir = dirname(notePath);
+  for (let depth = 0; depth < 12; depth++) {
+    if (existsSync(join(dir, ".obsidian"))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return "";
 }
 
 function parseNote(raw, fallbackTitle) {
@@ -137,7 +153,40 @@ async function main() {
   }
 
   const notePath = resolve(argPath);
-  const raw = await readFile(notePath, "utf8");
+  let raw = await readFile(notePath, "utf8");
+  let linksRewritten = false;
+
+  if (hostImages) {
+    const vaultRoot = vaultRootOf(notePath);
+    const hosted = await hostLocalImages({
+      text: raw,
+      notePath,
+      endpoint: DEFAULT_ENDPOINT,
+      dryRun,
+      dropAfterUpload: dropAssets,
+      trashDir: vaultRoot ? join(vaultRoot, ".trash") : "",
+      onProgress: (line) => console.log(line),
+    });
+    if (hosted.total === 0) {
+      console.log("正文里没有本地图片，不用转图床。");
+    } else if (dryRun) {
+      console.log(
+        `--dry：本地图片 ${hosted.preview.length} 张待上传，${hosted.missing.length} 张找不到文件。`
+      );
+    } else if (hosted.missing.length) {
+      throw new Error(
+        "有图片没能传到图床，已中止发布（避免发出去是死链）：\n  " + hosted.missing.join("\n  ")
+      );
+    } else {
+      raw = hosted.text;
+      linksRewritten = hosted.uploaded.length > 0;
+      console.log(
+        `图片已转图床：${hosted.uploaded.length}/${hosted.total} 张` +
+          (hosted.moved.length ? `，${hosted.moved.length} 张本地图已挪进 .trash` : "")
+      );
+    }
+  }
+
   const fallbackTitle = notePath.split(/[\\/]/).pop().replace(/\.md$/i, "");
   const note = parseNote(raw, fallbackTitle);
 
@@ -181,6 +230,9 @@ async function main() {
   if (!note.postId) {
     await writeFile(notePath, stampPostId(raw, postId), "utf8");
     console.log("已把 post-id: " + postId + " 写回笔记，下次再发就是更新而不是新增。");
+  } else if (linksRewritten) {
+    await writeFile(notePath, raw, "utf8");
+    console.log("正文里的图片链接已改写回笔记（本地路径 → 图床链接）。");
   }
   console.log("feed.xml 已更新（共 " + count + " 篇）");
 
