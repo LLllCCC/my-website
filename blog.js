@@ -1,14 +1,17 @@
+// 博客列表页：搜索、标签云、文章卡片。
+import { CONFIG, debounce, safeHttpUrl } from "./config.js?v=27";
+
 document.addEventListener("DOMContentLoaded", async function () {
-  var listContainer = document.getElementById("dynamic-article-list");
-  var searchInput = document.getElementById("blog-search");
-  var tagCloud = document.getElementById("tag-cloud");
-  var totalCount = document.getElementById("blog-total-count");
-  var resultCount = document.getElementById("blog-result-count");
+  const listContainer = document.getElementById("dynamic-article-list");
+  const searchInput = document.getElementById("blog-search");
+  const tagCloud = document.getElementById("tag-cloud");
+  const totalCount = document.getElementById("blog-total-count");
+  const resultCount = document.getElementById("blog-result-count");
   if (!listContainer) return;
 
-  var allPosts = [];
-  var activeTag = null;
-  var chronologicalRank = new Map();
+  let allPosts = [];
+  let activeTag = null;
+  const chronologicalRank = new Map();
 
   function normalizeTags(tags) {
     if (Array.isArray(tags)) return tags.map(String).join(", ");
@@ -16,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   function setMessage(message, isError) {
-    var paragraph = document.createElement("p");
+    const paragraph = document.createElement("p");
     paragraph.className = "blog-empty-state" + (isError ? " blog-empty-state--error" : "");
     paragraph.setAttribute("role", "status");
     paragraph.textContent = message;
@@ -24,20 +27,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (resultCount) resultCount.textContent = isError ? "暂时无法连接" : "暂无文章";
   }
 
-  function safeCover(value) {
-    if (typeof value !== "string" || !value.trim()) return "";
-    try {
-      var url = new URL(value, window.location.href);
-      return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
-    } catch (_) {
-      return "";
-    }
-  }
-
   function renderPosts(posts) {
     listContainer.replaceChildren();
     if (!posts.length) {
-      var empty = document.createElement("p");
+      const empty = document.createElement("p");
       empty.className = "blog-empty-state";
       empty.textContent = "没有找到匹配的文章。换个关键词或清除标签试试。";
       listContainer.appendChild(empty);
@@ -45,10 +38,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     posts.forEach(function (post) {
-      var card = document.createElement("article");
+      const card = document.createElement("article");
       card.className = "card blog-post-card";
       card.dataset.index = String(chronologicalRank.get(String(post.id)) || 0).padStart(2, "0");
-      var cover = safeCover(post.cover);
+      const cover = safeHttpUrl(post.cover);
       if (cover) {
         card.style.backgroundImage =
           "linear-gradient(145deg, rgba(0,0,0,.18), rgba(0,0,0,.72)), url(" +
@@ -57,45 +50,45 @@ document.addEventListener("DOMContentLoaded", async function () {
         card.classList.add("blog-post-card--cover");
       }
 
-      var content = document.createElement("div");
+      const content = document.createElement("div");
       content.className = "blog-post-content";
-      var meta = document.createElement("div");
+      const meta = document.createElement("div");
       meta.className = "blog-post-meta";
 
-      var date = document.createElement("time");
+      const date = document.createElement("time");
       date.className = "blog-post-date";
-      var rawDate = typeof post.date === "string" ? post.date.substring(0, 10) : "";
+      const rawDate = typeof post.date === "string" ? post.date.substring(0, 10) : "";
       date.textContent = rawDate.replace(/-/g, " / ");
       if (rawDate) date.dateTime = rawDate;
 
-      var tag = document.createElement("span");
+      const tag = document.createElement("span");
       tag.className = "blog-post-tag";
       tag.textContent = normalizeTags(post.tags).split(",")[0].trim();
       meta.append(date, tag);
 
-      var commentCount = Number(post.comment_count) || 0;
+      const commentCount = Number(post.comment_count) || 0;
       if (commentCount > 0) {
-        var comments = document.createElement("span");
+        const comments = document.createElement("span");
         comments.className = "blog-post-comments";
         comments.textContent = "评论 " + commentCount;
         comments.title = "已有 " + commentCount + " 条通过审核的评论";
         meta.appendChild(comments);
       }
 
-      var title = document.createElement("h2");
+      const title = document.createElement("h2");
       title.className = "blog-post-title";
       title.textContent =
         typeof post.title === "string" && post.title.trim() ? post.title : "未命名文章";
 
-      var excerpt = document.createElement("p");
+      const excerpt = document.createElement("p");
       excerpt.className = "blog-post-excerpt";
-      var summary = typeof post.description === "string" ? post.description.trim() : "";
+      const summary = typeof post.description === "string" ? post.description.trim() : "";
       excerpt.textContent =
         summary && summary !== title.textContent
           ? summary
           : "一段关于代码与日常的记录，点开继续阅读。";
 
-      var link = document.createElement("a");
+      const link = document.createElement("a");
       link.className = "blog-post-link";
       link.href = "post.html?id=" + encodeURIComponent(String(post.id));
       link.setAttribute("aria-label", "阅读全文：" + title.textContent);
@@ -108,15 +101,15 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   function filterPosts() {
-    var keyword = searchInput ? searchInput.value.trim().toLocaleLowerCase() : "";
-    var filtered = allPosts.filter(function (post) {
-      var tags = normalizeTags(post.tags)
+    const keyword = searchInput ? searchInput.value.trim().toLocaleLowerCase() : "";
+    const filtered = allPosts.filter(function (post) {
+      const tags = normalizeTags(post.tags)
         .split(",")
         .map(function (tag) {
           return tag.trim();
         });
-      var matchesTag = !activeTag || tags.includes(activeTag);
-      var haystack = [post.title, post.description].filter(Boolean).join(" ").toLocaleLowerCase();
+      const matchesTag = !activeTag || tags.includes(activeTag);
+      const haystack = [post.title, post.description].filter(Boolean).join(" ").toLocaleLowerCase();
       return matchesTag && haystack.includes(keyword);
     });
 
@@ -131,18 +124,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   function buildTagCloud() {
     if (!tagCloud) return;
-    var counts = new Map();
+    const counts = new Map();
     allPosts.forEach(function (post) {
       normalizeTags(post.tags)
         .split(",")
         .forEach(function (value) {
-          var tag = value.trim();
+          const tag = value.trim();
           if (tag) counts.set(tag, (counts.get(tag) || 0) + 1);
         });
     });
 
     tagCloud.replaceChildren();
-    var allButton = document.createElement("button");
+    const allButton = document.createElement("button");
     allButton.type = "button";
     allButton.className = "tag-btn is-active";
     allButton.textContent = "全部";
@@ -151,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       activeTag = null;
       searchInput.value = "";
       tagCloud.querySelectorAll(".tag-btn").forEach(function (button) {
-        var active = button === allButton;
+        const active = button === allButton;
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
@@ -164,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         return b[1] - a[1];
       })
       .forEach(function (entry) {
-        var button = document.createElement("button");
+        const button = document.createElement("button");
         button.type = "button";
         button.className = "tag-btn";
         button.textContent = entry[0] + " " + String(entry[1]).padStart(2, "0");
@@ -172,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         button.addEventListener("click", function () {
           activeTag = activeTag === entry[0] ? null : entry[0];
           tagCloud.querySelectorAll(".tag-btn").forEach(function (item) {
-            var active = activeTag !== null && item === button;
+            const active = activeTag !== null && item === button;
             item.classList.toggle("is-active", active);
             item.setAttribute("aria-pressed", String(active));
           });
@@ -189,9 +182,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (searchInput) searchInput.addEventListener("input", debounce(filterPosts, 180));
 
   try {
-    var response = await fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } });
+    const response = await fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } });
     if (!response.ok) throw new Error("HTTP " + response.status);
-    var posts = await response.json();
+    const posts = await response.json();
     if (!Array.isArray(posts)) throw new Error("Invalid response");
     allPosts = posts
       .filter(function (post) {
@@ -204,8 +197,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     allPosts
       .slice()
       .sort(function (a, b) {
-        var timeA = Date.parse(a.date || "") || 0;
-        var timeB = Date.parse(b.date || "") || 0;
+        const timeA = Date.parse(a.date || "") || 0;
+        const timeB = Date.parse(b.date || "") || 0;
         return timeA - timeB || Number(a.id) - Number(b.id);
       })
       .forEach(function (post, index) {

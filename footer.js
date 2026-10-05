@@ -1,7 +1,7 @@
 // footer.js - 全站通用页脚
 document.addEventListener("DOMContentLoaded", function () {
-  var year = new Date().getFullYear();
-  var footerHTML =
+  const year = new Date().getFullYear();
+  const footerHTML =
     '<footer class="site-footer">' +
     "<p>© " +
     year +
@@ -11,13 +11,13 @@ document.addEventListener("DOMContentLoaded", function () {
     "</p>" +
     "</footer>";
 
-  var footerPlaceholder = document.getElementById("global-footer");
+  const footerPlaceholder = document.getElementById("global-footer");
   if (footerPlaceholder) {
     footerPlaceholder.innerHTML = footerHTML;
   }
 
   // 回到顶部按钮
-  var topBtn = document.createElement("button");
+  const topBtn = document.createElement("button");
   topBtn.className = "back-to-top";
   topBtn.type = "button";
   topBtn.setAttribute("aria-label", "回到顶部");
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  var ticking = false;
+  let ticking = false;
   window.addEventListener("scroll", function () {
     if (!ticking) {
       requestAnimationFrame(function () {

@@ -1,12 +1,6 @@
 // 评论 Markdown 渲染器的测试：用假 DOM 断言「渲染结果里不可能出现访客写的标签」。
 // 用法：node scripts/test-comment-markdown.mjs
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
-
-const here = dirname(fileURLToPath(import.meta.url));
-createRequire(import.meta.url)(join(here, "..", "comment-markdown.js"));
-const render = globalThis.renderCommentMarkdown;
+const { renderCommentMarkdown: render } = await import("../comment-markdown.js");
 
 function makeDoc() {
   return {

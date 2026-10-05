@@ -1,16 +1,19 @@
+// 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
+import { CONFIG, formatDateTime } from "./config.js?v=27";
+
 document.addEventListener("DOMContentLoaded", function () {
-  var token = "";
-  var editingId = null;
-  var authForm = document.getElementById("admin-auth-form");
-  var tokenInput = document.getElementById("admin-token");
-  var authSection = document.getElementById("admin-auth");
-  var workspace = document.getElementById("admin-workspace");
-  var authStatus = document.getElementById("admin-auth-status");
-  var formStatus = document.getElementById("admin-form-status");
-  var form = document.getElementById("admin-post-form");
-  var list = document.getElementById("admin-post-list");
-  var saveButton = document.getElementById("admin-save");
-  var charCount = document.getElementById("admin-char-count");
+  let token = "";
+  let editingId = null;
+  const authForm = document.getElementById("admin-auth-form");
+  const tokenInput = document.getElementById("admin-token");
+  const authSection = document.getElementById("admin-auth");
+  const workspace = document.getElementById("admin-workspace");
+  const authStatus = document.getElementById("admin-auth-status");
+  const formStatus = document.getElementById("admin-form-status");
+  const form = document.getElementById("admin-post-form");
+  const list = document.getElementById("admin-post-list");
+  const saveButton = document.getElementById("admin-save");
+  const charCount = document.getElementById("admin-char-count");
 
   function setStatus(element, message, isError) {
     if (!element) return;
@@ -20,21 +23,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function apiRequest(path, options) {
-    var requestOptions = Object.assign({ cache: "no-store" }, options || {});
+    const requestOptions = Object.assign({ cache: "no-store" }, options || {});
     requestOptions.headers = Object.assign(
       { Accept: "application/json" },
       requestOptions.headers || {}
     );
     if (token) requestOptions.headers.Authorization = "Bearer " + token;
-    var response = await fetch(CONFIG.API_BASE + path, requestOptions);
-    var result = {};
+    const response = await fetch(CONFIG.API_BASE + path, requestOptions);
+    let result = {};
     try {
       result = await response.json();
     } catch (_) {
       /* API may return an empty response */
     }
     if (!response.ok) {
-      var error = new Error(result.error || "请求失败（HTTP " + response.status + "）");
+      const error = new Error(result.error || "请求失败（HTTP " + response.status + "）");
       error.status = response.status;
       throw error;
     }
@@ -42,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function formValue(id) {
-    var field = document.getElementById(id);
+    const field = document.getElementById(id);
     return field ? field.value.trim() : "";
   }
 
@@ -61,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
     list.replaceChildren();
     document.getElementById("admin-post-count").textContent = String(posts.length).padStart(2, "0");
     if (!posts.length) {
-      var empty = document.createElement("p");
+      const empty = document.createElement("p");
       empty.className = "admin-list-placeholder";
       empty.textContent = "还没有文章，写下第一篇吧。";
       list.appendChild(empty);
@@ -69,20 +72,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     posts.forEach(function (post) {
-      var item = document.createElement("article");
+      const item = document.createElement("article");
       item.className = "admin-post-item";
-      var info = document.createElement("div");
+      const info = document.createElement("div");
       info.className = "admin-post-info";
-      var title = document.createElement("h4");
+      const title = document.createElement("h4");
       title.textContent = post.title || "未命名文章";
-      var meta = document.createElement("p");
-      var date = typeof post.date === "string" ? post.date.substring(0, 10) : "日期未知";
+      const meta = document.createElement("p");
+      const date = typeof post.date === "string" ? post.date.substring(0, 10) : "日期未知";
       meta.textContent = date + " · " + (post.tags || "无标签");
       info.append(title, meta);
 
-      var actions = document.createElement("div");
+      const actions = document.createElement("div");
       actions.className = "admin-post-actions";
-      var edit = document.createElement("button");
+      const edit = document.createElement("button");
       edit.type = "button";
       edit.className = "admin-action-button";
       edit.textContent = "编辑";
@@ -90,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
       edit.addEventListener("click", function () {
         editPost(post.id);
       });
-      var remove = document.createElement("button");
+      const remove = document.createElement("button");
       remove.type = "button";
       remove.className = "admin-action-button admin-action-button--danger";
       remove.textContent = "删除";
@@ -108,11 +111,11 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadPosts() {
     list.innerHTML = '<p class="admin-list-placeholder">正在读取文章…</p>';
     try {
-      var posts = await apiRequest("/posts");
+      const posts = await apiRequest("/posts");
       renderPosts(Array.isArray(posts) ? posts : []);
     } catch (error) {
       list.replaceChildren();
-      var message = document.createElement("p");
+      const message = document.createElement("p");
       message.className = "admin-list-placeholder is-error";
       message.textContent =
         error.status === 401
@@ -123,37 +126,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  var commentList = document.getElementById("admin-comment-list");
-  var commentFilter = document.getElementById("admin-comment-filter");
-  var commentCount = document.getElementById("admin-comment-count");
-  var commentStatus = document.getElementById("admin-comment-status");
-  var commentLabels = { pending: "待审核", approved: "已显示", rejected: "已拒绝" };
-
-  function formatCommentTime(value) {
-    if (!value) return "";
-    var date = new Date(value);
-    if (isNaN(date.getTime())) return String(value);
-    function pad(part) {
-      return String(part).padStart(2, "0");
-    }
-    return (
-      date.getFullYear() +
-      "-" +
-      pad(date.getMonth() + 1) +
-      "-" +
-      pad(date.getDate()) +
-      " " +
-      pad(date.getHours()) +
-      ":" +
-      pad(date.getMinutes())
-    );
-  }
+  const commentList = document.getElementById("admin-comment-list");
+  const commentFilter = document.getElementById("admin-comment-filter");
+  const commentCount = document.getElementById("admin-comment-count");
+  const commentStatus = document.getElementById("admin-comment-status");
+  const commentLabels = { pending: "待审核", approved: "已显示", rejected: "已拒绝" };
 
   function renderComments(comments) {
     commentList.replaceChildren();
     commentCount.textContent = String(comments.length).padStart(2, "0");
     if (!comments.length) {
-      var empty = document.createElement("p");
+      const empty = document.createElement("p");
       empty.className = "admin-list-placeholder";
       empty.textContent =
         commentFilter.value === "pending" ? "没有待审核的评论。" : "这个状态下还没有评论。";
@@ -162,33 +145,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     comments.forEach(function (comment) {
-      var item = document.createElement("article");
+      const item = document.createElement("article");
       item.className = "admin-comment-item" + (comment.status === "pending" ? " is-pending" : "");
 
-      var main = document.createElement("div");
+      const main = document.createElement("div");
       main.className = "admin-comment-main";
 
-      var head = document.createElement("div");
+      const head = document.createElement("div");
       head.className = "admin-comment-head";
-      var name = document.createElement("span");
+      const name = document.createElement("span");
       name.className = "admin-comment-name";
       name.textContent = comment.nickname || "匿名访客";
-      var time = document.createElement("span");
+      const time = document.createElement("span");
       time.className = "admin-comment-time";
-      time.textContent = formatCommentTime(comment.created_at);
-      var badge = document.createElement("span");
+      time.textContent = formatDateTime(comment.created_at);
+      const badge = document.createElement("span");
       badge.className = "admin-comment-badge is-" + comment.status;
       badge.textContent = commentLabels[comment.status] || comment.status;
       head.append(name, time, badge);
 
-      var body = document.createElement("p");
+      const body = document.createElement("p");
       body.className = "admin-comment-body";
       body.textContent = comment.content || "";
 
-      var source = document.createElement("p");
+      const source = document.createElement("p");
       source.className = "admin-comment-source";
       if (comment.post_id) {
-        var link = document.createElement("a");
+        const link = document.createElement("a");
         link.href = "post.html?id=" + encodeURIComponent(String(comment.post_id));
         link.target = "_blank";
         link.rel = "noopener";
@@ -200,10 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       main.append(head, body, source);
 
-      var actions = document.createElement("div");
+      const actions = document.createElement("div");
       actions.className = "admin-comment-actions";
       function action(label, className, handler) {
-        var button = document.createElement("button");
+        const button = document.createElement("button");
         button.type = "button";
         button.className = className;
         button.textContent = label;
@@ -232,13 +215,13 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadComments() {
     commentList.innerHTML = '<p class="admin-list-placeholder">正在读取评论…</p>';
     try {
-      var query =
+      const query =
         commentFilter.value === "all" ? "" : "?status=" + encodeURIComponent(commentFilter.value);
-      var comments = await apiRequest("/admin/comments" + query);
+      const comments = await apiRequest("/admin/comments" + query);
       renderComments(Array.isArray(comments) ? comments : []);
     } catch (error) {
       commentList.replaceChildren();
-      var message = document.createElement("p");
+      const message = document.createElement("p");
       message.className = "admin-list-placeholder is-error";
       message.textContent =
         error.status === 401
@@ -292,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function editPost(id) {
     setStatus(formStatus, "正在载入文章…", false);
     try {
-      var post = await apiRequest("/posts/" + encodeURIComponent(String(id)));
+      const post = await apiRequest("/posts/" + encodeURIComponent(String(id)));
       editingId = post.id;
       document.getElementById("post-title").value = post.title || "";
       document.getElementById("post-tags").value = post.tags || "";
@@ -350,13 +333,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   authForm.addEventListener("submit", async function (event) {
     event.preventDefault();
-    var candidate = tokenInput.value;
+    const candidate = tokenInput.value;
     if (!candidate) return;
-    var button = authForm.querySelector("button[type=submit]");
+    const button = authForm.querySelector("button[type=submit]");
     button.disabled = true;
     setStatus(authStatus, "正在验证令牌…", false);
     try {
-      var response = await fetch(CONFIG.API_BASE + "/admin/session", {
+      const response = await fetch(CONFIG.API_BASE + "/admin/session", {
         method: "GET",
         cache: "no-store",
         headers: { Authorization: "Bearer " + candidate, Accept: "application/json" },
@@ -375,20 +358,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
-    var title = formValue("post-title");
-    var content = document.getElementById("post-content").value;
+    const title = formValue("post-title");
+    const content = document.getElementById("post-content").value;
     if (!title || !content.trim()) {
       setStatus(formStatus, "标题和正文都需要填写。", true);
       return;
     }
 
-    var payload = {
+    const payload = {
       title: title,
       tags: formValue("post-tags"),
       cover: formValue("post-cover"),
       content: content,
     };
-    var wasEditing = editingId !== null;
+    const wasEditing = editingId !== null;
     saveButton.disabled = true;
     setStatus(formStatus, "正在保存…", false);
     try {
@@ -426,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!window.confirm("确定清空所有「待审核」评论吗？已显示和已拒绝的不受影响，此操作无法撤销。"))
       return;
     try {
-      var result = await apiRequest("/admin/comments?status=pending", { method: "DELETE" });
+      const result = await apiRequest("/admin/comments?status=pending", { method: "DELETE" });
       setStatus(commentStatus, "已清空 " + (result.deleted || 0) + " 条待审评论。", false);
       await loadComments();
     } catch (error) {

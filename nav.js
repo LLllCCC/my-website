@@ -1,9 +1,9 @@
 // nav.js - 全站统一导航栏
 function loadNavbar() {
-  var menuIcon =
+  const menuIcon =
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h10"/><path d="M7 12h10"/><path d="M7 16h10"/></svg>';
 
-  var navHTML =
+  const navHTML =
     '<a class="skip-link" href="#main-content">跳至正文</a>' +
     "<nav>" +
     '  <div class="nav-container">' +
@@ -32,25 +32,25 @@ function loadNavbar() {
     "  </div>" +
     "</nav>";
 
-  var navPlaceholder = document.getElementById("global-nav");
+  const navPlaceholder = document.getElementById("global-nav");
   if (navPlaceholder) {
     navPlaceholder.innerHTML = navHTML;
   }
 
-  var currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+  const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
   document.querySelectorAll(".nav-dropdown-link").forEach(function (link) {
-    var linkPath = new URL(link.href, window.location.href).pathname.replace(/\/$/, "") || "/";
-    var isCurrent =
+    const linkPath = new URL(link.href, window.location.href).pathname.replace(/\/$/, "") || "/";
+    const isCurrent =
       currentPath === linkPath || (linkPath === "/blog.html" && currentPath === "/post.html");
     if (isCurrent) link.setAttribute("aria-current", "page");
   });
 
   // 菜单下拉
-  var menuBtn = document.getElementById("menu-btn");
-  var dropdown = document.getElementById("nav-dropdown");
+  const menuBtn = document.getElementById("menu-btn");
+  const dropdown = document.getElementById("nav-dropdown");
 
   if (menuBtn && dropdown) {
-    var closeMenu = function () {
+    const closeMenu = function () {
       dropdown.classList.remove("open");
       dropdown.setAttribute("aria-hidden", "true");
       dropdown.setAttribute("inert", "");
@@ -59,7 +59,7 @@ function loadNavbar() {
 
     menuBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      var isOpen = dropdown.classList.toggle("open");
+      const isOpen = dropdown.classList.toggle("open");
       dropdown.setAttribute("aria-hidden", (!isOpen).toString());
       if (isOpen) dropdown.removeAttribute("inert");
       else dropdown.setAttribute("inert", "");
@@ -81,10 +81,10 @@ function loadNavbar() {
   }
 
   // 主题切换
-  var toggleBtn = document.getElementById("theme-toggle");
+  const toggleBtn = document.getElementById("theme-toggle");
   if (toggleBtn) {
-    var updateToggleState = function () {
-      var currentTheme = document.documentElement.getAttribute("data-theme");
+    const updateToggleState = function () {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
       toggleBtn.setAttribute("aria-pressed", (currentTheme === "light").toString());
       toggleBtn.setAttribute(
         "aria-label",
@@ -95,8 +95,8 @@ function loadNavbar() {
     updateToggleState();
 
     toggleBtn.addEventListener("click", function () {
-      var currentTheme = document.documentElement.getAttribute("data-theme");
-      var newTheme = currentTheme === "light" ? "dark" : "light";
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const newTheme = currentTheme === "light" ? "dark" : "light";
       document.documentElement.setAttribute("data-theme", newTheme);
       try {
         localStorage.setItem("theme", newTheme);

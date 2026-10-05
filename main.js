@@ -1,3 +1,6 @@
+// 首页专用脚本：邮件卡片、实时时钟、卡片视差、最新文章卡片。
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=27";
+
 // =========================================================
 // 1. Email 卡片点击监听
 // =========================================================
@@ -70,7 +73,7 @@ if (canTiltCards) {
 // 首页博客卡片始终展示最近发布文章的标题和封面。
 document.addEventListener("DOMContentLoaded", async function () {
   const card = document.getElementById("home-blog-card");
-  if (!card || !window.CONFIG) return;
+  if (!card) return;
   try {
     const response = await fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } });
     if (!response.ok) return;
@@ -95,11 +98,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         newest.description !== newest.title
           ? newest.description
           : "最新发布 · 点击阅读全文";
-    if (typeof newest.cover === "string" && newest.cover.trim()) {
-      const coverUrl = new URL(newest.cover, window.location.href);
-      if (coverUrl.protocol === "https:" || coverUrl.protocol === "http:") {
-        card.style.backgroundImage = "url(" + JSON.stringify(coverUrl.href) + ")";
-      }
+    const coverUrl = safeHttpUrl(newest.cover);
+    if (coverUrl) {
+      card.style.backgroundImage = "url(" + JSON.stringify(coverUrl) + ")";
     }
     card.setAttribute("aria-label", "打开最新博客文章：" + (newest.title || "博客"));
   } catch (error) {

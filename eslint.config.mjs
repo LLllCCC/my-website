@@ -6,26 +6,14 @@ export default [
   { ignores: ["motion-web/**"] },
   js.configs.recommended,
   {
-    // 根目录 *.js 是浏览器端经典脚本（<script> 直接引入，无构建）。
+    // 根目录 *.js 全部是浏览器端 ES Module（<script type="module"> 或被 import）。
     files: ["*.js"],
     languageOptions: {
       ecmaVersion: 2024,
-      sourceType: "script",
-      globals: globals.browser,
-    },
-  },
-  {
-    // 使用共享全局的页面脚本。config.js 是定义方（用 /* exported */ 声明），不在此列。
-    files: ["*.js"],
-    ignores: ["config.js"],
-    languageOptions: {
+      sourceType: "module",
       globals: {
-        // 跨文件共享的全局（阶段 4 ESM 化后改为显式 import）。
-        CONFIG: "readonly",
-        showToast: "readonly",
-        debounce: "readonly",
-        renderCommentMarkdown: "readonly",
-        // CDN 经典脚本提供的全局（post.html 引入）。
+        ...globals.browser,
+        // CDN 经典脚本提供的全局（post.html 引入 marked + DOMPurify）。
         marked: "readonly",
         DOMPurify: "readonly",
       },
@@ -45,6 +33,9 @@ export default [
       // localStorage 等调用统一用 catch (_) {} 静默降级，是本仓库的约定写法。
       "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],
       "no-empty": ["error", { allowEmptyCatch: true }],
+      // 新代码统一 const/let，不再新增 var。
+      "no-var": "error",
+      "prefer-const": "error",
     },
   },
 ];
