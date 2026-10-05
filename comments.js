@@ -1,7 +1,7 @@
 // 评论区：免登录留言（昵称自动生成）、表情回应、排序、两层楼中楼。
 // 从 post.js 拆出；文章渲染逻辑不要写进这个文件。
-import { CONFIG, formatDateTime } from "./config.js?v=27";
-import { renderCommentMarkdown } from "./comment-markdown.js?v=27";
+import { CONFIG, formatDateTime } from "./config.js?v=29";
+import { renderCommentMarkdown } from "./comment-markdown.js?v=29";
 
 const COMMENT_NICKNAME_KEY = "yopo-comment-nickname";
 const COMMENT_NICKNAME_WORDS = {
