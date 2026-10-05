@@ -51,6 +51,8 @@ function parseNote(raw, fallbackTitle) {
     cover: meta.cover || "",
     description: meta.description || firstParagraph || fallbackTitle,
     content: body.trim(),
+    // 笔记 YAML 里的 date（YYYY-MM-DD）作为发布日期；不写就由服务器用当天。
+    date: /^\d{4}-\d{2}-\d{2}$/.test((meta.date || "").trim()) ? meta.date.trim() : "",
     postId: /^\d+$/.test(meta["post-id"] || "") ? meta["post-id"] : "",
   };
 }
@@ -141,6 +143,7 @@ async function main() {
 
   console.log("标题：" + note.title);
   console.log("标签：" + note.tags);
+  console.log("日期：" + (note.date || "（不填，用发布当天）"));
   console.log("摘要：" + note.description.slice(0, 40) + (note.description.length > 40 ? "…" : ""));
   console.log("正文：" + [...note.content].length + " 字");
 
@@ -162,6 +165,8 @@ async function main() {
       content: note.content,
       tags: note.tags,
       cover: note.cover,
+      description: note.description,
+      date: note.date,
     }),
   });
   const result = await res.json().catch(() => null);
