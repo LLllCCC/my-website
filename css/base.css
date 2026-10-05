@@ -1,0 +1,457 @@
+/* base.css — 全站基础：主题变量、基础布局、导航、页脚、Toast、回到顶部、通用工具。
+   由 style.css 按规则拆分而来；所有页面都按 base→home→blog→post→admin→site 顺序加载全部文件，顺序不要调换。改了任何 css 文件后全站 ?v= 一起 +1。 */
+
+/* --- 1. 变量与主题定义 (清新蓝 #98F5F9) --- */
+:root {
+  --bg-color: #08090b;
+  --card-bg: #17181b;
+  --card-hover: #2c2c2e;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a8;
+  --nav-bg: rgba(8, 9, 11, 0.82);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --accent-color: #58b5ff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg-color: #eaf6f7;
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-hover: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #45535b;
+  --nav-bg: rgba(234, 246, 247, 0.88);
+  --border-color: rgba(21, 46, 55, 0.11);
+  --accent-color: #006ba7;
+}
+
+/* --- 2. 基础布局 --- */
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  margin: 0;
+  padding: 0;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* --- 3. 导航栏 --- */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 0;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 100;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-links > a,
+.nav-links > button {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.nav-links > a {
+  margin-left: 0;
+}
+
+.nav-links > button {
+  margin-left: 10px;
+}
+
+/* 跳至正文（键盘用户专用的可达性入口，聚焦时才出现） */
+.skip-link {
+  position: fixed;
+  top: -64px;
+  left: 20px;
+  z-index: 200;
+  padding: 12px 20px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 14px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  transition: top 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.skip-link:focus-visible {
+  top: 0;
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logo-svg {
+  height: 60px;
+  width: auto;
+  display: block;
+}
+
+.logo a {
+  color: var(--text-primary);
+  text-decoration: none;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.logo span {
+  color: var(--text-secondary);
+}
+
+.logo-icon {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.logo-icon:hover {
+  background: rgba(128, 128, 128, 0.15);
+}
+
+.logo-icon svg {
+  display: block;
+}
+
+/* 下拉菜单容器 */
+.menu-wrapper {
+  position: relative;
+}
+
+/* 下拉菜单 */
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 176px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 300;
+}
+
+.nav-dropdown.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.nav-dropdown-link {
+  display: block;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.nav-dropdown-link:hover {
+  background: rgba(128, 128, 128, 0.1);
+}
+
+.nav-dropdown-link[aria-current="page"] {
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+  color: var(--accent-color);
+}
+
+.logo a:hover {
+  opacity: 0.6;
+  color: var(--text-primary);
+}
+
+.logo span {
+  color: var(--text-secondary);
+}
+
+/* --- 4. Bento Grid 核心系统 --- */
+.container {
+  max-width: 1200px;
+  margin: 100px auto 50px;
+  padding: 20px;
+}
+
+/* 淡入效果 */
+.fade-in {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInUp 520ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toast 通知 */
+.toast-notification {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 28px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  z-index: 9999;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.toast-notification.fade-out {
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+}
+
+.delay-01 { animation-delay: 0.1s; }
+
+.delay-02 { animation-delay: 0.2s; }
+
+.delay-03 { animation-delay: 0.3s; }
+
+.delay-04 { animation-delay: 0.4s; }
+
+.delay-05 { animation-delay: 0.5s; }
+
+.delay-06 { animation-delay: 0.6s; }
+
+.delay-07 { animation-delay: 0.7s; }
+
+/* 导航主题切换按钮 */
+.nav-theme-toggle {
+  font-size: 1.2rem;
+  margin-left: 10px;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.nav-theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
+}
+
+.theme-icon-img {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon-sun {
+  display: inline-block;
+  filter: invert(1);
+}
+
+.icon-moon {
+  display: none;
+}
+
+/* 屏幕阅读器专用——业界标准写法，!important 是必须的 */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.game-main {
+  width: 100%;
+}
+
+.local-time {
+  margin-left: 20px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 头像呼吸灯 */
+@keyframes avatar-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(41, 151, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(41, 151, 255, 0.7);
+    border-color: rgba(41, 151, 255, 0.5);
+  }
+}
+
+/* 3. 浅色模式主题图标切换 */
+[data-theme="light"] .icon-sun {
+  display: none;
+}
+
+[data-theme="light"] .icon-moon {
+  display: inline-block;
+  filter: none;
+}
+
+/* 4. 悬停旋转特效 */
+.nav-theme-toggle:hover .theme-icon-img {
+  transform: rotate(30deg) scale(1.1);
+  filter: invert(1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+}
+
+[data-theme="light"] .nav-theme-toggle:hover .theme-icon-img {
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+  transform: rotate(-30deg) scale(1.1);
+}
+
+/* --- Email 卡片尺寸一致性 --- */
+
+* {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   手机端强制适配
+   ========================================= */
+@media (max-width: 768px) {
+
+  .nav-container {
+    padding: 0 15px;
+  }
+  .logo a {
+    font-size: 1.1rem;
+  }
+}
+
+/* =========================================
+   手机端强制适配
+   ========================================= */
+@media (max-width: 768px) {
+
+  html,
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+}
+
+/* 回到顶部按钮 */
+.back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.3s, transform 0.3s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--accent-color);
+  color: #fff;
+  border-color: var(--accent-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .fade-in {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+

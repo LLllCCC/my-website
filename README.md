@@ -37,6 +37,8 @@
 
 前端脚本是无构建的浏览器原生 ES Module：每个页面一个入口脚本（`main.js`/`blog.js`/`post.js`/`admin.js`），共享配置与工具在 `config.js`，评论区在 `comments.js`，评论渲染器在 `comment-markdown.js`，导航/页脚在 `nav.js`/`footer.js`。`theme-init.js` 是唯一的经典脚本（要在渲染前设置主题，防闪烁）。
 
+样式在 `css/` 下按页面拆分（base/home/blog/post/admin/site 共 6 个文件），所有页面按固定顺序加载全部文件——顺序是级联的一部分，不要调换。
+
 因为用了 ES Module，**本地预览不能直接双击 HTML**（浏览器会拦 `file://` 的模块请求），需要起一个本地静态服务，例如 `python -m http.server 8000` 后访问 `http://localhost:8000`。
 
 ## 自动部署配置
