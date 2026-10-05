@@ -22,15 +22,16 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | `config.js` | 共享配置与工具：`CONFIG`、`showToast`、`debounce`、`formatDateTime`、`safeHttpUrl` |
 | `theme-init.js` | **唯一的经典脚本**，在 `<head>` 阻塞执行防主题闪烁；不要改成 module |
 | `css/` | 全站样式，按页面拆分：`base.css`（主题变量/布局/导航/页脚/Toast/回到顶部）+ `home.css` / `blog.css` / `post.css` / `admin.css` / `site.css`。**所有 HTML 按这个顺序加载全部 6 个文件**，顺序是级联的一部分，不要调换 |
-| `scripts/publish.mjs` | Obsidian 笔记发布脚本（配合 myblog-api 的 `/api/posts`） |
+| `scripts/publish.mjs` | Obsidian 笔记发布脚本（配合 myblog-api 的 `/api/posts`）；笔记 YAML 认 `title`/`tags`/`cover`/`description`/`date`/`post-id` 六个键 |
 | `scripts/test-comment-markdown.mjs` | 评论渲染器测试 |
+| `scripts/e2e_check.py` + `e2e_stub_server.py` | 浏览器端到端检查（假接口 + Playwright，随机端口）；CI 会跑，本地 `python scripts/e2e_check.py` |
 | `motion-web/` | 外部 CC BY-NC 动效案例素材，**不要改其中的代码** |
 
 ## 改代码的规则
 
 1. 新功能进对应页面的入口脚本；跨页面复用的函数放 `config.js` 并 `export`。
-2. 任何 `.js`/`.css` 改动后：五个 HTML 里的 `?v=` **和**各模块 `import` 路径里的 `?v=` 一起 +1（当前 `28`），否则浏览器继续用旧缓存。没有构建步骤，版本号是唯一缓存失效手段。
-3. 提交前必跑：`npm run lint` 和 `npm test`；改了 JS 顺带 `npm run format`。CI 会再查一遍，不过不部署。
+2. 任何 `.js`/`.css` 改动后：五个 HTML 里的 `?v=` **和**各模块 `import` 路径里的 `?v=` 一起 +1（当前 `29`），否则浏览器继续用旧缓存。没有构建步骤，版本号是唯一缓存失效手段。
+3. 提交前必跑：`npm run lint` 和 `npm test`；改了 JS 顺带 `npm run format`。CI 还会跑浏览器端到端（五页面 + 评论交互），不过不部署。
 4. 不引入打包器、框架、运行时依赖；保持无构建。
 5. `css/` 只做最小改动：改对应页面的文件；`base.css` 是全站的，动之前先想其他页面。别重排格式，别为对齐更换布局模型。
 6. 渲染用户内容只能用 `createElement`/`createTextNode`，**禁止对用户输入用 `innerHTML`**（文章正文例外：必须过 `DOMPurify.sanitize`）。
