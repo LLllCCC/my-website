@@ -1,7 +1,7 @@
 // 文章详情页：拉取正文、Markdown 渲染、封面定位、目录、阅读进度。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl } from "./config.js?v=27";
-import { initComments } from "./comments.js?v=27";
+import { CONFIG, safeHttpUrl } from "./config.js?v=29";
+import { initComments } from "./comments.js?v=29";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");
