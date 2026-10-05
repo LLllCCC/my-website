@@ -328,17 +328,6 @@ nav {
   border: 0 !important;
 }
 
-.game-main {
-  width: 100%;
-}
-
-.local-time {
-  margin-left: 20px;
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  font-variant-numeric: tabular-nums;
-}
-
 /* 头像呼吸灯 */
 @keyframes avatar-breathe {
   0%,
@@ -454,4 +443,3 @@ nav {
     transform: none;
   }
 }
-

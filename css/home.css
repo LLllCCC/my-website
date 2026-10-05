@@ -187,12 +187,6 @@
   background-position: center;
 }
 
-.bg-map {
-  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/map.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
 /* Email 卡片专用样式 */
 .card-email {
   background-color: #2997ff;
@@ -202,32 +196,6 @@
 .card-label {
   font-size: 0.9rem;
   margin-top: 5px;
-  display: block;
-}
-
-.map-link {
-  text-decoration: none;
-}
-
-.map-external-icon {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.map-pin-icon {
-  font-size: 2rem;
-  color: #fff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-.map-caption {
-  font-size: 1rem;
-  margin-top: 10px;
-  color: #fff;
-  font-weight: 600;
   display: block;
 }
 

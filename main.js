@@ -1,5 +1,5 @@
-// 首页专用脚本：邮件卡片、实时时钟、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=27";
+// 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=29";
 
 // =========================================================
 // 1. Email 卡片点击监听
@@ -13,28 +13,7 @@ if (mailtoLink) {
 }
 
 // =========================================================
-// 2. 实时时间
-// =========================================================
-(function () {
-  const timeElement = document.getElementById("local-time");
-  if (!timeElement) return;
-
-  function updateTime() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, "0");
-    const m = String(now.getMinutes()).padStart(2, "0");
-    const s = String(now.getSeconds()).padStart(2, "0");
-    timeElement.textContent = `${h}:${m}:${s}`;
-  }
-
-  const timer = setInterval(updateTime, 1000);
-  updateTime();
-
-  window.addEventListener("beforeunload", () => clearInterval(timer));
-})();
-
-// =========================================================
-// 3. 轻量视差效果，仅在支持鼠标且未启用减少动态效果时运行
+// 2. 轻量视差效果，仅在支持鼠标且未启用减少动态效果时运行
 // =========================================================
 const canTiltCards = window.matchMedia(
   "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)"
