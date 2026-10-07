@@ -17,7 +17,12 @@ POST_1 = {
     "date": "2026-10-03T00:00:00.000Z",
     "tags": "代码,生活",
     "cover": "",
-    "content": "开篇一段话。\n\n## 安装步骤\n\n正文里有 **粗体** 和一个 [图片链接](https://example.com/a.jpg)。\n\n## 注意事项\n\n结尾。\n",
+    "older": None,
+    "newer": {"id": 2, "title": "第二篇文章"},
+    "content": (
+        "开篇一段话。\n\n## 安装步骤\n\n正文里有 **粗体** 和一个 [图片链接](https://example.com/a.jpg)。\n\n"
+        "```bash\nnpm install && npm run build\n```\n\n## 注意事项\n\n结尾。\n"
+    ),
 }
 COMMENTS_1 = [
     {
@@ -66,6 +71,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(POSTS)
         if path == "/api/posts/1":
             return self.send_json(POST_1)
+        if path == "/api/posts/1/reactions":
+            return self.send_json({"reactions": [{"emoji": "👍", "count": 2}]})
         if path == "/api/posts/1/comments":
             return self.send_json(COMMENTS_1)
         if path.startswith("/api/posts/") and path.endswith("/comments"):
@@ -75,6 +82,8 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path.startswith("/api/comments/") and self.path.endswith("/reactions"):
             return self.send_json({"active": True, "reactions": [{"emoji": "👍", "count": 2}]})
+        if self.path.startswith("/api/posts/") and self.path.endswith("/reactions"):
+            return self.send_json({"active": True, "reactions": [{"emoji": "👍", "count": 3}]})
         return self.send_json({"message": "Comment queued"}, status=201)
 
     def log_message(self, fmt, *args):

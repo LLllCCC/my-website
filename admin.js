@@ -1,5 +1,5 @@
 // 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
-import { CONFIG, formatDateTime } from "./config.js?v=29";
+import { CONFIG, formatDateTime } from "./config.js?v=30";
 
 document.addEventListener("DOMContentLoaded", function () {
   let token = "";

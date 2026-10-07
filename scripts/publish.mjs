@@ -1,4 +1,4 @@
-// 把 Obsidian 里的笔记发布到自己的博客，并重新生成 feed.xml（RSS）。
+// 把 Obsidian 里的笔记发布到自己的博客，并重新生成 feed.xml（RSS）与 sitemap.xml。
 //
 // 用法：
 //   node scripts/publish.mjs "D:\\Obsidian\\博客\\某篇文章.md"          # 发布并更新 feed.xml
@@ -95,10 +95,14 @@ function escapeXml(value) {
   );
 }
 
-async function buildFeed() {
+async function fetchPosts() {
   const res = await fetch(API + "/posts", { headers: { Accept: "application/json" } });
   if (!res.ok) throw new Error("读取文章列表失败：HTTP " + res.status);
-  const posts = await res.json();
+  return res.json();
+}
+
+async function buildFeed() {
+  const posts = await fetchPosts();
   const items = posts
     .slice(0, 20)
     .map((post) => {
@@ -127,6 +131,7 @@ async function buildFeed() {
     "    <link>" + SITE + "/blog.html</link>",
     "    <description>自己搭的博客：代码、工具和日常。</description>",
     "    <language>zh-CN</language>",
+    "    <lastBuildDate>" + new Date().toUTCString() + "</lastBuildDate>",
     items,
     "  </channel>",
     "</rss>",
@@ -134,6 +139,38 @@ async function buildFeed() {
   ].join("\n");
 
   await writeFile(join(repoRoot, "feed.xml"), xml, "utf8");
+  return posts.length;
+}
+
+// sitemap 和 feed 一样在每次发布/重建时全量重写，删除的文章自然消失。
+async function buildSitemap() {
+  const posts = await fetchPosts();
+  const urls = [
+    { loc: SITE + "/", lastmod: "" },
+    { loc: SITE + "/blog.html", lastmod: "" },
+  ].concat(
+    posts.map((post) => ({
+      loc: SITE + "/post.html?id=" + encodeURIComponent(post.id),
+      lastmod: typeof post.date === "string" ? post.date.slice(0, 10) : "",
+    }))
+  );
+  const xml = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...urls.map((url) =>
+      [
+        "  <url>",
+        "    <loc>" + escapeXml(url.loc) + "</loc>",
+        url.lastmod ? "    <lastmod>" + url.lastmod + "</lastmod>" : "",
+        "  </url>",
+      ]
+        .filter(Boolean)
+        .join("\n")
+    ),
+    "</urlset>",
+    "",
+  ].join("\n");
+  await writeFile(join(repoRoot, "sitemap.xml"), xml, "utf8");
   return posts.length;
 }
 
@@ -148,7 +185,8 @@ function stampPostId(raw, id) {
 async function main() {
   if (feedOnly) {
     const total = await buildFeed();
-    console.log("feed.xml 已重新生成（共 " + total + " 篇）");
+    const mapped = await buildSitemap();
+    console.log("feed.xml 与 sitemap.xml 已重新生成（共 " + Math.max(total, mapped) + " 篇）");
     return;
   }
 
@@ -226,6 +264,7 @@ async function main() {
   const postId = note.postId || result.id;
   const url = SITE + "/post.html?id=" + postId;
   const count = await buildFeed();
+  await buildSitemap();
   console.log("\n" + (note.postId ? "已更新：" : "已发布：") + url);
   if (!note.postId) {
     await writeFile(notePath, stampPostId(raw, postId), "utf8");
@@ -234,17 +273,19 @@ async function main() {
     await writeFile(notePath, raw, "utf8");
     console.log("正文里的图片链接已改写回笔记（本地路径 → 图床链接）。");
   }
-  console.log("feed.xml 已更新（共 " + count + " 篇）");
+  console.log("feed.xml 与 sitemap.xml 已更新（共 " + count + " 篇）");
 
   if (pushFeed) {
-    await run("git", ["add", "feed.xml"], { cwd: repoRoot });
-    await run("git", ["commit", "-m", "chore: 更新 RSS 订阅源"], { cwd: repoRoot }).catch(() => {
-      throw new Error("feed.xml 没有变化，无需提交");
-    });
+    await run("git", ["add", "feed.xml", "sitemap.xml"], { cwd: repoRoot });
+    await run("git", ["commit", "-m", "chore: 更新 RSS 与 sitemap"], { cwd: repoRoot }).catch(
+      () => {
+        throw new Error("feed.xml 和 sitemap.xml 没有变化，无需提交");
+      }
+    );
     await run("git", ["push", "origin", "main"], { cwd: repoRoot });
-    console.log("feed.xml 已推送，等 Actions 部署即可访问 " + SITE + "/feed.xml");
+    console.log("已推送，等 Actions 部署即可访问 " + SITE + "/feed.xml");
   } else {
-    console.log("提示：feed.xml 需要提交推送才会上线，加 --push 自动做。");
+    console.log("提示：feed.xml 和 sitemap.xml 需要提交推送才会上线，加 --push 自动做。");
   }
 }
 

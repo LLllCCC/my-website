@@ -8,7 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
     " Yopo</p>" +
     '<p class="footer-links">' +
     '<a href="/index.html">首页</a>' +
+    '<a href="/blog.html">博客</a>' +
+    '<a href="/motion-web/cases/">动效案例</a>' +
+    '<a href="/site.html">这个网站</a>' +
+    '<a href="/feed.xml">RSS</a>' +
     "</p>" +
+    '<p class="footer-note">用原生 HTML/CSS/JS 手写，部署在自己的 VPS 上。</p>' +
     "</footer>";
 
   const footerPlaceholder = document.getElementById("global-footer");

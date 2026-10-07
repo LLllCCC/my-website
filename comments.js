@@ -1,7 +1,8 @@
 // 评论区：免登录留言（昵称自动生成）、表情回应、排序、两层楼中楼。
 // 从 post.js 拆出；文章渲染逻辑不要写进这个文件。
-import { CONFIG, formatDateTime } from "./config.js?v=29";
-import { renderCommentMarkdown } from "./comment-markdown.js?v=29";
+// visitorId 也被文章级表情回应（post.js）复用，是全站统一的访客标识。
+import { CONFIG, formatDateTime } from "./config.js?v=30";
+import { renderCommentMarkdown } from "./comment-markdown.js?v=30";
 
 const COMMENT_NICKNAME_KEY = "yopo-comment-nickname";
 const COMMENT_NICKNAME_WORDS = {
@@ -46,7 +47,7 @@ function randomVisitorId() {
     : String(Date.now()) + "-" + Math.random().toString(16).slice(2);
 }
 
-function visitorId() {
+export function visitorId() {
   try {
     const saved = localStorage.getItem(COMMENT_VISITOR_KEY);
     if (typeof saved === "string" && /^[0-9a-zA-Z-]{8,64}$/.test(saved)) return saved;

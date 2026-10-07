@@ -1,7 +1,8 @@
 // 文章详情页：拉取正文、Markdown 渲染、封面定位、目录、阅读进度。
+// 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl } from "./config.js?v=29";
-import { initComments } from "./comments.js?v=29";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=30";
+import { initComments, visitorId } from "./comments.js?v=30";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");
@@ -90,6 +91,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       replaceImageLinks(articleBody);
       buildTOC(articleBody);
       initReadingProgress();
+      renderNeighbors(post);
+      initArticleReactions(postId);
+      injectArticleJsonLd(post);
+      enhanceCodeBlocks(articleBody);
+      initLightbox(articleBody);
     } else {
       showMessage("文章格式组件暂时不可用，请刷新页面重试。");
     }
@@ -346,4 +352,215 @@ function initReadingProgress() {
     { passive: true }
   );
   update();
+}
+
+function renderNeighbors(post) {
+  const box = document.getElementById("article-neighbors");
+  if (!box) return;
+  const links = [
+    { label: "← 上一篇", post: post.older, extra: "article-neighbor--older" },
+    { label: "下一篇 →", post: post.newer, extra: "article-neighbor--newer" },
+  ].filter(function (item) {
+    return item.post && Number(item.post.id) > 0;
+  });
+  if (!links.length) return;
+  box.hidden = false;
+  links.forEach(function (item) {
+    const link = document.createElement("a");
+    link.className = "article-neighbor " + item.extra;
+    link.href = "post.html?id=" + encodeURIComponent(String(item.post.id));
+    const label = document.createElement("span");
+    label.className = "article-neighbor-label";
+    label.textContent = item.label;
+    const title = document.createElement("span");
+    title.className = "article-neighbor-title";
+    title.textContent = String(item.post.title || "无标题文章");
+    link.append(label, title);
+    box.appendChild(link);
+  });
+}
+
+// 文章级表情回应：身份与计数口径都和评论区一致（visitor 的 sha256 + localStorage 记录点过哪些）。
+// 加载失败（比如文章回应表还没建）就整栏不显示，不影响正文和评论。
+const POST_REACTION_EMOJIS = ["\u{1F44D}", "\u2764\uFE0F", "\u{1F604}", "\u{1F525}"];
+const POST_REACTION_KEY = "yopo-post-reactions";
+
+function tappedPostReactions() {
+  try {
+    const list = JSON.parse(localStorage.getItem(POST_REACTION_KEY) || "[]");
+    return new Set(Array.isArray(list) ? list.filter((item) => typeof item === "string") : []);
+  } catch (_) {
+    return new Set();
+  }
+}
+
+async function initArticleReactions(postId) {
+  const box = document.getElementById("article-reactions");
+  if (!box) return;
+  const reactionsUrl =
+    CONFIG.API_BASE + "/posts/" + encodeURIComponent(String(postId)) + "/reactions";
+  const key = String(postId) + "|";
+  let counts = new Map();
+  const tapped = tappedPostReactions();
+
+  function saveTapped() {
+    try {
+      localStorage.setItem(POST_REACTION_KEY, JSON.stringify(Array.from(tapped).slice(-500)));
+    } catch (_) {}
+  }
+
+  function render() {
+    box.replaceChildren();
+    POST_REACTION_EMOJIS.forEach(function (emoji) {
+      const count = counts.get(emoji) || 0;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "article-reaction" + (tapped.has(key + emoji) ? " is-tapped" : "");
+      button.textContent = emoji + (count ? " " + count : "");
+      button.setAttribute("aria-label", "用" + emoji + "回应这篇文章，目前 " + count + " 个");
+      button.addEventListener("click", function () {
+        toggle(emoji, button);
+      });
+      box.appendChild(button);
+    });
+  }
+
+  async function toggle(emoji, button) {
+    if (button.classList.contains("is-busy")) return;
+    button.classList.add("is-busy");
+    try {
+      const res = await fetch(reactionsUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ emoji: emoji, visitor: visitorId() }),
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      counts = new Map(
+        (Array.isArray(data.reactions) ? data.reactions : []).map(function (reaction) {
+          return [reaction.emoji, Number(reaction.count) || 0];
+        })
+      );
+      if (data.active) tapped.add(key + emoji);
+      else tapped.delete(key + emoji);
+      saveTapped();
+      render();
+    } catch (err) {
+      console.error("文章表情回应失败:", err);
+      button.classList.remove("is-busy");
+    }
+  }
+
+  try {
+    const res = await fetch(reactionsUrl, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    counts = new Map(
+      (Array.isArray(data.reactions) ? data.reactions : []).map(function (reaction) {
+        return [reaction.emoji, Number(reaction.count) || 0];
+      })
+    );
+    box.hidden = false;
+    render();
+  } catch (err) {
+    console.error("文章表情回应加载失败:", err);
+  }
+}
+
+// 给爬虫补一份结构化数据（真人无感知）；爬虫版 meta 由后端 /api/render/post 提供。
+function injectArticleJsonLd(post) {
+  const published = typeof post.date === "string" ? post.date.slice(0, 10) : "";
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title || "未命名文章",
+    description: post.description || "",
+    datePublished: published || undefined,
+    image: safeHttpUrl(post.cover) || undefined,
+    author: { "@type": "Person", name: "Yopo" },
+    mainEntityOfPage: window.location.href,
+  };
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.textContent = JSON.stringify(data).replace(/</g, "\\u003c");
+  document.head.appendChild(script);
+}
+
+function enhanceCodeBlocks(articleBody) {
+  articleBody.querySelectorAll("pre code").forEach(function (code) {
+    if (window.hljs && !code.dataset.highlighted) {
+      try {
+        window.hljs.highlightElement(code);
+      } catch (_) {
+        // 高亮失败不影响代码本身的展示。
+      }
+    }
+  });
+  articleBody.querySelectorAll("pre").forEach(function (pre) {
+    if (pre.querySelector(".code-copy-btn")) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "code-copy-btn";
+    button.textContent = "复制";
+    button.setAttribute("aria-label", "复制代码");
+    button.addEventListener("click", async function () {
+      const code = pre.querySelector("code");
+      const text = (code ? code.textContent : pre.textContent) || "";
+      try {
+        await navigator.clipboard.writeText(text);
+        button.textContent = "已复制";
+        showToast("代码已复制");
+      } catch (err) {
+        console.error("复制代码失败:", err);
+        button.textContent = "复制失败";
+      }
+      setTimeout(function () {
+        button.textContent = "复制";
+      }, 1800);
+    });
+    pre.appendChild(button);
+  });
+}
+
+function initLightbox(articleBody) {
+  const images = articleBody.querySelectorAll("img");
+  if (!images.length) return;
+  let overlay = null;
+
+  function close() {
+    if (!overlay) return;
+    overlay.remove();
+    overlay = null;
+    document.documentElement.classList.remove("lightbox-open");
+    document.removeEventListener("keydown", onKey);
+  }
+  function onKey(event) {
+    if (event.key === "Escape") close();
+  }
+  function open(src, alt) {
+    close();
+    overlay = document.createElement("div");
+    overlay.className = "lightbox-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-label", "查看大图，点击任意位置关闭");
+    const image = document.createElement("img");
+    image.src = src;
+    image.alt = alt || "文章图片大图";
+    overlay.appendChild(image);
+    overlay.addEventListener("click", close);
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(overlay);
+    document.documentElement.classList.add("lightbox-open");
+  }
+
+  images.forEach(function (image) {
+    image.classList.add("lightboxable");
+    image.addEventListener("click", function () {
+      const src = safeHttpUrl(image.currentSrc || image.src);
+      if (src) open(src, image.alt);
+    });
+  });
 }

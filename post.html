@@ -18,16 +18,18 @@
 
     <link href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css" rel="stylesheet" />
 
-    <script src="theme-init.js?v=29"></script>
+    <script src="theme-init.js?v=30"></script>
 
-    <link rel="stylesheet" href="css/base.css?v=29" />
-    <link rel="stylesheet" href="css/home.css?v=29" />
-    <link rel="stylesheet" href="css/blog.css?v=29" />
-    <link rel="stylesheet" href="css/post.css?v=29" />
-    <link rel="stylesheet" href="css/admin.css?v=29" />
-    <link rel="stylesheet" href="css/site.css?v=29" />
+    <link rel="stylesheet" href="css/base.css?v=30" />
+    <link rel="stylesheet" href="css/home.css?v=30" />
+    <link rel="stylesheet" href="css/blog.css?v=30" />
+    <link rel="stylesheet" href="css/post.css?v=30" />
+    <link rel="stylesheet" href="css/admin.css?v=30" />
+    <link rel="stylesheet" href="css/site.css?v=30" />
     <script src="https://cdn.staticfile.net/marked/4.3.0/marked.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/github-dark.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js" defer></script>
   </head>
   <body>
     <div id="global-nav"></div>
@@ -54,6 +56,8 @@
           <aside class="article-toc" id="article-toc"></aside>
           <div class="article-main">
             <div id="article-body" class="post-content"></div>
+            <div id="article-neighbors" class="article-neighbors" role="navigation" aria-label="相邻文章" hidden></div>
+            <div id="article-reactions" class="article-reactions" hidden></div>
           <div id="article-comments">
             <div class="comments-title">评论<span id="comments-count" class="comments-count"></span></div>
             <form id="comment-form" class="comment-form" autocomplete="off">
@@ -81,8 +85,8 @@
       <div id="global-footer"></div>
     </main>
 
-    <script src="/footer.js?v=29" type="module"></script>
-    <script src="/nav.js?v=29" type="module"></script>
-    <script src="post.js?v=29" type="module"></script>
+    <script src="/footer.js?v=30" type="module"></script>
+    <script src="/nav.js?v=30" type="module"></script>
+    <script src="post.js?v=30" type="module"></script>
   </body>
 </html>

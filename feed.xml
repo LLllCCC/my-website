@@ -5,6 +5,7 @@
     <link>https://yopoo.888431.xyz/blog.html</link>
     <description>自己搭的博客：代码、工具和日常。</description>
     <language>zh-CN</language>
+    <lastBuildDate>Wed, 07 Oct 2026 07:17:36 GMT</lastBuildDate>
     <item>
       <title>我把博客评论从 Giscus 换成自己写的</title>
       <link>https://yopoo.888431.xyz/post.html?id=7</link>
@@ -44,14 +45,6 @@
       <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
       <description>把扫描书变成能搜能跳的文本，我用了三套流程</description>
       <category>OCR, Python, 阅读</category>
-    </item>
-    <item>
-      <title>测试</title>
-      <link>https://yopoo.888431.xyz/post.html?id=6</link>
-      <guid isPermaLink="false">6</guid>
-      <pubDate>Sat, 03 Oct 2026 12:00:00 GMT</pubDate>
-      <description>测试</description>
-      <category>测试</category>
     </item>
   </channel>
 </rss>
