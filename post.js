@@ -1,8 +1,8 @@
 // 文章详情页：拉取正文、Markdown 渲染、封面定位、目录、阅读进度。
 // 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=30";
-import { initComments, visitorId } from "./comments.js?v=30";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=31";
+import { initComments, visitorId } from "./comments.js?v=31";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");

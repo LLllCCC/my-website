@@ -9,7 +9,7 @@ function loadNavbar() {
     '  <div class="nav-container">' +
     '    <div class="logo">' +
     '      <a href="/index.html" class="logo-link">' +
-    '        <img src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@ff861f502864f59d6e53d54eab11ff9f785deccb/img/yopo_logo.png" alt="YOPO" class="logo-svg">' +
+    '        <img src="/img/yopo_logo.png" alt="YOPO" class="logo-svg">' +
     "      </a>" +
     "    </div>" +
     '    <div class="nav-links">' +
@@ -25,8 +25,8 @@ function loadNavbar() {
     "        </div>" +
     "      </div>" +
     '      <button id="theme-toggle" class="nav-theme-toggle" type="button" aria-label="切换主题" aria-pressed="false">' +
-    '        <img src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/sun.png" class="icon-sun theme-icon-img" alt="Light Mode">' +
-    '        <img src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/moon.png" class="icon-moon theme-icon-img" alt="Dark Mode">' +
+    '        <img src="/img/sun.png" class="icon-sun theme-icon-img" alt="Light Mode">' +
+    '        <img src="/img/moon.png" class="icon-moon theme-icon-img" alt="Dark Mode">' +
     "      </button>" +
     "    </div>" +
     "  </div>" +

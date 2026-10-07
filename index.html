@@ -22,24 +22,27 @@
     />
     <meta
       property="og:image"
-      content="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/map.jpg"
+      content="/img/map.jpg"
     />
 
-    <link rel="icon" href="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" type="image/jpeg" />
+    <link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg" />
+
+    <!-- 首页最大内容绘制（LCP）元素是 #my-projects 卡片的 CSS 背景图，提前预加载 -->
+    <link rel="preload" as="image" href="/img/project-3.jpg" fetchpriority="high" />
 
     <link
       href="https://cdn.staticfile.net/remixicon/3.5.0/remixicon.css"
       rel="stylesheet"
     />
 
-    <script src="theme-init.js?v=30"></script>
+    <script src="theme-init.js?v=31"></script>
 
-    <link rel="stylesheet" href="css/base.css?v=30" />
-    <link rel="stylesheet" href="css/home.css?v=30" />
-    <link rel="stylesheet" href="css/blog.css?v=30" />
-    <link rel="stylesheet" href="css/post.css?v=30" />
-    <link rel="stylesheet" href="css/admin.css?v=30" />
-    <link rel="stylesheet" href="css/site.css?v=30" />
+    <link rel="stylesheet" href="css/base.css?v=31" />
+    <link rel="stylesheet" href="css/home.css?v=31" />
+    <link rel="stylesheet" href="css/blog.css?v=31" />
+    <link rel="stylesheet" href="css/post.css?v=31" />
+    <link rel="stylesheet" href="css/admin.css?v=31" />
+    <link rel="stylesheet" href="css/site.css?v=31" />
   </head>
 
   <body class="index-page">
@@ -52,7 +55,7 @@
             <h1>自己搭的<br />网站。</h1>
             <p>你好，我是 Yopo。页面、后端和评论系统都自己写，跑在自己买的 VPS 上。</p>
           </div>
-          <img src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/my-avatar.jpg" alt="Yopo's Avatar" class="avatar" />
+          <img src="/img/my-avatar.jpg" alt="Yopo's Avatar" class="avatar" />
         </div>
 
         <div class="card card-social-container fade-in delay-02">
@@ -68,7 +71,7 @@
             </div>
             <div class="flip-back">
               <img
-                src="https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/github-back.jpg"
+                src="/img/github-back.jpg"
                 alt="个人头像"
                 class="mini-avatar"
               />
@@ -173,10 +176,10 @@
       </div>
 
       <div id="global-footer"></div>
-      <script src="/footer.js?v=30" type="module"></script>
+      <script src="/footer.js?v=31" type="module"></script>
     </main>
 
-    <script src="/nav.js?v=30" type="module"></script>
-    <script src="main.js?v=30" type="module"></script>
+    <script src="/nav.js?v=31" type="module"></script>
+    <script src="main.js?v=31" type="module"></script>
   </body>
 </html>

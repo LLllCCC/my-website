@@ -176,13 +176,13 @@
 
 /* 背景图类 */
 .bg-project-1 {
-  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/project-1.jpg");
+  background-image: url("/img/project-1.jpg");
   background-size: cover;
   background-position: center;
 }
 
 .bg-project-3 {
-  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/project-3.jpg");
+  background-image: url("/img/project-3.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -393,7 +393,7 @@ body.index-page .grid {
 
 .card-blog {
   grid-column: span 6;
-  background-image: url("https://cdn.jsdelivr.net/gh/LLllCCC/tuchaung@main/img/map.jpg");
+  background-image: url("/img/map.jpg");
   background-size: cover;
   background-position: center;
   border: none;
