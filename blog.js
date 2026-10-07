@@ -1,5 +1,5 @@
 // 博客列表页：搜索、标签云、文章卡片。
-import { CONFIG, debounce, safeHttpUrl } from "./config.js?v=32";
+import { CONFIG, debounce, safeHttpUrl } from "./config.js?v=33";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const listContainer = document.getElementById("dynamic-article-list");

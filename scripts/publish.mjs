@@ -227,11 +227,11 @@ async function main() {
 
   const fallbackTitle = notePath.split(/[\\/]/).pop().replace(/\.md$/i, "");
   const note = parseNote(raw, fallbackTitle);
-  // 图床链接统一改写为自己域名的 /gh-img/ 代理：CF 边缘长缓存，
+  // 图床链接统一改写为 API 域名的 /gh-img/ 代理：CF 边缘长缓存，
   // 晚间跨境到 jsDelivr 的抖动不影响读者。本地笔记里的链接保持原样不动。
   const imgHostRe = /https:\/\/cdn\.jsdelivr\.net\/gh\//g;
-  note.content = note.content.replace(imgHostRe, SITE + "/gh-img/");
-  if (note.cover) note.cover = note.cover.replace(imgHostRe, SITE + "/gh-img/");
+  note.content = note.content.replace(imgHostRe, "https://api.888431.xyz/gh-img/");
+  if (note.cover) note.cover = note.cover.replace(imgHostRe, "https://api.888431.xyz/gh-img/");
 
   console.log("标题：" + note.title);
   console.log("标签：" + note.tags);
