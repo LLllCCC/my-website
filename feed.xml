@@ -5,13 +5,13 @@
     <link>https://yopoo.888431.xyz/blog.html</link>
     <description>自己搭的博客：代码、工具和日常。</description>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 07 Oct 2026 07:17:36 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 07:59:17 GMT</lastBuildDate>
     <item>
       <title>我把博客评论从 Giscus 换成自己写的</title>
       <link>https://yopoo.888431.xyz/post.html?id=7</link>
       <guid isPermaLink="false">7</guid>
       <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
-      <description>我把博客评论从 Giscus 换成自己写的</description>
+      <description>只想让人不登录就能留句话，结果顺手写了一套评论系统：蜜罐、限流、先审后发、防 XSS，还有表情回应和楼中楼。</description>
       <category>自建服务, 博客, Node.js</category>
     </item>
     <item>
@@ -19,7 +19,7 @@
       <link>https://yopoo.888431.xyz/post.html?id=8</link>
       <guid isPermaLink="false">8</guid>
       <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
-      <description>一台 965MB 内存的 VPS 上，我用 Docker 跑了哪些东西</description>
+      <description>五个容器、三次踩坑：ufw 拦不住 Docker 发布的端口、把端口绑到回环会打断自己的反向代理、改了 .env 必须重建容器。</description>
       <category>自建服务, Docker, 服务器运维</category>
     </item>
     <item>
@@ -27,7 +27,7 @@
       <link>https://yopoo.888431.xyz/post.html?id=9</link>
       <guid isPermaLink="false">9</guid>
       <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
-      <description>我的数据库被勒索清空那次，以及我是怎么确认它发生了什么</description>
+      <description>2026 年 5 月 20 日，我的 MySQL 库里多出一张不认识的表，旧博客的数据没了。这篇记录我怎么确认发生了什么、怎么收口，以及三条跟&quot;备份&quot;无关的教训。</description>
       <category>自建服务, MySQL, 服务器运维</category>
     </item>
     <item>
@@ -35,7 +35,7 @@
       <link>https://yopoo.888431.xyz/post.html?id=10</link>
       <guid isPermaLink="false">10</guid>
       <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
-      <description>自己给 Obsidian 写插件这几个月</description>
+      <description>从改不动别人的插件，到写下 Grove Reader、Personal Homepage、Blog Publisher。记录一个非科班的人怎么在 Obsidian 里做插件、怎么取证、怎么给没有测试环境的界面写测试。</description>
       <category>Obsidian, 插件开发, JavaScript</category>
     </item>
     <item>
@@ -43,7 +43,7 @@
       <link>https://yopoo.888431.xyz/post.html?id=11</link>
       <guid isPermaLink="false">11</guid>
       <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
-      <description>把扫描书变成能搜能跳的文本，我用了三套流程</description>
+      <description>从一本 420 页的扫描书到能在阅读器里点目录跳转，中间要过 OCR、压体积、加书签三道关。记录我的三套工具、一条命令里每个参数的用处，以及那些没人提前告诉我的坑。</description>
       <category>OCR, Python, 阅读</category>
     </item>
   </channel>
