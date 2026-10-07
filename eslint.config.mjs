@@ -3,7 +3,8 @@ import globals from "globals";
 
 export default [
   // motion-web 是外部 CC BY-NC 案例素材，不参与 lint。
-  { ignores: ["motion-web/**"] },
+  // lib/ 是 vendored 的压缩第三方库（marked/DOMPurify/highlight.js/remixicon），同样不参与。
+  { ignores: ["motion-web/**", "lib/**"] },
   js.configs.recommended,
   {
     // 根目录 *.js 全部是浏览器端 ES Module（<script type="module"> 或被 import）。
