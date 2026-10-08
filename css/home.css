@@ -362,11 +362,7 @@ body.index-page .grid {
   }
   body.index-page .card,
   body.index-page .card-project,
-  body.index-page .card-social-container,
-
-  body.index-page .card-skills,
-  body.index-page .card-friends,
-  body.index-page .card-timeline {
+  body.index-page .card-social-container {
     width: 100%;
     grid-column: auto;
   }
@@ -441,47 +437,9 @@ body.index-page .grid {
   font-size: 0.95rem;
 }
 
-/* 技能卡片 */
-.card-skills {
-  grid-column: span 4;
-}
-
-/* 技术栈标签 */
-.skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.skill-tags .tag {
-  padding: 6px 14px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--text-primary);
-  background: color-mix(in srgb, var(--text-primary), transparent 95%);
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  transition:
-    background-color 220ms ease,
-    border-color 220ms ease,
-    color 220ms ease,
-    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.skill-tags .tag:hover {
-  color: var(--accent-color);
-  background: color-mix(in srgb, var(--accent-color), transparent 92%);
-  border-color: color-mix(in srgb, var(--accent-color), transparent 55%);
-  transform: translateY(-1px);
-}
-
 /* 时间线 */
-.card-timeline {
-  grid-column: span 4;
-}
-
+/* 说明：.card-timeline / .timeline-* 原为首页「学习之路」卡，现首页已下线该卡；
+   site.html 的更新记录仍在用这套 timeline-* 类，所以只删了 .card-timeline 这一层外壳。 */
 .timeline-list {
   display: flex;
   flex-direction: column;
@@ -521,35 +479,6 @@ body.index-page .grid {
 .timeline-text {
   color: var(--text-primary);
   font-size: 0.92rem;
-}
-
-/* 友情链接 */
-.card-friends {
-  grid-column: span 4;
-}
-
-.friends-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.friend-link {
-  display: inline-block;
-  padding: 8px 16px;
-  background: var(--card-hover);
-  color: var(--text-primary);
-  text-decoration: none;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.friend-link:hover {
-  background: var(--accent-color);
-  color: #fff;
 }
 
 .home-blog-badge-wrap {
@@ -605,9 +534,6 @@ body.index-page .grid {
   .card-social-container,
   .card-motion-web,
   .card-blog,
-  .card-skills,
-  .card-friends,
-  .card-timeline,
   #my-skills {
     grid-column: span 1;
     width: 100%;

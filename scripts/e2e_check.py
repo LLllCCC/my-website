@@ -73,14 +73,72 @@ def run_checks():
         page.goto(BASE + "/blog.html", wait_until="networkidle")
         check("博客 文章卡片 3 张", page.locator(".blog-post-card").count() == 3)
         check("博客 标签云有按钮", page.locator(".tag-btn").count() >= 2)
+        # 全文搜索：关键词长度达到阈值后应请求 /api/posts/search 并把正文命中并进结果。
+        page.fill("#blog-search", "第二篇")
+        page.wait_for_timeout(700)
+        check("博客 全文搜索命中标题", page.locator(".blog-post-card").count() == 1, page.locator(".blog-post-card").count())
+        check(
+            "博客 搜索结果显示摘要或片段",
+            "二" in page.locator(".blog-post-card .blog-post-excerpt").first.inner_text(),
+            page.locator(".blog-post-card .blog-post-excerpt").first.inner_text(),
+        )
+        page.fill("#blog-search", "绝对搜不到的词xyzzy")
+        page.wait_for_timeout(700)
+        check("博客 无结果时给出空状态", page.locator(".blog-empty-state").count() == 1)
+        page.fill("#blog-search", "")
+        page.wait_for_timeout(700)
+        check("博客 清空搜索后恢复全部文章", page.locator(".blog-post-card").count() == 3)
         if shot_dir:
             page.screenshot(path=os.path.join(shot_dir, "blog.png"), full_page=True)
+
+        page.goto(BASE + "/archive.html", wait_until="networkidle")
+        check("归档 导航已注入", page.locator(".nav-container").count() == 1)
+        check("归档 标题为归档", "归档" in page.locator(".blog-hero h1").inner_text())
+        check("归档 按月份分组", page.locator(".archive-group").count() == 1, page.locator(".archive-group").count())
+        check("归档 每组有文章条目", page.locator(".archive-item").count() == 3)
+        # 桩数据里三篇都在 2026-10，所以年份筛选只有「全部 + 2026」两个按钮。
+        check("归档 年份筛选按钮（含全部）", page.locator(".archive-year-btn").count() == 2, page.locator(".archive-year-btn").count())
+        check("归档 总数已填充", page.locator("#archive-total-count").inner_text() == "03", page.locator("#archive-total-count").inner_text())
+        check("归档 文章链接指向文章页", "post.html?id=" in (page.locator(".archive-item-link").first.get_attribute("href") or ""))
+        page.locator(".archive-year-btn").nth(1).click()
+        page.wait_for_timeout(200)
+        check("归档 点年份后只剩该年", page.locator(".archive-item").count() == 3)
+        page.fill("#archive-search", "第三篇")
+        page.wait_for_timeout(400)
+        check("归档 搜索生效", page.locator(".archive-item").count() == 1)
+        page.fill("#archive-search", "")
+        page.wait_for_timeout(300)
+        if shot_dir:
+            page.screenshot(path=os.path.join(shot_dir, "archive.png"), full_page=True)
 
         page.goto(BASE + "/post.html?id=1", wait_until="networkidle")
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
         check("文章 正文渲染出 h2", page.locator("#article-body h2").count() == 2)
         check("文章 目录生成", page.locator("#article-toc li").count() == 2)
         check("文章 上一篇/下一篇只显示下一篇", page.locator("#article-neighbors .article-neighbor").count() == 1)
+        # 文章1 标签「代码,生活」：文章2「代码」与文章3「生活」各命中一个共同标签，
+        # 因此两篇都应被推荐（只要求有结果且不把自己算进去）。
+        check("文章 相关阅读显示同标签文章", page.locator("#article-related .article-related-item").count() == 2, page.locator("#article-related .article-related-item").count())
+        related_titles = page.locator("#article-related .article-related-link").all_inner_texts()
+        check(
+            "文章 相关阅读不含自己",
+            "ESM 验证文章" not in related_titles,
+            related_titles,
+        )
+        check(
+            "文章 相关阅读标出共同标签",
+            page.locator("#article-related .article-related-tag").count() >= 1,
+            page.locator("#article-related .article-related-tag").count(),
+        )
+        related_hrefs = [
+            link.get_attribute("href") or "" for link in page.locator("#article-related .article-related-link").all()
+        ]
+        # 两篇各命中一个共同标签、shared 相等时按日期倒序，所以顺序不固定，只校验集合。
+        check(
+            "文章 相关阅读链接指向同标签的两篇",
+            sorted(related_hrefs) == ["post.html?id=2", "post.html?id=3"],
+            related_hrefs,
+        )
         check("文章 表情回应栏 4 个按钮", page.locator("#article-reactions .article-reaction").count() == 4)
         check("文章 代码块有复制按钮", page.locator("#article-body .code-copy-btn").count() == 1)
         check("评论 两条留言", page.locator("#comment-list .comment-item").count() == 2)

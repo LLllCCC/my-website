@@ -148,6 +148,8 @@ async function buildSitemap() {
   const urls = [
     { loc: SITE + "/", lastmod: "" },
     { loc: SITE + "/blog.html", lastmod: "" },
+    // 归档页是静态页，不在文章接口里，每次重建 sitemap 都要带上它，否则会被抹掉。
+    { loc: SITE + "/archive.html", lastmod: "" },
   ].concat(
     posts.map((post) => ({
       loc: SITE + "/post.html?id=" + encodeURIComponent(post.id),

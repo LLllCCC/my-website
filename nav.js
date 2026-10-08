@@ -20,6 +20,7 @@ function loadNavbar() {
     '        <div class="nav-dropdown" id="nav-dropdown" aria-hidden="true" inert>' +
     '          <a href="/index.html" class="nav-dropdown-link">主页</a>' +
     '          <a href="/blog.html" class="nav-dropdown-link">博客</a>' +
+    '          <a href="/archive.html" class="nav-dropdown-link">归档</a>' +
     '          <a href="/motion-web/cases/" class="nav-dropdown-link">动效案例</a>' +
     '          <a href="/site.html" class="nav-dropdown-link">这个网站</a>' +
     "        </div>" +

@@ -46,6 +46,21 @@ COMMENTS_1 = [
 ]
 
 
+def search_posts(keyword):
+    """假搜索：按标题/摘要/标签命中，并带上正文片段，形状与真实接口一致。"""
+    keyword = (keyword or "").strip().lower()
+    if not keyword:
+        return []
+    hits = []
+    for post in POSTS:
+        haystack = " ".join(
+            str(post.get(field, "")) for field in ("title", "description", "tags")
+        ).lower()
+        if keyword in haystack:
+            hits.append({**post, "snippet": post.get("description", "")})
+    return hits
+
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
@@ -69,6 +84,9 @@ class Handler(SimpleHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path == "/api/posts":
             return self.send_json(POSTS)
+        # 搜索要排在 /api/posts/1 之前判断，否则 "search" 会被当成文章编号。
+        if path == "/api/posts/search":
+            return self.send_json(search_posts(self.query_keyword("q")))
         if path == "/api/posts/1":
             return self.send_json(POST_1)
         if path == "/api/posts/1/reactions":
@@ -78,6 +96,13 @@ class Handler(SimpleHTTPRequestHandler):
         if path.startswith("/api/posts/") and path.endswith("/comments"):
             return self.send_json([])
         return super().do_GET()
+
+    def query_keyword(self, name):
+        """取出查询串里某个参数的值（已做百分号解码）。"""
+        from urllib.parse import parse_qs, urlparse
+
+        values = parse_qs(urlparse(self.path).query).get(name, [])
+        return values[0] if values else ""
 
     def do_POST(self):
         if self.path.startswith("/api/comments/") and self.path.endswith("/reactions"):

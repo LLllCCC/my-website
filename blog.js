@@ -1,5 +1,10 @@
 // 博客列表页：搜索、标签云、文章卡片。
-import { CONFIG, debounce, safeHttpUrl } from "./config.js?v=33";
+// 搜索分两级：短关键词走本地（标题/摘要/标签，即时响应），
+// 关键词达到长度阈值时再调 /api/posts/search 取正文命中的结果，两级合并去重。
+import { CONFIG, safeHttpUrl } from "./config.js?v=34";
+
+// 关键词到这个长度才发网络请求：更短的词本地就能筛完，省一次往返。
+const FULL_TEXT_MIN_LENGTH = 2;
 
 document.addEventListener("DOMContentLoaded", async function () {
   const listContainer = document.getElementById("dynamic-article-list");
@@ -11,6 +16,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   let allPosts = [];
   let activeTag = null;
+  let fullTextSnippets = new Map();
+  let fullTextTimer = null;
   const chronologicalRank = new Map();
 
   function normalizeTags(tags) {
@@ -83,10 +90,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       const excerpt = document.createElement("p");
       excerpt.className = "blog-post-excerpt";
       const summary = typeof post.description === "string" ? post.description.trim() : "";
+      // 有正文命中片段时优先显示它，让访客看出为什么匹配上。
+      const snippet = fullTextSnippets.get(String(post.id));
+      const text = snippet || summary;
       excerpt.textContent =
-        summary && summary !== title.textContent
-          ? summary
-          : "一段关于代码与日常的记录，点开继续阅读。";
+        text && text !== title.textContent ? text : "一段关于代码与日常的记录，点开继续阅读。";
 
       const link = document.createElement("a");
       link.className = "blog-post-link";
@@ -109,17 +117,56 @@ document.addEventListener("DOMContentLoaded", async function () {
           return tag.trim();
         });
       const matchesTag = !activeTag || tags.includes(activeTag);
+      // 本地匹配标题、摘要、标签，以及后端已经确认在正文里命中的文章。
       const haystack = [post.title, post.description].filter(Boolean).join(" ").toLocaleLowerCase();
-      return matchesTag && haystack.includes(keyword);
+      const matchesKeyword =
+        !keyword || haystack.includes(keyword) || fullTextSnippets.has(String(post.id));
+      return matchesTag && matchesKeyword;
     });
 
     if (resultCount) {
-      resultCount.textContent =
-        keyword || activeTag
-          ? "找到 " + filtered.length + " 篇"
-          : "最近更新 · " + filtered.length + " 篇";
+      const scope = keyword || activeTag;
+      resultCount.textContent = scope
+        ? "找到 " + filtered.length + " 篇"
+        : "最近更新 · " + filtered.length + " 篇";
     }
     renderPosts(filtered);
+  }
+
+  // 关键词达到阈值才去后端搜正文。用序号打断，只认最后一次输入的结果，
+  // 避免慢的旧请求回来后覆盖新关键词的命中集合。
+  let searchSeq = 0;
+  function requestFullText(keyword) {
+    if (keyword.length < FULL_TEXT_MIN_LENGTH) {
+      fullTextSnippets = new Map();
+      return;
+    }
+    const seq = ++searchSeq;
+    const url = CONFIG.API_BASE + "/posts/search?q=" + encodeURIComponent(keyword);
+    fetch(url, { headers: { Accept: "application/json" } })
+      .then(function (response) {
+        return response.ok ? response.json() : [];
+      })
+      .then(function (rows) {
+        if (seq !== searchSeq || !Array.isArray(rows)) return;
+        const next = new Map();
+        rows.forEach(function (row) {
+          if (row && row.id != null) next.set(String(row.id), row.snippet || "");
+        });
+        fullTextSnippets = next;
+        filterPosts();
+      })
+      .catch(function () {
+        // 全文搜索失败就退回纯本地结果，不打扰用户。
+        if (seq === searchSeq) filterPosts();
+      });
+  }
+
+  function scheduleFullText(keyword) {
+    clearTimeout(fullTextTimer);
+    fullTextTimer = setTimeout(function () {
+      requestFullText(keyword);
+    }, 280);
   }
 
   function buildTagCloud() {
@@ -142,7 +189,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     allButton.setAttribute("aria-pressed", "true");
     allButton.addEventListener("click", function () {
       activeTag = null;
-      searchInput.value = "";
+      if (searchInput) searchInput.value = "";
+      // 搜索框被清空了，全文命中的那批文章不该再留在结果里。
+      fullTextSnippets = new Map();
+      searchSeq += 1;
       tagCloud.querySelectorAll(".tag-btn").forEach(function (button) {
         const active = button === allButton;
         button.classList.toggle("is-active", active);
@@ -179,7 +229,14 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
   }
 
-  if (searchInput) searchInput.addEventListener("input", debounce(filterPosts, 180));
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      const keyword = searchInput.value.trim().toLocaleLowerCase();
+      // 先出本地结果，再去要正文命中，界面不等网络。
+      filterPosts();
+      scheduleFullText(keyword);
+    });
+  }
 
   try {
     const response = await fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } });

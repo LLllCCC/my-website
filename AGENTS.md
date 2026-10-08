@@ -12,14 +12,16 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | 文件 | 职责 |
 |---|---|
 | `index.html` + `main.js` | 首页：邮件卡片、视差、最新文章卡片 |
-| `blog.html` + `blog.js` | 博客列表：搜索、标签云、文章卡片 |
-| `post.html` + `post.js` | 文章页：Markdown 渲染、目录、封面定位、阅读进度 |
+| `blog.html` + `blog.js` | 博客列表：搜索（本地 + 后端全文两级）、标签云、文章卡片 |
+| `archive.html` + `archive.js` | 归档：年份切换 + 按月分组，纯前端用列表接口数据 |
+| `post.html` + `post.js` | 文章页：Markdown 渲染、目录、封面定位、阅读进度、相关阅读 |
 | `comments.js` | 评论区：昵称生成、表情回应、排序、两层楼中楼。**评论相关改动只进这个文件** |
 | `comment-markdown.js` | 评论正文的 Markdown 子集渲染器（配套 15 项测试） |
 | `admin.html` + `admin.js` | 后台：文章管理 + 评论审核 |
 | `site.html` | 「这个网站是怎么搭的」说明页 |
-| `nav.js` / `footer.js` | 全站导航与页脚（各页面注入） |
+| `nav.js` / `footer.js` | 全站导航与页脚（各页面注入；新增页面时两处都要加链接） |
 | `config.js` | 共享配置与工具：`CONFIG`、`showToast`、`debounce`、`formatDateTime`、`safeHttpUrl` |
+| `sitemap.xml` | **由 `scripts/publish.mjs` 每次发布全量重写**，手改会被冲掉；要加静态页（如 `archive.html`）必须改 `buildSitemap()` |
 | `theme-init.js` | **唯一的经典脚本**，在 `<head>` 阻塞执行防主题闪烁；不要改成 module |
 | `css/` | 全站样式，按页面拆分：`base.css`（主题变量/布局/导航/页脚/Toast/回到顶部）+ `home.css` / `blog.css` / `post.css` / `admin.css` / `site.css`。**所有 HTML 按这个顺序加载全部 6 个文件**，顺序是级联的一部分，不要调换 |
 | `scripts/publish.mjs` | Obsidian 笔记发布脚本（配合 myblog-api 的 `/api/posts`）；笔记 YAML 认 `title`/`tags`/`cover`/`description`/`date`/`post-id` 六个键 |

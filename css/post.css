@@ -724,6 +724,19 @@
 .article-reaction.is-tapped { border-color: color-mix(in srgb, var(--accent-color), transparent 52%); background: color-mix(in srgb, var(--accent-color), transparent 88%); color: var(--accent-color); font-weight: 700; }
 .article-reaction.is-busy { opacity: .55; cursor: progress; }
 
+/* --- 相关阅读（article-related，post.js initRelatedPosts 注入；按共同标签推荐）--- */
+.article-related { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--border-color); }
+.article-related-title { margin: 0 0 14px; font-size: .95rem; font-weight: 600; color: var(--text-primary); letter-spacing: .02em; }
+.article-related-list { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.article-related-item { display: flex; flex-direction: column; gap: 5px; min-width: 0; padding: 13px 16px; border: 1px solid var(--border-color); border-radius: 14px; background: color-mix(in srgb, var(--card-bg), transparent 35%); transition: border-color .18s ease, transform .18s ease; }
+.article-related-item:hover { border-color: color-mix(in srgb, var(--accent-color), transparent 45%); transform: translateY(-2px); }
+.article-related-link { color: var(--text-primary); text-decoration: none; font-size: .93rem; font-weight: 600; line-height: 1.5; transition: color .16s ease; }
+.article-related-link:hover { color: var(--accent-color); }
+.article-related-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.article-related-date { color: var(--text-secondary); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.article-related-tags { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.article-related-tag { padding: 2px 9px; border: 1px solid var(--border-color); border-radius: 999px; color: var(--text-secondary); font-size: .72rem; }
+
 /* --- 代码块复制按钮（post.js enhanceCodeBlocks 注入）+ 高亮底色让位给 pre --- */
 .post-content pre { position: relative; }
 .post-content pre code.hljs { background: transparent; padding: 0; }
@@ -768,4 +781,4 @@ html.lightbox-open { overflow: hidden; }
 [data-theme="light"] .post-content .hljs-deletion { color: #b31d28; background-color: #ffeef0; }
 
 /* hidden 属性必须真正隐藏（上面两条 display 规则会盖过 UA 样式的 [hidden]）*/
-.article-neighbors[hidden], .article-reactions[hidden] { display: none; }
+.article-neighbors[hidden], .article-reactions[hidden], .article-related[hidden] { display: none; }

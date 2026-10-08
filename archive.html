@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>博客 - Yopo</title>
-    <meta name="description" content="自己搭的博客：代码、工具和日常。" />
+    <title>归档 - Yopo</title>
+    <meta name="description" content="按年份和月份浏览 Yopo 写过的所有文章。" />
     <link rel="alternate" type="application/rss+xml" title="Yopo 的博客" href="/feed.xml" />
     <meta name="author" content="Yopo" />
-    <meta property="og:title" content="Yopo 的博客 - 思维碎片" />
-    <meta property="og:description" content="记录代码旅程与生活点滴。" />
+    <meta property="og:title" content="归档 - Yopo" />
+    <meta property="og:description" content="按年份和月份浏览全部文章。" />
     <meta property="og:image" content="/img/map.jpg" />
     <link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
     <link href="/lib/remixicon.css?v=34" rel="stylesheet">
@@ -20,35 +20,39 @@
     <link rel="stylesheet" href="css/admin.css?v=34" />
     <link rel="stylesheet" href="css/site.css?v=34" />
 </head>
-<body>
+<body class="blog-page">
 
 <div id="global-nav"></div>
 
     <main id="main-content" class="container blog-container blog-page">
         <header class="blog-hero fade-in">
-            <h1>思维碎片<span>。</span></h1>
-            <p>关于代码、设计与日常的记录。<br class="blog-mobile-break">慢慢写，慢慢积累。</p>
+            <h1>归档<span>。</span></h1>
+            <p>按时间和年份翻看写过的每一篇。<br class="blog-mobile-break">一共 <strong id="archive-total-count">—</strong> 篇，最早一篇在 <strong id="archive-earliest">—</strong>。</p>
             <div class="blog-hero-foot">
                 <span class="blog-hero-rule" aria-hidden="true"></span>
-                <span>随笔与开发记录</span>
-                <span class="blog-hero-total"><strong id="blog-total-count">—</strong> 篇文章</span>
+                <span>全部文章</span>
+                <span class="blog-hero-total"><strong id="archive-year-count">—</strong> 个年份</span>
             </div>
         </header>
 
-        <section class="blog-library fade-in" aria-label="博客文章">
-            <div class="blog-toolbar">
+        <section class="blog-library fade-in" aria-label="文章归档">
+            <div class="archive-toolbar">
+                <div class="archive-years" id="archive-years" role="group" aria-label="按年份筛选"></div>
                 <label class="blog-search">
                     <i class="ri-search-line" aria-hidden="true"></i>
-                    <input type="search" id="blog-search" placeholder="搜索标题、摘要或正文…" aria-label="搜索文章标题、摘要或正文">
+                    <input type="search" id="archive-search" placeholder="搜索标题、摘要…" aria-label="搜索文章标题或摘要">
                     <span class="blog-search-hint" aria-hidden="true">⌕</span>
                 </label>
-                <p class="blog-list-status" id="blog-result-count" role="status" aria-live="polite">正在载入文章</p>
             </div>
 
-            <div class="tag-cloud" id="tag-cloud" aria-label="按标签筛选"></div>
+            <p class="blog-list-status" id="archive-result-count" role="status" aria-live="polite">正在载入文章</p>
 
-            <div class="article-list" id="dynamic-article-list">
+            <div class="archive-groups" id="archive-groups">
                 <p class="blog-empty-state" role="status" aria-live="polite">正在加载文章…</p>
+            </div>
+
+            <div class="blog-toolbar" style="justify-content:center; margin-top:10px;">
+                <a class="blog-post-link" href="/blog.html" style="text-decoration:none;">← 回到文章列表</a>
             </div>
         </section>
 
@@ -58,6 +62,6 @@
 
     <script src="/nav.js?v=34" type="module"></script>
 
-    <script src="/blog.js?v=34" type="module"></script>
+    <script src="archive.js?v=34" type="module"></script>
 </body>
 </html>

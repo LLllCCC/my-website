@@ -1,8 +1,8 @@
 // 文章详情页：拉取正文、Markdown 渲染、封面定位、目录、阅读进度。
 // 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=33";
-import { initComments, visitorId } from "./comments.js?v=33";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=34";
+import { initComments, visitorId } from "./comments.js?v=34";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");
@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       buildTOC(articleBody);
       initReadingProgress();
       renderNeighbors(post);
+      initRelatedPosts(post);
       initArticleReactions(postId);
       injectArticleJsonLd(post);
       enhanceCodeBlocks(articleBody);
@@ -378,6 +379,116 @@ function renderNeighbors(post) {
     link.append(label, title);
     box.appendChild(link);
   });
+}
+
+// 相关阅读：按共同标签数排序，从列表接口里取最近几篇同主题的文章。
+// 整栏拿不到数据或没有共同标签时就不显示，不影响正文与评论。
+const RELATED_MAX = 3;
+
+function tagSetOf(value) {
+  const raw = Array.isArray(value) ? value.map(String) : String(value || "").split(",");
+  return new Set(
+    raw
+      .map(function (tag) {
+        return tag.trim();
+      })
+      .filter(Boolean)
+  );
+}
+
+async function initRelatedPosts(post) {
+  const box = document.getElementById("article-related");
+  if (!box) return;
+
+  const currentId = String(post.id);
+  const currentTags = tagSetOf(post.tags);
+  if (!currentTags.size) return;
+
+  try {
+    const response = await fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } });
+    if (!response.ok) return;
+    const posts = await response.json();
+    if (!Array.isArray(posts)) return;
+
+    const scored = posts
+      .filter(function (item) {
+        return item && item.id != null && String(item.id) !== currentId;
+      })
+      .map(function (item) {
+        const tags = tagSetOf(item.tags);
+        let shared = 0;
+        tags.forEach(function (tag) {
+          if (currentTags.has(tag)) shared += 1;
+        });
+        return { post: item, shared: shared };
+      })
+      .filter(function (item) {
+        return item.shared > 0;
+      })
+      .sort(function (a, b) {
+        const timeA = Date.parse(a.post.date || "") || 0;
+        const timeB = Date.parse(b.post.date || "") || 0;
+        return b.shared - a.shared || timeB - timeA || Number(b.post.id) - Number(a.post.id);
+      })
+      .slice(0, RELATED_MAX);
+
+    if (!scored.length) return;
+
+    const heading = document.createElement("h2");
+    heading.className = "article-related-title";
+    heading.textContent = "相关阅读";
+
+    const list = document.createElement("ul");
+    list.className = "article-related-list";
+
+    scored.forEach(function (item) {
+      const entry = item.post;
+      const row = document.createElement("li");
+      row.className = "article-related-item";
+
+      const link = document.createElement("a");
+      link.className = "article-related-link";
+      link.href = "post.html?id=" + encodeURIComponent(String(entry.id));
+      link.textContent =
+        typeof entry.title === "string" && entry.title.trim() ? entry.title : "未命名文章";
+
+      const sharedTags = Array.from(tagSetOf(entry.tags))
+        .filter(function (tag) {
+          return currentTags.has(tag);
+        })
+        .slice(0, 3);
+
+      const meta = document.createElement("span");
+      meta.className = "article-related-meta";
+      const dateKey = typeof entry.date === "string" ? entry.date.substring(0, 10) : "";
+      if (dateKey) {
+        const time = document.createElement("time");
+        time.className = "article-related-date";
+        time.textContent = dateKey.replace(/-/g, " / ");
+        time.dateTime = dateKey;
+        meta.appendChild(time);
+      }
+      if (sharedTags.length) {
+        const tagList = document.createElement("span");
+        tagList.className = "article-related-tags";
+        sharedTags.forEach(function (tag) {
+          const chip = document.createElement("span");
+          chip.className = "article-related-tag";
+          chip.textContent = tag;
+          tagList.appendChild(chip);
+        });
+        meta.appendChild(tagList);
+      }
+
+      row.append(link, meta);
+      list.appendChild(row);
+    });
+
+    box.replaceChildren(heading, list);
+    box.hidden = false;
+  } catch (error) {
+    console.warn("相关阅读未能加载:", error);
+  }
 }
 
 // 文章级表情回应：身份与计数口径都和评论区一致（visitor 的 sha256 + localStorage 记录点过哪些）。
