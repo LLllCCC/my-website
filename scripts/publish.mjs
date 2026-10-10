@@ -148,6 +148,7 @@ const STATIC_SITEMAP_PAGES = [
   "/",
   "/blog.html",
   "/archive.html",
+  "/stats.html",
   "/tag.html",
   "/gallery.html",
   "/site.html",

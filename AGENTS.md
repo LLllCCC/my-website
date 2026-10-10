@@ -15,6 +15,7 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | `blog.html` + `blog.js` | 博客列表：搜索（本地 + 后端全文两级）、标签云、文章卡片 |
 | `archive.html` + `archive.js` | 归档：年份切换 + 按月分组，纯前端用列表接口数据 |
 | `tag.html` + `tag.js` | 标签：标签云 + 按 `?t=xxx` 筛选。每个标签有独立可分享链接（`?t=` 会 pushState 进 URL，支持前进后退） |
+| `stats.html` + `stats.js` | 写作统计：概览四卡、近一年热力图、标签分布、按年汇总。字数 = 正文去代码块后的非空白字符数，逐篇拉详情得出。`?until=YYYY-MM-DD` 可固定热力图窗口（e2e 靠它让断言不依赖真实日期） |
 | `gallery.html` + `gallery.js` | 壁纸：缩略图网格 + 点开看原图的灯箱。**依赖生成的 `gallery.data.js`**，见下方「壁纸约定」 |
 | `gallery.data.js` | **由 `scripts/build-gallery.py` 生成，不要手改**。相册清单（文件名 / 缩略图路径 / 尺寸） |
 | `scripts/build-gallery.py` | 相册构建：按图床目录列出图片 → 下载原图 → 生成 `img/wallpaper/` 下 480px 缩略图 → 写 `gallery.data.js`。需要 Pillow |

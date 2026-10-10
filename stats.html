@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写作统计 - Yopo</title>
+    <meta name="description" content="Yopo 的写作统计：文章数、字数、评论与近一年的写作热力图。" />
+    <link rel="alternate" type="application/rss+xml" title="Yopo 的博客" href="/feed.xml" />
+    <meta name="author" content="Yopo" />
+    <meta property="og:title" content="写作统计 - Yopo" />
+    <meta property="og:description" content="写了多少、什么时候写的，一眼看全。" />
+    <meta property="og:image" content="/img/map.jpg" />
+    <link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+    <link href="/lib/remixicon.css?v=44" rel="stylesheet">
+    <script src="theme-init.js?v=44"></script>
+    <link rel="stylesheet" href="css/base.css?v=44" />
+    <link rel="stylesheet" href="css/home.css?v=44" />
+    <link rel="stylesheet" href="css/blog.css?v=44" />
+    <link rel="stylesheet" href="css/post.css?v=44" />
+    <link rel="stylesheet" href="css/admin.css?v=44" />
+    <link rel="stylesheet" href="css/site.css?v=44" />
+</head>
+<body class="blog-page">
+
+<div id="global-nav"></div>
+
+    <main id="main-content" class="container blog-container blog-page">
+        <header class="blog-hero fade-in">
+            <h1>写作<span>。</span></h1>
+            <p>写了多少、什么时候写的，一眼看全。<br class="blog-mobile-break">热力图是最近一年，颜色越深当天写得越多；字数按正文文字计，<strong>不含代码块</strong>。</p>
+            <div class="blog-hero-foot">
+                <span class="blog-hero-rule" aria-hidden="true"></span>
+                <span>最近一年</span>
+                <span class="blog-hero-total"><strong id="stats-range">—</strong></span>
+            </div>
+        </header>
+
+        <section class="blog-library fade-in" aria-label="写作统计">
+            <p class="blog-list-status" id="stats-status" role="status" aria-live="polite">正在载入统计</p>
+
+            <dl class="stats-overview">
+                <div class="stat-card"><dt>文章</dt><dd><span id="stat-posts">—</span><small>篇</small></dd></div>
+                <div class="stat-card"><dt>字数</dt><dd><span id="stat-words">—</span><small>字</small></dd></div>
+                <div class="stat-card"><dt>评论</dt><dd><span id="stat-comments">—</span><small>条</small></dd></div>
+                <div class="stat-card"><dt>标签</dt><dd><span id="stat-tags">—</span><small>个</small></dd></div>
+            </dl>
+
+            <section class="stats-section" aria-label="写作热力图">
+                <h2>热力图</h2>
+                <div class="heatmap-scroll">
+                    <div class="heatmap-months" id="heatmap-months" aria-hidden="true"></div>
+                    <div class="heatmap-cells" id="heatmap-cells" role="img" aria-label="按天统计的发文热力图"></div>
+                </div>
+                <div class="heatmap-legend" aria-hidden="true">
+                    <span>少</span>
+                    <span class="legend-swatch" data-level="0"></span>
+                    <span class="legend-swatch" data-level="1"></span>
+                    <span class="legend-swatch" data-level="2"></span>
+                    <span class="legend-swatch" data-level="3"></span>
+                    <span>多</span>
+                </div>
+            </section>
+
+            <section class="stats-section" aria-label="标签分布">
+                <h2>标签</h2>
+                <div id="stats-tags"></div>
+            </section>
+
+            <section class="stats-section" aria-label="按年汇总">
+                <h2>按年</h2>
+                <div id="stats-years"></div>
+            </section>
+        </section>
+
+        <div id="global-footer"></div>
+        <script src="/footer.js?v=44" type="module"></script>
+    </main>
+
+    <script src="/nav.js?v=44" type="module"></script>
+    <script src="/keys.js?v=44" type="module"></script>
+    <script src="/reveal.js?v=44" type="module"></script>
+
+    <script src="stats.js?v=44" type="module"></script>
+</body>
+</html>

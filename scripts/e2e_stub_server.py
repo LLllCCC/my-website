@@ -38,6 +38,28 @@ POST_1 = {
         "```js\nconst s = `alpha\nbeta`;\n```\n\n## 注意事项\n\n结尾。\n"
     ),
 }
+# id 2 / 3 的详情：统计页要逐篇拉正文算字数，没有这两条就只测得到"详情失败"的分支。
+# content 长度刻意不同，方便人工核对汇总数字；older/newer 形状与真实接口一致。
+POST_2 = {
+    "id": 2,
+    "title": "第二篇文章",
+    "date": "2026-10-04T00:00:00.000Z",
+    "tags": "代码,自建服务",
+    "cover": "",
+    "older": {"id": 1, "title": "ESM 验证文章"},
+    "newer": {"id": 3, "title": "第三篇文章"},
+    "content": "第二篇的正文。\n\n## 一节\n\n内容简短一些，但不是空的。",
+}
+POST_3 = {
+    "id": 3,
+    "title": "第三篇文章",
+    "date": "2026-10-05T00:00:00.000Z",
+    "tags": "生活",
+    "cover": "",
+    "older": {"id": 2, "title": "第二篇文章"},
+    "newer": None,
+    "content": "第三篇，生活随记。",
+}
 COMMENTS_1 = [
     {
         "id": 1,
@@ -103,6 +125,10 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(search_posts(self.query_keyword("q")))
         if path == "/api/posts/1":
             return self.send_json(POST_1)
+        if path == "/api/posts/2":
+            return self.send_json(POST_2)
+        if path == "/api/posts/3":
+            return self.send_json(POST_3)
         if path == "/api/posts/1/reactions":
             return self.send_json({"reactions": [{"emoji": "👍", "count": 2}]})
         if path == "/api/posts/1/comments":

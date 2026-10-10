@@ -313,6 +313,46 @@ def run_checks():
         page.wait_for_timeout(400)
         check("壁纸 Esc 关闭灯箱", page.locator(".lightbox-overlay").count() == 0)
 
+        # 统计页。?until= 把热力图窗口钉死在 stub 数据所在的那一周，
+        # 否则「哪几天该亮」的断言会依赖跑测试那天的日期，过一年就全红。
+        page.goto(BASE + "/stats.html?until=2026-10-11", wait_until="networkidle")
+        page.wait_for_timeout(400)  # 等逐篇详情的字数汇总回来
+        check("统计 标题含写作", "写作" in page.locator(".blog-hero h1").inner_text())
+        check("统计 导航已挂链接", page.locator('a[href="/stats.html"]').count() >= 1)
+        check("统计 概览文章数与列表一致", page.locator("#stat-posts").inner_text() == "3", page.locator("#stat-posts").inner_text())
+        check("统计 概览评论数与列表一致", page.locator("#stat-comments").inner_text() == "2", page.locator("#stat-comments").inner_text())
+        check("统计 概览标签数已去重", page.locator("#stat-tags").inner_text() == "3", page.locator("#stat-tags").inner_text())
+        words_total = page.locator("#stat-words").inner_text()
+        check("统计 字数已汇总（逐篇详情拉取）", words_total not in ("—", "0"), words_total)
+        heat = page.evaluate(
+            """() => {
+              const cells = [...document.querySelectorAll('#heatmap-cells span')];
+              const lit = cells.filter(c => c.dataset.level);
+              return {
+                cells: cells.length,
+                litTitles: lit.map(c => c.title),
+                levels: [...new Set(lit.map(c => c.dataset.level))],
+                months: document.querySelectorAll('#heatmap-months span').length,
+              };
+            }"""
+        )
+        check("统计 热力图格子数在一年窗口内", 350 <= heat["cells"] <= 380, heat["cells"])
+        # 月份行每周一个占位 span（1 行 × N 列），格子行 7 行 × N 列：两行列数相同才对齐。
+        # 关系是 months == ceil(cells / 7)（最后一列可能不满 7 天）。
+        check(
+            "统计 月份行与格子行列数一致（对齐前提）",
+            heat["months"] == -(-heat["cells"] // 7),
+            f'{heat["months"]} vs ceil({heat["cells"]}/7)',
+        )
+        check("统计 亮格恰好是发文的三天", len(heat["litTitles"]) == 3, heat["litTitles"])
+        check("统计 亮格 title 带日期与篇数", all("2026-10-0" in t and "1 篇" in t for t in heat["litTitles"]), heat["litTitles"])
+        check("统计 亮格档位都是 1（各 1 篇）", heat["levels"] == ["1"], heat["levels"])
+        check("统计 标签条 3 条", page.locator(".stats-tag-row").count() == 3)
+        year_rows = page.locator(".stats-year-row").count()
+        check("统计 按年至少 1 行", year_rows >= 1, year_rows)
+        # 自洽：stub 三篇全在 2026，年度字数必须等于总字数（两处口径一致才相等地了）
+        check("统计 年度字数与总字数自洽", page.locator(".stats-year-words").first.inner_text() == words_total, page.locator(".stats-year-words").first.inner_text())
+
         page.goto(BASE + "/post.html?id=1", wait_until="networkidle")
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
         check("文章 正文渲染出 h2", page.locator("#article-body h2").count() == 2)
