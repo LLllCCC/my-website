@@ -149,6 +149,7 @@ const STATIC_SITEMAP_PAGES = [
   "/blog.html",
   "/archive.html",
   "/tag.html",
+  "/gallery.html",
   "/site.html",
   // motion-web 案例集：7 个案例各自是独立页面，全部登记，否则搜索引擎收不到。
   "/motion-web/cases/",

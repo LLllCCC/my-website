@@ -279,6 +279,40 @@ def run_checks():
         check("现在 最后更新日期已填充", bool(updated) and updated != "—", updated)
         check("现在 导航尚未挂链接（内容填好后才挂）", page.locator('a[href="/now.html"]').count() == 0)
 
+        # 壁纸页。张数会随用户加图变化，所以断言只绑定"页面自洽"，
+        # 不绑定具体数字（绑死数字的断言迟早会因为加了几张图而变红）。
+        page.goto(BASE + "/gallery.html", wait_until="networkidle")
+        check("壁纸 导航已注入", page.locator(".nav-container").count() == 1)
+        check("壁纸 标题为壁纸", "壁纸" in page.locator(".blog-hero h1").inner_text())
+        thumb_count = page.locator(".gallery-item").count()
+        check("壁纸 网格里有缩略图", thumb_count >= 1, thumb_count)
+        check(
+            "壁纸 头部张数与网格一致",
+            page.locator("#gallery-count").inner_text() == "%02d" % thumb_count,
+            f'{page.locator("#gallery-count").inner_text()} vs {thumb_count}',
+        )
+        # 懒加载是这页的命门：30 张原图共 75 MB，不懒加载首屏就废了
+        lazy_ok = page.evaluate(
+            """() => {
+              const imgs = [...document.querySelectorAll('.gallery-thumb')];
+              return imgs.length > 0 && imgs.every(i => i.getAttribute('loading') === 'lazy');
+            }"""
+        )
+        check("壁纸 缩略图全部懒加载（否则一页几十兆）", lazy_ok)
+        # 列表里必须是缩略图，不能是原图
+        first_src = page.locator(".gallery-thumb").first.get_attribute("src") or ""
+        check("壁纸 列表里挂的是本地缩略图", first_src.startswith("/img/wallpaper/"), first_src)
+        page.locator(".gallery-item").first.click()
+        page.wait_for_timeout(700)
+        check("壁纸 点缩略图打开灯箱", page.locator(".lightbox-overlay").count() == 1)
+        light_src = page.locator(".lightbox-image").get_attribute("src") or ""
+        check("壁纸 灯箱请求的是原图（不是缩略图）", "/Wallpaper/" in light_src, light_src[:70])
+        check("壁纸 灯箱有「查看/下载原图」链接", page.locator(".lightbox-link").count() == 1)
+        check("壁纸 灯箱标出第几张", "/" in page.locator(".lightbox-caption").inner_text())
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(400)
+        check("壁纸 Esc 关闭灯箱", page.locator(".lightbox-overlay").count() == 0)
+
         page.goto(BASE + "/post.html?id=1", wait_until="networkidle")
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
         check("文章 正文渲染出 h2", page.locator("#article-body h2").count() == 2)

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     '<a href="/blog.html">博客</a>' +
     '<a href="/tag.html">标签</a>' +
     '<a href="/archive.html">归档</a>' +
+    '<a href="/gallery.html">壁纸</a>' +
     '<a href="/motion-web/cases/">动效案例</a>' +
     '<a href="/site.html">这个网站</a>' +
     '<a href="/feed.xml">RSS</a>' +

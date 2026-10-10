@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>壁纸 - Yopo</title>
+    <meta name="description" content="Yopo 收集的手机壁纸，点开可以看大图或下载原图。" />
+    <link rel="alternate" type="application/rss+xml" title="Yopo 的博客" href="/feed.xml" />
+    <meta name="author" content="Yopo" />
+    <meta property="og:title" content="壁纸 - Yopo" />
+    <meta property="og:description" content="收集的手机壁纸，点开可以看大图或下载原图。" />
+    <meta property="og:image" content="/img/map.jpg" />
+    <link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+    <link href="/lib/remixicon.css?v=43" rel="stylesheet">
+    <script src="theme-init.js?v=43"></script>
+    <link rel="stylesheet" href="css/base.css?v=43" />
+    <link rel="stylesheet" href="css/home.css?v=43" />
+    <link rel="stylesheet" href="css/blog.css?v=43" />
+    <link rel="stylesheet" href="css/post.css?v=43" />
+    <link rel="stylesheet" href="css/admin.css?v=43" />
+    <link rel="stylesheet" href="css/site.css?v=43" />
+</head>
+<body class="blog-page">
+
+<div id="global-nav"></div>
+
+    <main id="main-content" class="container blog-container blog-page">
+        <header class="blog-hero fade-in">
+            <h1>壁纸<span>。</span></h1>
+            <p>平时收集的手机壁纸，随手放这儿。<br class="blog-mobile-break">列表里是缩略图，<strong>点开</strong>才加载原图——不放大的话一页只花 1 MB 出头。</p>
+            <div class="blog-hero-foot">
+                <span class="blog-hero-rule" aria-hidden="true"></span>
+                <span>全部壁纸</span>
+                <span class="blog-hero-total"><strong id="gallery-count">—</strong> 张</span>
+            </div>
+        </header>
+
+        <section class="blog-library fade-in" aria-label="壁纸列表">
+            <p class="blog-list-status" id="gallery-status" role="status" aria-live="polite">正在载入壁纸</p>
+            <div class="gallery-grid" id="gallery-grid"></div>
+        </section>
+
+        <div id="global-footer"></div>
+        <script src="/footer.js?v=43" type="module"></script>
+    </main>
+
+    <script src="/nav.js?v=43" type="module"></script>
+    <script src="/keys.js?v=43" type="module"></script>
+    <script src="/reveal.js?v=43" type="module"></script>
+
+    <script src="gallery.js?v=43" type="module"></script>
+</body>
+</html>

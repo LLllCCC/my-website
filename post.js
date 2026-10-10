@@ -2,10 +2,10 @@
 // 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、系列导航、相关阅读、
 // 文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=42";
-import { initComments, visitorId } from "./comments.js?v=42";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=43";
+import { initComments, visitorId } from "./comments.js?v=43";
 // 标签解析在 series.js 里（系列就是用标签表达的，所以放一起），别在这里再写一份。
-import { tagSetOf, seriesOfPost, sortByDateAsc } from "./series.js?v=42";
+import { tagSetOf, seriesOfPost, sortByDateAsc } from "./series.js?v=43";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");

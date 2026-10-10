@@ -15,6 +15,9 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | `blog.html` + `blog.js` | 博客列表：搜索（本地 + 后端全文两级）、标签云、文章卡片 |
 | `archive.html` + `archive.js` | 归档：年份切换 + 按月分组，纯前端用列表接口数据 |
 | `tag.html` + `tag.js` | 标签：标签云 + 按 `?t=xxx` 筛选。每个标签有独立可分享链接（`?t=` 会 pushState 进 URL，支持前进后退） |
+| `gallery.html` + `gallery.js` | 壁纸：缩略图网格 + 点开看原图的灯箱。**依赖生成的 `gallery.data.js`**，见下方「壁纸约定」 |
+| `gallery.data.js` | **由 `scripts/build-gallery.py` 生成，不要手改**。相册清单（文件名 / 缩略图路径 / 尺寸） |
+| `scripts/build-gallery.py` | 相册构建：按图床目录列出图片 → 下载原图 → 生成 `img/wallpaper/` 下 480px 缩略图 → 写 `gallery.data.js`。需要 Pillow |
 | `post.html` + `post.js` | 文章页：Markdown 渲染、目录、封面定位、阅读进度、系列导航、相关阅读 |
 | `series.js` | **系列/合集的定义与标签工具**：`SERIES_TAGS` 声明哪些标签代表一个系列，成员 = 带该标签的文章。**新增系列只能改这里**（见下方「系列约定」） |
 | `postList.js` | 归档页与标签页共用的「一行一篇」渲染（`dateKeyOf` / `matchesKeyword` / `buildPostRow`），改一处两边都变 |
@@ -31,6 +34,42 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | `scripts/test-comment-markdown.mjs` | 评论渲染器测试 |
 | `scripts/e2e_check.py` + `e2e_stub_server.py` | 浏览器端到端检查（假接口 + Playwright，随机端口）；CI 会跑，本地 `python scripts/e2e_check.py` |
 | `motion-web/` | 外部 CC BY-NC 动效案例素材，**不要改其中的代码** |
+
+## 壁纸约定（加壁纸时必须走这条流程）
+
+壁纸原图存在**图床仓库 `LLllCCC/tuchaung` 的 `Wallpaper/` 目录**（不是本站仓库）。
+
+**为什么不能在页面里直接显示原图**：那批原图 30 张共 **75 MB**，平均 2.5 MB、单张最大 18 MB。直接铺在页面上，手机滚一遍就是几十兆。所以列表里只放**缩略图**（480px 宽、JPEG q78，约 45 KB/张，整页 1 MB 出头），原图只在点开灯箱时才加载。
+
+**加壁纸的流程**：
+
+1. 把原图传到图床仓库的 `Wallpaper/`（PicList 或 GitHub 网页都行）
+2. 在站点仓库跑 `python scripts/build-gallery.py`（需要 Pillow）——它会列出远端目录、下载原图、生成 `img/wallpaper/` 下的缩略图、并重写 `gallery.data.js`
+3. 把新的缩略图和 `gallery.data.js` 一起提交
+
+脚本会**跳过已有缩略图**，所以中断后重跑是断点续传，不会重复下载。下载会按 Content-Length 校验字节数并重试——这条跨境线路会截断响应，不校验就会拿到半个文件。
+
+**两条不要踩的线**：
+
+- 页面**不能**在运行时去调 GitHub API 列目录：跨境慢，且未鉴权**限流 60 次/小时**。清单必须是构建时生成的。
+- 灯箱里的原图 URL 用 `jsDelivr`（`gallery.data.js` 里的 `GALLERY_CDN`）。实测 **18 MB 那张 jsDelivr 也能完整返回**，而 `raw.githubusercontent.com` 在本机直连常失败。
+
+## 代码块约定（改 post.js 的代码块部分前必读）
+
+`post.js` 的 `renderCodeLines()` 把每个代码块重排成 **每行一个 grid 行**：
+
+```html
+<span class="code-line">
+  <span class="code-line-no">1</span>
+  <span class="code-line-text">……</span>
+</span>
+```
+
+**别再改回"整列数字塞进一个伪元素"的写法。** 那种做法隐含假设「一个逻辑行 = 一个视觉行」，某行一旦折行，后面的数字就全部错位——以前只能二选一：要么有行号但长行要拖横向滚动条，要么软换行但撤掉行号。grid 方案让两件事同时成立（代码折行只撑高自己那一格，行号仍停在该行第一行位置），而且对齐是布局算出来的，**不需要任何 resize 重算**。
+
+**切行必须走 DOM，不能切 HTML 字符串。** highlight.js 的标签会跨行（多行字符串就是**一个** `<span>`），按 `\n` 切 HTML 会把标签切坏。`codeLinesOf()` 递归遍历文本节点，遇到 `\n` 就另起一行，并把当时的**祖先链 clone 出来**包住该行文本，跨行的 span 于是每行各有一份副本。测试桩里第三个代码块（`const s = \`alpha\nbeta\`;`）就是专门守这条路径的。
+
+**复制按钮必须走 `codeTextOf(pre)`，不能读 `code.textContent`。** 行号现在是真实元素，`textContent` 一定带上数字。e2e 里有一条**真点复制按钮读剪贴板**的断言盯着这件事（Windows 会把 `\n` 规范成 `\r\n`，比较前先归一化）。
 
 ## 系列约定（写文章时必须知道）
 

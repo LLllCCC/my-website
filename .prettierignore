@@ -5,3 +5,5 @@ feed.xml
 package-lock.json
 cspell.json
 *.html
+# 由 scripts/build-gallery.py 生成的相册清单（数据文件，格式由脚本决定）
+gallery.data.js
