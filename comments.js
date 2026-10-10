@@ -10,7 +10,7 @@ const COMMENT_NICKNAME_WORDS = {
   nouns: ["水母", "信天翁", "柴犬", "风铃", "苔原", "云豹", "刺猬", "灯塔", "游隼", "小鹿"],
 };
 
-function randomNickname() {
+export function randomNickname() {
   function pick(list) {
     return list[Math.floor(Math.random() * list.length)];
   }
@@ -21,7 +21,7 @@ function randomNickname() {
   );
 }
 
-function rememberedNickname() {
+export function rememberedNickname() {
   try {
     const saved = localStorage.getItem(COMMENT_NICKNAME_KEY);
     const value = typeof saved === "string" ? saved.trim() : "";
@@ -31,7 +31,7 @@ function rememberedNickname() {
   }
 }
 
-function rememberNickname(value) {
+export function rememberNickname(value) {
   try {
     localStorage.setItem(COMMENT_NICKNAME_KEY, value);
   } catch (_) {}

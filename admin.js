@@ -131,6 +131,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const commentCount = document.getElementById("admin-comment-count");
   const commentStatus = document.getElementById("admin-comment-status");
   const commentLabels = { pending: "待审核", approved: "已显示", rejected: "已拒绝" };
+  const guestbookList = document.getElementById("admin-guestbook-list");
+  const guestbookFilter = document.getElementById("admin-guestbook-filter");
+  const guestbookCount = document.getElementById("admin-guestbook-count");
+  const guestbookStatus = document.getElementById("admin-guestbook-status");
 
   function renderComments(comments) {
     commentList.replaceChildren();
@@ -272,6 +276,137 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // --- 留言板审核：形状与评论审核一致，少一个「来源文章」字段 ---
+
+  function renderGuestbook(messages) {
+    guestbookList.replaceChildren();
+    guestbookCount.textContent = String(messages.length).padStart(2, "0");
+    if (!messages.length) {
+      const empty = document.createElement("p");
+      empty.className = "admin-list-placeholder";
+      empty.textContent =
+        guestbookFilter.value === "pending" ? "没有待审核的留言。" : "这个状态下还没有留言。";
+      guestbookList.appendChild(empty);
+      return;
+    }
+
+    messages.forEach(function (message) {
+      const item = document.createElement("article");
+      item.className = "admin-comment-item" + (message.status === "pending" ? " is-pending" : "");
+
+      const main = document.createElement("div");
+      main.className = "admin-comment-main";
+
+      const head = document.createElement("div");
+      head.className = "admin-comment-head";
+      const name = document.createElement("span");
+      name.className = "admin-comment-name";
+      name.textContent = message.nickname || "匿名访客";
+      const time = document.createElement("span");
+      time.className = "admin-comment-time";
+      time.textContent = formatDateTime(message.created_at);
+      const badge = document.createElement("span");
+      badge.className = "admin-comment-badge is-" + message.status;
+      badge.textContent = commentLabels[message.status] || message.status;
+      head.append(name, time, badge);
+
+      const body = document.createElement("p");
+      body.className = "admin-comment-body";
+      body.textContent = message.content || "";
+
+      main.append(head, body);
+
+      const actions = document.createElement("div");
+      actions.className = "admin-comment-actions";
+      function action(label, className, handler) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = className;
+        button.textContent = label;
+        button.addEventListener("click", handler);
+        actions.appendChild(button);
+      }
+      if (message.status !== "approved") {
+        action("通过", "admin-action-button", function () {
+          reviewMessage(message.id, "approved");
+        });
+      }
+      if (message.status !== "rejected") {
+        action("拒绝", "admin-action-button", function () {
+          reviewMessage(message.id, "rejected");
+        });
+      }
+      action("删除", "admin-action-button admin-action-button--danger", function () {
+        removeMessage(message);
+      });
+
+      item.append(main, actions);
+      guestbookList.appendChild(item);
+    });
+  }
+
+  async function loadGuestbook() {
+    guestbookList.innerHTML = '<p class="admin-list-placeholder">正在读取留言…</p>';
+    try {
+      const query =
+        guestbookFilter.value === "all"
+          ? ""
+          : "?status=" + encodeURIComponent(guestbookFilter.value);
+      const messages = await apiRequest("/admin/guestbook" + query);
+      renderGuestbook(Array.isArray(messages) ? messages : []);
+    } catch (error) {
+      guestbookList.replaceChildren();
+      const message = document.createElement("p");
+      message.className = "admin-list-placeholder is-error";
+      message.textContent =
+        error.status === 401
+          ? "令牌已失效，请退出后重新验证。"
+          : "留言读取失败，请检查 API 服务与留言数据表。";
+      guestbookList.appendChild(message);
+      if (error.status === 401) lockWorkspace();
+    }
+  }
+
+  async function reviewMessage(id, status) {
+    setStatus(guestbookStatus, "正在处理…", false);
+    try {
+      await apiRequest("/admin/guestbook/" + encodeURIComponent(String(id)), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: status }),
+      });
+      setStatus(
+        guestbookStatus,
+        status === "approved" ? "留言已通过，会显示在留言板。" : "留言已拒绝。",
+        false
+      );
+      await loadGuestbook();
+    } catch (error) {
+      setStatus(
+        guestbookStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "操作失败，请检查 API 服务。",
+        true
+      );
+    }
+  }
+
+  async function removeMessage(message) {
+    if (!window.confirm("确定删除这条留言吗？此操作无法撤销。")) return;
+    try {
+      await apiRequest("/admin/guestbook/" + encodeURIComponent(String(message.id)), {
+        method: "DELETE",
+      });
+      setStatus(guestbookStatus, "留言已删除。", false);
+      await loadGuestbook();
+    } catch (error) {
+      setStatus(
+        guestbookStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "删除失败，请检查 API 服务。",
+        true
+      );
+    }
+  }
+
   async function editPost(id) {
     setStatus(formStatus, "正在载入文章…", false);
     try {
@@ -318,6 +453,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setStatus(authStatus, "", false);
     loadPosts();
     loadComments();
+    loadGuestbook();
   }
 
   function lockWorkspace() {
@@ -328,6 +464,9 @@ document.addEventListener("DOMContentLoaded", function () {
     commentList.innerHTML = '<p class="admin-list-placeholder">登录后显示评论。</p>';
     commentCount.textContent = "—";
     setStatus(commentStatus, "", false);
+    guestbookList.innerHTML = '<p class="admin-list-placeholder">登录后显示留言。</p>';
+    guestbookCount.textContent = "—";
+    setStatus(guestbookStatus, "", false);
     tokenInput.focus();
   }
 
@@ -405,6 +544,8 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("admin-lock").addEventListener("click", lockWorkspace);
   commentFilter.addEventListener("change", loadComments);
   document.getElementById("admin-comments-refresh").addEventListener("click", loadComments);
+  guestbookFilter.addEventListener("change", loadGuestbook);
+  document.getElementById("admin-guestbook-refresh").addEventListener("click", loadGuestbook);
   document.getElementById("admin-comments-clear").addEventListener("click", async function () {
     if (!window.confirm("确定清空所有「待审核」评论吗？已显示和已拒绝的不受影响，此操作无法撤销。"))
       return;

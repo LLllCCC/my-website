@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     '<p class="footer-links">' +
     '<a href="/index.html">首页</a>' +
     '<a href="/blog.html">博客</a>' +
+    '<a href="/guestbook.html">留言板</a>' +
     '<a href="/tag.html">标签</a>' +
     '<a href="/archive.html">归档</a>' +
     '<a href="/stats.html">统计</a>' +

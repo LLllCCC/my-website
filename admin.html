@@ -119,6 +119,28 @@
           </div>
           <p id="admin-comment-status" class="admin-status" role="status" aria-live="polite"></p>
         </section>
+
+        <section class="admin-comments-card" aria-labelledby="admin-guestbook-title">
+          <div class="admin-section-heading">
+            <div>
+              <h3 id="admin-guestbook-title">留言板审核</h3>
+            </div>
+            <div class="admin-comments-tools">
+              <select id="admin-guestbook-filter" aria-label="留言状态筛选">
+                <option value="pending">待审核</option>
+                <option value="approved">已显示</option>
+                <option value="rejected">已拒绝</option>
+                <option value="all">全部</option>
+              </select>
+              <button id="admin-guestbook-refresh" class="admin-text-button" type="button">刷新</button>
+              <span id="admin-guestbook-count" class="admin-count">—</span>
+            </div>
+          </div>
+          <div id="admin-guestbook-list" class="admin-comment-list" aria-live="polite">
+            <p class="admin-list-placeholder">正在读取留言…</p>
+          </div>
+          <p id="admin-guestbook-status" class="admin-status" role="status" aria-live="polite"></p>
+        </section>
       </section>
 
       <div id="global-footer"></div>

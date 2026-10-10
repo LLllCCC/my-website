@@ -11,6 +11,11 @@ POSTS = [
     {"id": 2, "title": "第二篇文章", "date": "2026-10-04", "description": "二", "tags": "代码,自建服务", "cover": "", "comment_count": 0},
     {"id": 1, "title": "ESM 验证文章", "date": "2026-10-03", "description": "第一篇", "tags": "代码,生活,自建服务", "cover": "", "comment_count": 2},
 ]
+# 留言板：两条已审核留言。列表形状与真实接口一致（id/nickname/content/created_at）。
+GUESTBOOK = [
+    {"id": 2, "nickname": "晚风柴犬456", "content": "第二回合，站点越来越顺眼了。", "created_at": "2026-10-05T09:30:00.000Z"},
+    {"id": 1, "nickname": "青柠水母123", "content": "第一句话留在你的留言板上！", "created_at": "2026-10-05T08:00:00.000Z"},
+]
 POST_1 = {
     "id": 1,
     "title": "ESM 验证文章",
@@ -120,6 +125,8 @@ class Handler(SimpleHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path == "/api/posts":
             return self.send_json(POSTS)
+        if path == "/api/guestbook":
+            return self.send_json(GUESTBOOK)
         # 搜索要排在 /api/posts/1 之前判断，否则 "search" 会被当成文章编号。
         if path == "/api/posts/search":
             return self.send_json(search_posts(self.query_keyword("q")))

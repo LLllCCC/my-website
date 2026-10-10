@@ -147,6 +147,7 @@ async function buildFeed() {
 const STATIC_SITEMAP_PAGES = [
   "/",
   "/blog.html",
+  "/guestbook.html",
   "/archive.html",
   "/stats.html",
   "/tag.html",

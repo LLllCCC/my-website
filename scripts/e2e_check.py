@@ -334,6 +334,8 @@ def run_checks():
 
         # 统计页。?until= 把热力图窗口钉死在 stub 数据所在的那一周，
         # 否则「哪几天该亮」的断言会依赖跑测试那天的日期，过一年就全红。
+        # 统计页。?until= 把热力图窗口钉死在 stub 数据所在的那一周，
+        # 否则「哪几天该亮」的断言会依赖跑测试那天的日期，过一年就全红。
         page.goto(BASE + "/stats.html?until=2026-10-11", wait_until="networkidle")
         page.wait_for_timeout(400)  # 等逐篇详情的字数汇总回来
         check("统计 标题含写作", "写作" in page.locator(".blog-hero h1").inner_text())
@@ -371,6 +373,28 @@ def run_checks():
         check("统计 按年至少 1 行", year_rows >= 1, year_rows)
         # 自洽：stub 三篇全在 2026，年度字数必须等于总字数（两处口径一致才相等地了）
         check("统计 年度字数与总字数自洽", page.locator(".stats-year-words").first.inner_text() == words_total, page.locator(".stats-year-words").first.inner_text())
+
+        # 留言板。提交走桩的兜底 201；先审后发意味着提交成功后列表**不变**。
+        page.goto(BASE + "/guestbook.html", wait_until="networkidle")
+        check("留言 标题含留言板", "留言板" in page.locator(".blog-hero h1").inner_text())
+        check("留言 导航已挂链接", page.locator('a[href="/guestbook.html"]').count() >= 1)
+        nickname_prefill = page.locator("#guestbook-nickname").input_value()
+        check("留言 昵称已自动预填", bool(nickname_prefill), nickname_prefill)
+        list_count = page.locator("#guestbook-list .comment-item").count()
+        check("留言 列表渲染出桩数据", list_count == 2, list_count)
+        check("留言 头部条数与列表一致", page.locator("#guestbook-count").inner_text() == "2", page.locator("#guestbook-count").inner_text())
+        page.fill("#guestbook-content", "测试留言：e2e 自动化提交")
+        page.click("#guestbook-submit")
+        page.wait_for_timeout(600)
+        check(
+            "留言 提交后提示等待审核",
+            "已提交" in page.locator("#guestbook-status").inner_text(),
+            page.locator("#guestbook-status").inner_text(),
+        )
+        check(
+            "留言 先审后发：提交不改变列表",
+            page.locator("#guestbook-list .comment-item").count() == 2,
+        )
 
         page.goto(BASE + "/post.html?id=1", wait_until="networkidle")
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
