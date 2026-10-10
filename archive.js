@@ -1,11 +1,8 @@
 // 归档页：按年份切换 + 按月份分组列出全部文章。
 // 数据来自现有 /api/posts 列表接口，纯前端分组，不额外请求后端。
-import { CONFIG, debounce, safeHttpUrl } from "./config.js?v=39";
-
-function normalizeTags(tags) {
-  if (Array.isArray(tags)) return tags.map(String).join(", ");
-  return typeof tags === "string" && tags.trim() ? tags : "";
-}
+import { CONFIG, debounce } from "./config.js?v=40";
+// 日期口径、关键词匹配、单行条目的渲染都在 postList.js 里，标签页共用同一套。
+import { dateKeyOf, matchesKeyword, buildPostRow } from "./postList.js?v=40";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const groupsContainer = document.getElementById("archive-groups");
@@ -28,73 +25,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     groupsContainer.replaceChildren(paragraph);
   }
 
-  // 日期口径统一成 YYYY-MM-DD；缺失或无法解析的排在最后而不是被丢掉。
-  function dateKeyOf(post) {
-    const raw = typeof post.date === "string" ? post.date.substring(0, 10) : "";
-    return /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : "";
-  }
-
-  function matchesKeyword(post, keyword) {
-    if (!keyword) return true;
-    const tags = normalizeTags(post.tags).split(",").join(" ");
-    const haystack = [post.title, post.description, tags]
-      .filter(Boolean)
-      .join(" ")
-      .toLocaleLowerCase();
-    return haystack.includes(keyword);
-  }
-
   function buildEntry(post) {
-    const dateKey = dateKeyOf(post);
-
-    const item = document.createElement("li");
-    item.className = "archive-item";
-
-    const time = document.createElement("time");
-    time.className = "archive-item-date";
-    time.textContent = dateKey ? dateKey.replace(/-/g, ".") : "未标日期";
-    if (dateKey) time.dateTime = dateKey;
-
-    const link = document.createElement("a");
-    link.className = "archive-item-link";
-    link.href = "post.html?id=" + encodeURIComponent(String(post.id));
-    link.textContent =
-      typeof post.title === "string" && post.title.trim() ? post.title : "未命名文章";
-    link.setAttribute("aria-label", "阅读：" + link.textContent);
-
-    const tagValues = normalizeTags(post.tags)
-      .split(",")
-      .map(function (tag) {
-        return tag.trim();
-      })
-      .filter(Boolean);
-
-    item.append(time, link);
-
-    if (tagValues.length) {
-      const tagList = document.createElement("span");
-      tagList.className = "archive-item-tags";
-      tagValues.forEach(function (tag) {
-        const chip = document.createElement("span");
-        chip.className = "archive-item-tag";
-        chip.textContent = tag;
-        tagList.appendChild(chip);
-      });
-      item.appendChild(tagList);
-    }
-
-    const coverUrl = safeHttpUrl(post.cover);
-    if (coverUrl) {
-      const thumb = document.createElement("img");
-      thumb.className = "archive-item-cover";
-      thumb.src = coverUrl;
-      thumb.alt = "";
-      thumb.loading = "lazy";
-      thumb.decoding = "async";
-      item.appendChild(thumb);
-    }
-
-    return item;
+    return buildPostRow(post);
   }
 
   function render() {

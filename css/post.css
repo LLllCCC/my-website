@@ -784,6 +784,21 @@
     gap: 12px;
   }
 }
+/* --- 系列导航（article-series，post.js initSeriesNav 注入；系列定义在 series.js）---
+   放在正文之前：要解决的就是"读者进来时不知道还有前后文"，藏到文末等于没做。 */
+.article-series { margin: 0 0 30px; padding: 18px 20px; border: 1px solid var(--border-color); border-left: 3px solid var(--accent-color); border-radius: 14px; background: color-mix(in srgb, var(--card-bg), transparent 35%); }
+.article-series-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 9px; margin-bottom: 13px; }
+.article-series-label { padding: 2px 8px; border-radius: 20px; background: color-mix(in srgb, var(--accent-color), transparent 82%); color: var(--accent-color); font-size: .72rem; font-weight: 600; letter-spacing: .06em; }
+.article-series-name { color: var(--text-primary); font-size: .95rem; font-weight: 600; text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent-color), transparent 55%); }
+.article-series-name:hover { color: var(--accent-color); }
+.article-series-count { color: var(--text-secondary); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.article-series-list { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
+.article-series-item { display: flex; align-items: baseline; gap: 10px; padding: 5px 0; font-size: .9rem; }
+.article-series-index { flex: none; width: 1.8em; color: var(--text-secondary); font-size: .76rem; font-variant-numeric: tabular-nums; opacity: .7; }
+.article-series-link { color: var(--text-secondary); text-decoration: none; }
+.article-series-link:hover { color: var(--accent-color); }
+.article-series-here { color: var(--text-primary); font-weight: 600; }
+
 /* --- 上一篇/下一篇导航（article-neighbors，post.js renderNeighbors 注入）--- */
 .article-neighbors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 44px; }
 .article-neighbor { display: flex; flex-direction: column; gap: 5px; min-width: 0; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: 14px; background: color-mix(in srgb, var(--card-bg), transparent 35%); color: var(--text-primary); text-decoration: none; transition: border-color .18s ease, transform .18s ease; }
@@ -857,7 +872,7 @@ html.lightbox-open { overflow: hidden; }
 [data-theme="light"] .post-content .hljs-deletion { color: #b31d28; background-color: #ffeef0; }
 
 /* hidden 属性必须真正隐藏（上面两条 display 规则会盖过 UA 样式的 [hidden]）*/
-.article-neighbors[hidden], .article-reactions[hidden], .article-related[hidden] { display: none; }
+.article-neighbors[hidden], .article-reactions[hidden], .article-related[hidden], .article-series[hidden] { display: none; }
 
 /* =========================================
    正文元素滚动渐入

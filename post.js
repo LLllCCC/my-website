@@ -1,8 +1,11 @@
 // 文章详情页：拉取正文、Markdown 渲染、封面定位、目录、阅读进度。
-// 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、文章级表情回应、JSON-LD。
+// 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、系列导航、相关阅读、
+// 文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=39";
-import { initComments, visitorId } from "./comments.js?v=39";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=40";
+import { initComments, visitorId } from "./comments.js?v=40";
+// 标签解析在 series.js 里（系列就是用标签表达的，所以放一起），别在这里再写一份。
+import { tagSetOf, seriesOfPost, sortByDateAsc } from "./series.js?v=40";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");
@@ -93,6 +96,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       initTOCScrollSpy(articleBody);
       initReadingProgress();
       renderNeighbors(post);
+      initSeriesNav(post);
       initRelatedPosts(post);
       initArticleReactions(postId);
       injectArticleJsonLd(post);
@@ -475,16 +479,115 @@ function renderNeighbors(post) {
 // 相关阅读：按共同标签数排序，从列表接口里取最近几篇同主题的文章。
 // 整栏拿不到数据或没有共同标签时就不显示，不影响正文与评论。
 const RELATED_MAX = 3;
+// 系列列表最多列这么多条：系列天然会长，太长会把它自己变成一堵墙，
+// 超过就只靠 tag.html 看全量。
+const SERIES_MAX = 12;
 
-function tagSetOf(value) {
-  const raw = Array.isArray(value) ? value.map(String) : String(value || "").split(",");
-  return new Set(
-    raw
-      .map(function (tag) {
-        return tag.trim();
+// 系列导航和相关阅读都要整份文章列表，缓存住这个 Promise，
+// 免得同一篇页面上把同一个接口拉两遍。
+let allPostsPromise = null;
+
+function fetchAllPosts() {
+  if (!allPostsPromise) {
+    allPostsPromise = fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } })
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
       })
-      .filter(Boolean)
-  );
+      .then(function (posts) {
+        return Array.isArray(posts)
+          ? posts.filter(function (item) {
+              return item && item.id != null;
+            })
+          : [];
+      })
+      .catch(function () {
+        // 失败不缓存，下次还能重试
+        allPostsPromise = null;
+        return [];
+      });
+  }
+  return allPostsPromise;
+}
+
+// 系列导航。
+//
+// 解决的问题：一条线写了好几篇，读者从任何一篇进来都不知道还有前后文。
+// 系列的定义见 series.js（标签约定），这里只负责把成员列出来。
+//
+// 放在正文之前，而不是文末——要解决的就是"进来时不知道"，藏在底部等于没做。
+async function initSeriesNav(post) {
+  const box = document.getElementById("article-series");
+  if (!box) return;
+
+  const seriesName = seriesOfPost(post);
+  if (!seriesName) return;
+
+  const posts = await fetchAllPosts();
+  if (!posts.length) return;
+
+  const members = sortByDateAsc(
+    posts.filter(function (item) {
+      return seriesOfPost(item) === seriesName;
+    })
+  ).slice(0, SERIES_MAX);
+
+  if (members.length < 2) return; // 只有一篇不构成系列
+
+  const currentIndex = members.findIndex(function (item) {
+    return String(item.id) === String(post.id);
+  });
+  if (currentIndex === -1) return;
+
+  const head = document.createElement("div");
+  head.className = "article-series-head";
+
+  const label = document.createElement("span");
+  label.className = "article-series-label";
+  label.textContent = "系列";
+
+  const name = document.createElement("a");
+  name.className = "article-series-name";
+  name.href = "tag.html?t=" + encodeURIComponent(seriesName);
+  name.textContent = seriesName;
+
+  const count = document.createElement("span");
+  count.className = "article-series-count";
+  count.textContent = "本篇第 " + (currentIndex + 1) + " / 共 " + members.length + " 篇";
+
+  head.append(label, name, count);
+
+  const list = document.createElement("ol");
+  list.className = "article-series-list";
+
+  members.forEach(function (item, index) {
+    const isCurrent = String(item.id) === String(post.id);
+    const row = document.createElement("li");
+    row.className = "article-series-item" + (isCurrent ? " is-current" : "");
+
+    const marker = document.createElement("span");
+    marker.className = "article-series-index";
+    marker.textContent = String(index + 1).padStart(2, "0");
+
+    if (isCurrent) {
+      const here = document.createElement("span");
+      here.className = "article-series-here";
+      here.textContent = (item.title || "未命名文章") + "（当前这篇）";
+      here.setAttribute("aria-current", "page");
+      row.append(marker, here);
+    } else {
+      const link = document.createElement("a");
+      link.className = "article-series-link";
+      link.href = "post.html?id=" + encodeURIComponent(String(item.id));
+      link.textContent = item.title || "未命名文章";
+      row.append(marker, link);
+    }
+
+    list.appendChild(row);
+  });
+
+  box.replaceChildren(head, list);
+  box.removeAttribute("hidden");
 }
 
 async function initRelatedPosts(post) {
@@ -496,10 +599,8 @@ async function initRelatedPosts(post) {
   if (!currentTags.size) return;
 
   try {
-    const response = await fetch(CONFIG.POSTS_URL, { headers: { Accept: "application/json" } });
-    if (!response.ok) return;
-    const posts = await response.json();
-    if (!Array.isArray(posts)) return;
+    const posts = await fetchAllPosts();
+    if (!posts.length) return;
 
     const scored = posts
       .filter(function (item) {

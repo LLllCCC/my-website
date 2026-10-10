@@ -148,6 +148,7 @@ const STATIC_SITEMAP_PAGES = [
   "/",
   "/blog.html",
   "/archive.html",
+  "/tag.html",
   "/site.html",
   // motion-web 案例集：7 个案例各自是独立页面，全部登记，否则搜索引擎收不到。
   "/motion-web/cases/",
@@ -160,17 +161,39 @@ const STATIC_SITEMAP_PAGES = [
   "/motion-web/cases/wheel-rail/",
 ];
 
+// 标签页的每个标签也要单独登记——它存在的意义就是"可分享、可被收录"，
+// 只登记 tag.html 不登记 ?t=xxx 等于白做。标签从文章数据里聚合出来。
+function collectTags(posts) {
+  const set = new Set();
+  posts.forEach((post) => {
+    const raw = Array.isArray(post.tags) ? post.tags.join(",") : String(post.tags || "");
+    raw
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+      .forEach((tag) => set.add(tag));
+  });
+  return Array.from(set).sort((a, b) => a.localeCompare(b, "zh"));
+}
+
 async function buildSitemap() {
   const posts = await fetchPosts();
   const urls = STATIC_SITEMAP_PAGES.map((path) => ({
     loc: SITE + path,
     lastmod: "",
-  })).concat(
-    posts.map((post) => ({
-      loc: SITE + "/post.html?id=" + encodeURIComponent(post.id),
-      lastmod: typeof post.date === "string" ? post.date.slice(0, 10) : "",
-    }))
-  );
+  }))
+    .concat(
+      posts.map((post) => ({
+        loc: SITE + "/post.html?id=" + encodeURIComponent(post.id),
+        lastmod: typeof post.date === "string" ? post.date.slice(0, 10) : "",
+      }))
+    )
+    .concat(
+      collectTags(posts).map((tag) => ({
+        loc: SITE + "/tag.html?t=" + encodeURIComponent(tag),
+        lastmod: "",
+      }))
+    );
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',

@@ -33,6 +33,21 @@
     );
   }
 
+  // 从别的页面按 "/" 跳过来时（URL 带 #search），落地就把光标放进搜索框。
+  // 搜索框是静态 HTML，所以脚本跑到这儿它已经在了；load 后再兜一次，
+  // 防止别的脚本初始化时把焦点抢走。
+  if (window.location.hash === "#search") {
+    const focusSearch = function () {
+      const input = findSearchInput();
+      if (!input) return;
+      input.focus();
+      input.select();
+      if (input.scrollIntoView) input.scrollIntoView({ block: "center" });
+    };
+    focusSearch();
+    window.addEventListener("load", focusSearch);
+  }
+
   document.addEventListener("keydown", function (e) {
     if (e.defaultPrevented) return;
     // 带修饰键的组合留给浏览器和系统（Ctrl+F 之类不该被抢）
@@ -42,10 +57,14 @@
     // "/" —— 聚焦搜索框（和 GitHub、MDN 一致的习惯）
     if (e.key === "/") {
       const input = findSearchInput();
+      e.preventDefault();
       if (input) {
-        e.preventDefault();
         input.focus();
         input.select();
+      } else {
+        // 本站的搜索框只在博客 / 归档 / 标签页上。别的页面按 "/" 就直接带过去，
+        // 落地后由上面那段 #search 分支把光标放好——比"按了没反应"强。
+        window.location.href = "/blog.html#search";
       }
       return;
     }

@@ -8,14 +8,16 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 POSTS = [
     {"id": 3, "title": "第三篇文章", "date": "2026-10-05", "description": "三", "tags": "生活", "cover": "", "comment_count": 0},
-    {"id": 2, "title": "第二篇文章", "date": "2026-10-04", "description": "二", "tags": "代码", "cover": "", "comment_count": 0},
-    {"id": 1, "title": "ESM 验证文章", "date": "2026-10-03", "description": "第一篇", "tags": "代码,生活", "cover": "", "comment_count": 2},
+    {"id": 2, "title": "第二篇文章", "date": "2026-10-04", "description": "二", "tags": "代码,自建服务", "cover": "", "comment_count": 0},
+    {"id": 1, "title": "ESM 验证文章", "date": "2026-10-03", "description": "第一篇", "tags": "代码,生活,自建服务", "cover": "", "comment_count": 2},
 ]
 POST_1 = {
     "id": 1,
     "title": "ESM 验证文章",
     "date": "2026-10-03T00:00:00.000Z",
-    "tags": "代码,生活",
+    # 自建服务：系列标签（series.js 的 SERIES_TAGS）。id 1(10-03) 和 id 2(10-04)
+    # 都带它，于是构成一个 2 篇的系列，文章页的系列导航才有的可测。
+    "tags": "代码,生活,自建服务",
     "cover": "",
     "older": None,
     "newer": {"id": 2, "title": "第二篇文章"},

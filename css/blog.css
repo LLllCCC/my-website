@@ -607,6 +607,43 @@
   color: #fff;
 }
 
+/* 标签云（tag.html）。沿用年份按钮的形态，只是多一个计数角标——
+   一个标签有多少篇，是决定"点不点它"的关键信息，不该藏起来。 */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+.tag-chip:hover {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.tag-chip.is-active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+
+.tag-chip-count {
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.6;
+}
+
+.tag-chip.is-active .tag-chip-count {
+  opacity: 0.8;
+}
+
 .archive-toolbar .blog-search {
   margin-bottom: 0;
   flex: 1 1 240px;

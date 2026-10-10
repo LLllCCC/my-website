@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>标签 - Yopo</title>
+    <meta name="description" content="按标签浏览 Yopo 写过的文章，每个标签都有独立链接。" />
+    <link rel="alternate" type="application/rss+xml" title="Yopo 的博客" href="/feed.xml" />
+    <meta name="author" content="Yopo" />
+    <meta property="og:title" content="标签 - Yopo" />
+    <meta property="og:description" content="按标签浏览全部文章。" />
+    <meta property="og:image" content="/img/map.jpg" />
+    <link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+    <link href="/lib/remixicon.css?v=40" rel="stylesheet">
+    <script src="theme-init.js?v=40"></script>
+    <link rel="stylesheet" href="css/base.css?v=40" />
+    <link rel="stylesheet" href="css/home.css?v=40" />
+    <link rel="stylesheet" href="css/blog.css?v=40" />
+    <link rel="stylesheet" href="css/post.css?v=40" />
+    <link rel="stylesheet" href="css/admin.css?v=40" />
+    <link rel="stylesheet" href="css/site.css?v=40" />
+</head>
+<body class="blog-page">
+
+<div id="global-nav"></div>
+
+    <main id="main-content" class="container blog-container blog-page">
+        <header class="blog-hero fade-in">
+            <h1>标签<span>。</span></h1>
+            <p>按标签翻看文章。<br class="blog-mobile-break">一共 <strong id="tag-total-count">—</strong> 个标签，<strong id="tag-post-count">—</strong> 篇文章。</p>
+            <div class="blog-hero-foot">
+                <span class="blog-hero-rule" aria-hidden="true"></span>
+                <span id="tag-current-label">全部文章</span>
+                <span class="blog-hero-total"><strong id="tag-current-count">—</strong> 篇</span>
+            </div>
+        </header>
+
+        <section class="blog-library fade-in" aria-label="文章标签">
+            <div class="archive-toolbar">
+                <div class="archive-years" id="tag-cloud" role="group" aria-label="按标签筛选"></div>
+                <label class="blog-search">
+                    <i class="ri-search-line" aria-hidden="true"></i>
+                    <input type="search" id="tag-search" placeholder="在当前标签下搜索…" aria-label="搜索文章标题或摘要">
+                    <span class="blog-search-hint" aria-hidden="true">⌕</span>
+                </label>
+            </div>
+
+            <p class="blog-list-status" id="tag-result-count" role="status" aria-live="polite">正在载入文章</p>
+
+            <div id="tag-posts">
+                <p class="blog-empty-state" role="status" aria-live="polite">正在加载文章…</p>
+            </div>
+
+            <div class="blog-toolbar" style="justify-content:center; margin-top:10px;">
+                <a class="blog-post-link" href="/blog.html" style="text-decoration:none;">← 回到文章列表</a>
+            </div>
+        </section>
+
+        <div id="global-footer"></div>
+        <script src="/footer.js?v=40" type="module"></script>
+    </main>
+
+    <script src="/nav.js?v=40" type="module"></script>
+    <script src="/keys.js?v=40" type="module"></script>
+    <script src="/reveal.js?v=40" type="module"></script>
+
+    <script src="tag.js?v=40" type="module"></script>
+</body>
+</html>

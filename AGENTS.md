@@ -14,7 +14,10 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | `index.html` + `main.js` | 首页：邮件卡片、视差、最新文章卡片 |
 | `blog.html` + `blog.js` | 博客列表：搜索（本地 + 后端全文两级）、标签云、文章卡片 |
 | `archive.html` + `archive.js` | 归档：年份切换 + 按月分组，纯前端用列表接口数据 |
-| `post.html` + `post.js` | 文章页：Markdown 渲染、目录、封面定位、阅读进度、相关阅读 |
+| `tag.html` + `tag.js` | 标签：标签云 + 按 `?t=xxx` 筛选。每个标签有独立可分享链接（`?t=` 会 pushState 进 URL，支持前进后退） |
+| `post.html` + `post.js` | 文章页：Markdown 渲染、目录、封面定位、阅读进度、系列导航、相关阅读 |
+| `series.js` | **系列/合集的定义与标签工具**：`SERIES_TAGS` 声明哪些标签代表一个系列，成员 = 带该标签的文章。**新增系列只能改这里**（见下方「系列约定」） |
+| `postList.js` | 归档页与标签页共用的「一行一篇」渲染（`dateKeyOf` / `matchesKeyword` / `buildPostRow`），改一处两边都变 |
 | `comments.js` | 评论区：昵称生成、表情回应、排序、两层楼中楼。**评论相关改动只进这个文件** |
 | `comment-markdown.js` | 评论正文的 Markdown 子集渲染器（配套 15 项测试） |
 | `admin.html` + `admin.js` | 后台：文章管理 + 评论审核 |
@@ -29,11 +32,28 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | `scripts/e2e_check.py` + `e2e_stub_server.py` | 浏览器端到端检查（假接口 + Playwright，随机端口）；CI 会跑，本地 `python scripts/e2e_check.py` |
 | `motion-web/` | 外部 CC BY-NC 动效案例素材，**不要改其中的代码** |
 
+## 系列约定（写文章时必须知道）
+
+「系列/合集」**不给 `posts` 表加列**，而是用标签表达——理由见知识库「为什么默认不动表」。
+
+- **系列的定义只在 `series.js` 的 `SERIES_TAGS` 里**。数组里出现某个标签名，就意味着「带该标签的文章构成一个系列」。
+- **新增一个系列 = 两步**：① 在 `SERIES_TAGS` 里加标签名；② 用 `publish.mjs` 给相关笔记打上这个同名的标签。成员不另维护 id 清单——清单一定会和文章漂移。
+- 当前系列：`自建服务`。
+- 文章页的系列导航**按日期升序**排（最早的算第 1 篇），`SERIES_MAX` 上限 12 条，超出的只去 `tag.html` 看全量。
+- 一个标签同时命中多个系列时取第一个；只有 1 篇成员的"系列"不显示导航（一篇不构成系列）。
+
 ## 改代码的规则
 
 1. 新功能进对应页面的入口脚本；跨页面复用的函数放 `config.js` 并 `export`。
-2. 任何 `.js`/`.css` 改动后：五个 HTML 里的 `?v=` **和**各模块 `import` 路径里的 `?v=` 一起 +1（当前 `29`），否则浏览器继续用旧缓存。没有构建步骤，版本号是唯一缓存失效手段。
-3. 提交前必跑：`npm run lint` 和 `npm test`；改了 JS 顺带 `npm run format`。CI 还会跑浏览器端到端（五页面 + 评论交互），不过不部署。
+2. 任何 `.js`/`.css` 改动后：所有 HTML 里的 `?v=` **和**各模块 `import` 路径里的 `?v=` 一起 +1（当前 `40`），否则浏览器继续用旧缓存。没有构建步骤，版本号是唯一缓存失效手段。
+   **必须做全库替换并把残留数检查到 0**：只改自己知道的那几个文件会漏（2026-10-10 就漏过 91 处，见下）。
+   ```bash
+   grep -rlE '\?v=NN' --include=*.html --include=*.js . | grep -v node_modules | grep -v 'motion-web/cases' \
+     | xargs sed -i 's/?v=NN/?v=MM/g'
+   grep -rEo '\?v=[0-9]+' --include=*.html --include=*.js . | grep -v node_modules | sort -u   # 必须只剩一个版本
+   ```
+3. 提交前必跑**三项**：`npm run lint`、`npm run format:check`、`npm test`。**少跑 `format:check` 已经被 CI 拦过一次、部署直接失败**（2026-10-10）。CI 还会跑浏览器端到端（参考，不拦部署）。
+   注意在 Windows 上直接跑 prettier 会因 CRLF 得到**假结果**（一次报十几个文件），那唯一真问题会被淹没；要精确复现 CI 得先做 LF 干净检出，做法见知识库项目笔记。
 4. 不引入打包器、框架、运行时依赖；保持无构建。
 5. `css/` 只做最小改动：改对应页面的文件；`base.css` 是全站的，动之前先想其他页面。别重排格式，别为对齐更换布局模型。
 6. 渲染用户内容只能用 `createElement`/`createTextNode`，**禁止对用户输入用 `innerHTML`**（文章正文例外：必须过 `DOMPurify.sanitize`）。

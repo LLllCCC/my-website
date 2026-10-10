@@ -7,6 +7,7 @@ import sys
 import tempfile
 import time
 import urllib.request
+from urllib.parse import quote, unquote
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -110,6 +111,20 @@ def run_checks():
             page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine") == "none",
             page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine"),
         )
+        # 搜索框只在博客/归档/标签页上。别的页面按 "/" 不能"什么都没发生"，
+        # 而要带人过去并在落地时把光标放进搜索框（URL 里的 #search 就是干这个的）。
+        check("首页 本身没有搜索框", page.locator("#blog-search").count() == 0)
+        page.keyboard.press("/")
+        page.wait_for_load_state("networkidle")
+        page.wait_for_timeout(500)
+        check("首页 按 / 跳到博客页", "blog.html" in page.url, page.url)
+        check(
+            "首页 按 / 落地后搜索框已聚焦",
+            page.evaluate("() => !!document.activeElement && document.activeElement.id === 'blog-search'"),
+            page.evaluate(
+                "() => document.activeElement ? (document.activeElement.id || document.activeElement.tagName) : 'none'"
+            ),
+        )
 
         page.goto(BASE + "/blog.html", wait_until="networkidle")
         check("博客 文章卡片 3 张", page.locator(".blog-post-card").count() == 3)
@@ -179,6 +194,62 @@ def run_checks():
         page.wait_for_timeout(300)
         if shot_dir:
             page.screenshot(path=os.path.join(shot_dir, "archive.png"), full_page=True)
+
+        page.goto(BASE + "/tag.html", wait_until="networkidle")
+        check("标签 导航已注入", page.locator(".nav-container").count() == 1)
+        check("标签 标题为标签", "标签" in page.locator(".blog-hero h1").inner_text())
+        # 桩数据里三个标签（代码 / 生活 / 自建服务），加「全部」= 4 个 chip
+        check(
+            "标签 标签云含全部+3个标签",
+            page.locator(".tag-chip").count() == 4,
+            page.locator(".tag-chip").count(),
+        )
+        check("标签 默认列出全部文章", page.locator(".archive-item").count() == 3)
+        check("标签 总数已填充", page.locator("#tag-post-count").inner_text() == "03")
+        page.locator('.tag-chip[data-tag="代码"]').click()
+        page.wait_for_timeout(300)
+        check(
+            "标签 点标签后 URL 变成可分享的 ?t=",
+            "%E4%BB%A3%E7%A0%81" in page.url or "代码" in unquote(page.url),
+            page.url,
+        )
+        check("标签 只列出该标签的 2 篇", page.locator(".archive-item").count() == 2)
+        check(
+            "标签 当前标签高亮",
+            page.locator('.tag-chip[data-tag="代码"]').get_attribute("aria-pressed") == "true",
+        )
+        check(
+            "标签 列表里不再重复当前标签",
+            page.locator(".archive-item-tag", has_text="代码").count() == 0,
+        )
+        page.fill("#tag-search", "第三篇")
+        page.wait_for_timeout(400)
+        check("标签 搜索在当前标签下过滤", page.locator(".archive-item").count() == 0)
+        # 分享链接：直接带 ?t= 打开也应该在那个标签上
+        page.goto(BASE + "/tag.html?t=" + quote("自建服务"), wait_until="networkidle")
+        page.wait_for_timeout(300)
+        check("标签 直接打开带 ?t= 的链接即落在该标签", page.locator(".archive-item").count() == 2)
+        check(
+            "标签 该标签 chip 为激活态",
+            page.locator('.tag-chip[data-tag="自建服务"]').get_attribute("aria-pressed") == "true",
+        )
+        # 指向不存在/已删除的标签要能优雅退化，不能白屏
+        page.goto(BASE + "/tag.html?t=" + quote("不存在的标签"), wait_until="networkidle")
+        page.wait_for_timeout(300)
+        check("标签 未知标签退化为全部文章", page.locator(".archive-item").count() == 3)
+        # 退化之后高亮的应该是「全部」那一枚（data-tag 为空串），而不是没有高亮、
+        # 也不是把某个不存在的标签留在激活态。
+        active_chip = page.locator(".tag-chip.is-active")
+        check(
+            "标签 未知标签退化为高亮「全部」",
+            active_chip.count() == 1
+            and (active_chip.first.get_attribute("data-tag") or "") == "",
+            f'{active_chip.count()} 个高亮, data-tag={active_chip.first.get_attribute("data-tag") if active_chip.count() else "?"}',
+        )
+        page.goto(BASE + "/tag.html", wait_until="networkidle")
+        page.wait_for_timeout(300)
+        if shot_dir:
+            page.screenshot(path=os.path.join(shot_dir, "tag.png"), full_page=True)
 
         page.goto(BASE + "/post.html?id=1", wait_until="networkidle")
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
@@ -257,6 +328,47 @@ def run_checks():
             "文章 相关阅读链接指向同标签的两篇",
             sorted(related_hrefs) == ["post.html?id=2", "post.html?id=3"],
             related_hrefs,
+        )
+        # 系列导航：桩里 id 1(10-03) 和 id 2(10-04) 都带「自建服务」，构成 2 篇的系列。
+        # 当前这篇是 10-03，按日期升序排第 1 —— 顺序错了读者会被倒着带。
+        series_info = page.evaluate(
+            """() => {
+              const box = document.getElementById('article-series');
+              if (!box) return null;
+              const rows = [...box.querySelectorAll('.article-series-item')];
+              return {
+                hidden: box.hasAttribute('hidden'),
+                visible: getComputedStyle(box).display !== 'none',
+                count: rows.length,
+                first: rows[0] ? rows[0].textContent.trim() : '',
+                firstIsCurrent: rows[0] ? rows[0].classList.contains('is-current') : false,
+                secondHref: rows[1] ? (rows[1].querySelector('a') || {}).getAttribute?.('href') : '',
+                nameHref: (box.querySelector('.article-series-name') || {}).getAttribute?.('href'),
+                countText: (box.querySelector('.article-series-count') || {}).textContent || '',
+              };
+            }"""
+        )
+        check("文章 系列导航已显示", bool(series_info) and not series_info["hidden"] and series_info["visible"], series_info)
+        check("文章 系列里列出 2 篇", bool(series_info) and series_info["count"] == 2, series_info and series_info["count"])
+        check(
+            "文章 系列按日期升序（当前这篇是第 1 篇）",
+            bool(series_info) and series_info["firstIsCurrent"] and "当前这篇" in series_info["first"],
+            series_info and series_info["first"],
+        )
+        check(
+            "文章 系列第 2 条指向另一篇",
+            bool(series_info) and series_info["secondHref"] == "post.html?id=2",
+            series_info and series_info["secondHref"],
+        )
+        check(
+            "文章 系列名链到标签页（可看全量）",
+            bool(series_info) and (series_info["nameHref"] or "").startswith("tag.html?t="),
+            series_info and series_info["nameHref"],
+        )
+        check(
+            "文章 系列标注「第 1 / 共 2 篇」",
+            bool(series_info) and "第 1" in series_info["countText"] and "2" in series_info["countText"],
+            series_info and series_info["countText"],
         )
         check("文章 表情回应栏 4 个按钮", page.locator("#article-reactions .article-reaction").count() == 4)
         check("文章 代码块有复制按钮", page.locator("#article-body .code-copy-btn").count() == 2)
