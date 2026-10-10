@@ -1,6 +1,6 @@
 // 文章列表的共用构件：归档页和标签页都用同一套「一行一篇」的渲染，
 // 抽出来是为了让它俩不会各自漂移（改一处两边都变）。
-import { safeHttpUrl } from "./config.js?v=40";
+import { safeHttpUrl } from "./config.js?v=41";
 
 export function normalizeTags(tags) {
   if (Array.isArray(tags)) return tags.map(String).join(", ");

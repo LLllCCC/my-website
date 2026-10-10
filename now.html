@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现在 - Yopo</title>
+    <meta name="description" content="Yopo 此刻在做、在读、在折腾的事。" />
+    <link rel="alternate" type="application/rss+xml" title="Yopo 的博客" href="/feed.xml" />
+    <meta name="author" content="Yopo" />
+    <meta property="og:title" content="现在 - Yopo" />
+    <meta property="og:description" content="此刻在做、在读、在折腾的事。" />
+    <meta property="og:image" content="/img/map.jpg" />
+    <link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+    <link href="/lib/remixicon.css?v=41" rel="stylesheet">
+    <script src="theme-init.js?v=41"></script>
+    <link rel="stylesheet" href="css/base.css?v=41" />
+    <link rel="stylesheet" href="css/home.css?v=41" />
+    <link rel="stylesheet" href="css/blog.css?v=41" />
+    <link rel="stylesheet" href="css/post.css?v=41" />
+    <link rel="stylesheet" href="css/admin.css?v=41" />
+    <link rel="stylesheet" href="css/site.css?v=41" />
+</head>
+<body class="blog-page">
+
+<div id="global-nav"></div>
+
+    <main id="main-content" class="container blog-container blog-page">
+        <header class="blog-hero fade-in">
+            <h1>现在<span>。</span></h1>
+            <p>这一页写的不是简历，也<strong>不是长期有效的</strong>——它只描述此刻。<br class="blog-mobile-break">过一阵子没更新，就说明它过期了。</p>
+            <div class="blog-hero-foot">
+                <span class="blog-hero-rule" aria-hidden="true"></span>
+                <span>最后更新</span>
+                <span class="blog-hero-total"><strong id="now-updated">—</strong></span>
+            </div>
+        </header>
+
+        <!-- ============================================================
+             要改内容：只改下面这几块 <section> 里的文字，其它不用动。
+             改完请把上面 #now-updated 的日期、以及本文件 frontmatter 之外的
+             <meta name="description"> 一起更新（日期写在页面脚本段里）。
+
+             格式约定：每块一个二级标题 + 一个无序列表，一条一句话、最好带一个
+             具体的东西（书名、项目名、工具名）。空着的块直接整段删掉。
+             ============================================================ -->
+        <div class="now-panel fade-in" id="now-panel">
+            <section class="now-block" data-now-block>
+                <h2>在做</h2>
+                <ul>
+                    <li>（在这里写：最近主要在忙的一件事，一两句就够）</li>
+                </ul>
+            </section>
+
+            <section class="now-block" data-now-block>
+                <h2>在读</h2>
+                <ul>
+                    <li>（在这里写：最近在读的书或文章）</li>
+                </ul>
+            </section>
+
+            <section class="now-block" data-now-block>
+                <h2>在折腾</h2>
+                <ul>
+                    <li>（在这里写：最近在玩的工具、硬件、想法）</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="blog-toolbar" style="justify-content:center; margin-top:10px;">
+            <a class="blog-post-link" href="/blog.html" style="text-decoration:none;">← 回到文章列表</a>
+        </div>
+
+        <div id="global-footer"></div>
+        <script src="/footer.js?v=41" type="module"></script>
+    </main>
+
+    <script src="/nav.js?v=41" type="module"></script>
+    <script src="/keys.js?v=41" type="module"></script>
+    <script src="/reveal.js?v=41" type="module"></script>
+
+    <script>
+      // 页面底部的「最后更新」日期。放在这里而不是写死在 HTML 里，
+      // 是为了让它只有一个地方要改——改了它会顺便更新 JSON-LD 和 og:updated_time。
+      (function () {
+        var LAST_UPDATED = "2026-10-11";
+        var el = document.getElementById("now-updated");
+        if (el) el.textContent = LAST_UPDATED;
+        var meta = document.createElement("meta");
+        meta.setAttribute("property", "og:updated_time");
+        meta.setAttribute("content", LAST_UPDATED);
+        document.head.appendChild(meta);
+      })();
+    </script>
+</body>
+</html>

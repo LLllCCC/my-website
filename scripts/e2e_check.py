@@ -251,6 +251,15 @@ def run_checks():
         if shot_dir:
             page.screenshot(path=os.path.join(shot_dir, "tag.png"), full_page=True)
 
+        # 「现在」页：目前只搭了框架、内容待填，所以**故意不进导航**。
+        # 这里只验框架本身是好的（标题 / 内容块 / 日期脚本），不管内容。
+        page.goto(BASE + "/now.html", wait_until="networkidle")
+        check("现在 标题为现在", "现在" in page.locator(".blog-hero h1").inner_text())
+        check("现在 三个内容块", page.locator("[data-now-block]").count() == 3)
+        updated = page.locator("#now-updated").inner_text()
+        check("现在 最后更新日期已填充", bool(updated) and updated != "—", updated)
+        check("现在 导航尚未挂链接（内容填好后才挂）", page.locator('a[href="/now.html"]').count() == 0)
+
         page.goto(BASE + "/post.html?id=1", wait_until="networkidle")
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
         check("文章 正文渲染出 h2", page.locator("#article-body h2").count() == 2)

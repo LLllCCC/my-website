@@ -1,8 +1,8 @@
 // 归档页：按年份切换 + 按月份分组列出全部文章。
 // 数据来自现有 /api/posts 列表接口，纯前端分组，不额外请求后端。
-import { CONFIG, debounce } from "./config.js?v=40";
+import { CONFIG, debounce } from "./config.js?v=41";
 // 日期口径、关键词匹配、单行条目的渲染都在 postList.js 里，标签页共用同一套。
-import { dateKeyOf, matchesKeyword, buildPostRow } from "./postList.js?v=40";
+import { dateKeyOf, matchesKeyword, buildPostRow } from "./postList.js?v=41";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const groupsContainer = document.getElementById("archive-groups");
