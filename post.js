@@ -2,10 +2,10 @@
 // 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、系列导航、相关阅读、
 // 文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=41";
-import { initComments, visitorId } from "./comments.js?v=41";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=42";
+import { initComments, visitorId } from "./comments.js?v=42";
 // 标签解析在 series.js 里（系列就是用标签表达的，所以放一起），别在这里再写一份。
-import { tagSetOf, seriesOfPost, sortByDateAsc } from "./series.js?v=41";
+import { tagSetOf, seriesOfPost, sortByDateAsc } from "./series.js?v=42";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");
@@ -792,66 +792,124 @@ function injectArticleJsonLd(post) {
   document.head.appendChild(script);
 }
 
-// 给代码块加行号。
+// 代码块的行号。
 //
-// 做法：把整列数字写进 pre 的 data-lines（换行分隔），由 post.css 用
-// `content: attr(data-lines)` + `white-space: pre` 一次性渲染出来。
+// 这个需求来回改过两轮，结论记在这里，别再绕回去：
+//   ① 最初是「行号 + 横向滚动」——长行要拖底部的滚动条才能读全，很别扭；
+//   ② 改成「放不下就软换行、同时撤掉行号」——滚动条没了，但长一点的行就没行号；
+//   ③ 现在这版把两件事**同时**做到：永远显示行号，且长行软换行。
 //
-// 为什么不用"逐行包一个 span"那种常见写法：代码已经被 highlight.js 处理过，
-// 它的标签是可能跨行的，按 \n 切分 HTML 字符串会把标签切坏。走伪元素既绕开了
-// 这个问题，又天然满足"行号不该被复制"——伪元素的内容不进 textContent，
-// 复制按钮拿到的仍然只有纯代码。
-function addLineNumbers(pre) {
-  const code = pre.querySelector("code");
-  if (!code || pre.dataset.lines) return;
+// ③ 的关键是"换行之后行号怎么还对得上"，也是以前做不到的原因：
+// 旧做法把整列数字塞进一个伪元素，前提是「一个逻辑行 = 一个视觉行」——
+// 某行一旦折成两行，后面的数字就全部错位，所以只能二选一。
+// 现在改成**每行一个 grid 行**：
+//     .code-line { display: grid; grid-template-columns: auto 1fr }
+// 行号在第一列、代码在第二列。代码折行只撑高它自己那一格，行号仍停在
+// 该行的第一行位置。于是对齐是布局算出来的，不需要任何 resize 重算。
+//
+// 麻烦的是"怎么把 highlight.js 的输出按行切开"——它的标签会跨行（一个多行
+// 字符串就是一个 <span>），按 \n 切 HTML 字符串会把标签切坏（这也是当初
+// 走伪元素的原因）。所以走 DOM：递归遍历文本节点，遇到 \n 就另起一行，
+// 并把当时的祖先链 clone 出来包住该行的文本——跨行的 span 于是每行各有一份副本。
+function codeLinesOf(codeEl) {
+  const lines = [[]];
 
-  // 结尾的换行不算一行，顺带兼容 CRLF
-  const text = code.textContent.replace(/\r?\n$/, "");
-  if (!text) return;
-  const count = text.split(/\r?\n/).length;
-  if (count < 2) return; // 单行代码加行号是纯噪音
+  function emitText(textNode, ancestors) {
+    textNode.nodeValue.split("\n").forEach(function (part, index) {
+      if (index > 0) lines.push([]);
+      if (!part) return;
 
-  const lines = [];
-  for (let i = 1; i <= count; i++) lines.push(i);
-  pre.dataset.lines = lines.join("\n");
-  pre.classList.add("has-line-numbers");
+      let outermost = null;
+      let innermost = null;
+      ancestors.forEach(function (ancestor) {
+        const clone = ancestor.cloneNode(false);
+        if (innermost) innermost.appendChild(clone);
+        else outermost = clone;
+        innermost = clone;
+      });
+
+      const text = document.createTextNode(part);
+      if (innermost) {
+        innermost.appendChild(text);
+        lines[lines.length - 1].push(outermost);
+      } else {
+        lines[lines.length - 1].push(text);
+      }
+    });
+  }
+
+  function walk(node, ancestors) {
+    Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+      if (child.nodeType === 3) {
+        emitText(child, ancestors);
+      } else if (child.nodeType === 1) {
+        walk(child, ancestors.concat([child]));
+      }
+      // 注释等其它节点直接丢掉：它们不该出现在代码块里
+    });
+  }
+
+  walk(codeEl, []);
+  return lines;
 }
 
-// 长行代码到底是"换行"还是"横向滚动"，只能二选一：
-// 一旦换行，行号那一列（整列由一个伪元素一次性渲染）就和视觉行对不上了，
-// 留着只会指错行。所以按实测宽度决定——整块放得下就保留行号，
-// 放不下就换成软换行、同时把行号撤掉（CSS 侧用 :not(.is-wrapped) 排除）。
-//
-// 两个坑：
-// 1. 量的对象是 <code>，不是 <pre>。hljs 给 .hljs 带了 `display:block; overflow-x:auto`，
-//    真正会横向滚动、scrollWidth 会超出来的是 code 那一层；pre 的 scrollWidth
-//    在这个结构下恒等于 clientWidth，拿它量永远得出"没溢出"。
-// 2. 量之前必须先退回"不换行"状态：已经处于换行状态时 scrollWidth 恒等于
-//    clientWidth，同样量不出溢出。
-function syncCodeWrap(pre) {
+function renderCodeLines(pre) {
   const code = pre.querySelector("code");
   if (!code) return false;
-  pre.classList.remove("is-wrapped");
-  const overflowing = code.scrollWidth > code.clientWidth + 1;
-  if (overflowing) pre.classList.add("is-wrapped");
-  return overflowing;
+
+  try {
+    const lines = codeLinesOf(code);
+    // 结尾的换行不算一行：否则末尾会多出一个空行号。
+    // 代码围栏几乎总会带一个结尾换行，所以这一步不是可选的美化。
+    if (lines.length > 1 && lines[lines.length - 1].length === 0) lines.pop();
+    if (!lines.length || (lines.length === 1 && lines[0].length === 0)) return false;
+
+    const fragment = document.createDocumentFragment();
+
+    lines.forEach(function (nodes, index) {
+      const row = document.createElement("span");
+      row.className = "code-line";
+
+      const number = document.createElement("span");
+      number.className = "code-line-no";
+      number.textContent = String(index + 1);
+      // 行号只是给人看的参照：读屏不该念它，复制也不该带上它
+      number.setAttribute("aria-hidden", "true");
+
+      const text = document.createElement("span");
+      text.className = "code-line-text";
+      nodes.forEach(function (node) {
+        text.appendChild(node);
+      });
+
+      row.append(number, text);
+      fragment.appendChild(row);
+    });
+
+    code.replaceChildren(fragment);
+    pre.classList.add("has-line-numbers");
+    return true;
+  } catch (error) {
+    // 切行失败不能把代码弄丢：保持 highlight.js 的原样输出，只是没有行号
+    console.error("代码块行号渲染失败:", error);
+    return false;
+  }
 }
 
-// 视口宽度变了，"放不放得下"的结论就会变，得跟着重量一遍。
-// 监听器只绑一次：enhanceCodeBlocks 每渲染一篇文章都会走到这里。
-const codeBlocks = [];
-let codeWrapResizeBound = false;
-
-function bindCodeWrapResize() {
-  if (codeWrapResizeBound) return;
-  codeWrapResizeBound = true;
-  let timer = 0;
-  window.addEventListener("resize", function () {
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      codeBlocks.forEach(syncCodeWrap);
-    }, 180);
-  });
+// 复制按钮要拿到"纯代码"：行号是独立的元素，直接读 code.textContent 会把
+// 数字一起带上。所以按行拼回去（.code-line-text 里不含行号）。
+// 没走行号渲染的代码块退回读 textContent。
+function codeTextOf(pre) {
+  const lineTexts = pre.querySelectorAll(".code-line-text");
+  if (lineTexts.length) {
+    return Array.prototype.map
+      .call(lineTexts, function (el) {
+        return el.textContent;
+      })
+      .join("\n");
+  }
+  const code = pre.querySelector("code");
+  return code ? code.textContent : pre.textContent;
 }
 
 function enhanceCodeBlocks(articleBody) {
@@ -866,20 +924,15 @@ function enhanceCodeBlocks(articleBody) {
   });
   articleBody.querySelectorAll("pre").forEach(function (pre) {
     if (pre.querySelector(".code-copy-btn")) return;
-    // 行号要在高亮之后算——高亮会改动 code 里的节点，文本这时才是最终版
-    addLineNumbers(pre);
-    // 再决定这个块是保留行号（放得下）还是改成软换行（放不下）
-    syncCodeWrap(pre);
-    codeBlocks.push(pre);
-    bindCodeWrapResize();
+    // 行号要在高亮之后渲染——高亮会改动 code 里的节点，文本这时才是最终版
+    renderCodeLines(pre);
     const button = document.createElement("button");
     button.type = "button";
     button.className = "code-copy-btn";
     button.textContent = "复制";
     button.setAttribute("aria-label", "复制代码");
     button.addEventListener("click", async function () {
-      const code = pre.querySelector("code");
-      const text = (code ? code.textContent : pre.textContent) || "";
+      const text = codeTextOf(pre) || "";
       try {
         await navigator.clipboard.writeText(text);
         button.textContent = "已复制";

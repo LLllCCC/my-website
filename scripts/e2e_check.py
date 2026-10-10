@@ -2,6 +2,7 @@
 本地跑法：python scripts/e2e_check.py（需要 pip install playwright && playwright install chromium）
 """
 import os
+import base64
 import subprocess
 import sys
 import tempfile
@@ -13,6 +14,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 BASE = None  # 由子进程分配的随机端口决定
 failures = []
+
+# 1×1 透明 GIF：用来顶掉测试里的外网请求（见下面 page.route 的说明）
+TINY_GIF = base64.b64decode("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
 
 
 def check(name, ok, detail=""):
@@ -63,6 +67,21 @@ def run_checks():
             lambda msg: console_errors.append(f"{msg.type}:{msg.text}") if msg.type == "error" else None,
         )
         page.on("pageerror", lambda err: console_errors.append("pageerror:" + str(err)))
+
+        # 只放行本机假服务器，外网请求一律用一张 1×1 透明像素顶掉。
+        #
+        # 起因：桩数据里有一个 example.com 的图片链接，浏览器会**真的去请求外网**。
+        # 外网一慢或不通，那个请求就一直挂着，`wait_until="networkidle"` 永远等不到
+        # —— 这套测试因此被挂断过两次，而且看起来像"代码坏了"，极难排查。
+        #
+        # 为什么不是 route.abort()：abort 会在控制台留下 net::ERR_FAILED，
+        # 把最后那条「控制台无错误」的断言污染掉。给一个能解码的 1×1 GIF 最干净。
+        page.route(
+            "**/*",
+            lambda route: route.continue_()
+            if route.request.url.startswith(BASE)
+            else route.fulfill(status=200, content_type="image/gif", body=TINY_GIF),
+        )
 
         page.goto(BASE + "/index.html", wait_until="networkidle")
         check("首页 导航已注入", page.locator(".nav-container").count() == 1)
@@ -380,78 +399,115 @@ def run_checks():
             series_info and series_info["countText"],
         )
         check("文章 表情回应栏 4 个按钮", page.locator("#article-reactions .article-reaction").count() == 4)
-        check("文章 代码块有复制按钮", page.locator("#article-body .code-copy-btn").count() == 2)
-        # 行号由伪元素渲染：数字不进 code.textContent，所以复制内容必须是纯代码。
+        check("文章 代码块有复制按钮", page.locator("#article-body .code-copy-btn").count() == 3)
+        # 行号是「每行一个 grid 行」渲染的（.code-line > .code-line-no + .code-line-text），
+        # 所以折行不会让数字错位——这正是「永远有行号」与「长行软换行」能同时成立的原因。
+        # 桩里 pre[0] 是 3 行短代码，pre[1] 是 1 行超长命令。
         line_info = page.evaluate(
             """() => {
-              const pre = document.querySelector('#article-body pre');
-              if (!pre) return null;
-              return {
-                cls: pre.classList.contains('has-line-numbers'),
-                lines: pre.dataset.lines || '',
-                gutter: getComputedStyle(pre, '::before').content || '',
-                code: (pre.querySelector('code') || {}).textContent || '',
-                gutFont: getComputedStyle(pre, '::before').fontSize,
-                preFont: getComputedStyle(pre).fontSize,
-                wrapped: pre.classList.contains('is-wrapped'),
+              const pres = [...document.querySelectorAll('#article-body pre')];
+              const dump = (pre) => {
+                if (!pre) return null;
+                const code = pre.querySelector('code');
+                const no = pre.querySelector('.code-line-no');
+                return {
+                  cls: pre.classList.contains('has-line-numbers'),
+                  nums: [...pre.querySelectorAll('.code-line-no')].map(n => n.textContent),
+                  lineText: [...pre.querySelectorAll('.code-line-text')].map(n => n.textContent).join('\\n'),
+                  // 溢出量要在 <code> 上量：hljs 给 .hljs 带了 overflow-x:auto，
+                  // 真正会横向滚动的是 code 那一层，pre.scrollWidth 恒等于 clientWidth。
+                  overflow: code ? code.scrollWidth - code.clientWidth : 0,
+                  numFont: no ? getComputedStyle(no).fontSize : '',
+                  preFont: getComputedStyle(pre).fontSize,
+                };
               };
+              return { short: dump(pres[0]), long: dump(pres[1]) };
             }"""
         )
-        check("文章 多行代码块有行号", bool(line_info) and line_info["cls"], line_info and line_info["lines"])
+        short_block = (line_info or {}).get("short")
+        long_block = (line_info or {}).get("long")
         check(
-            "文章 行号逐行渲染且行数正确",
-            bool(line_info) and line_info["lines"] == "1\n2\n3",
-            line_info and repr(line_info["lines"]),
+            "文章 两个代码块都渲染了行号",
+            bool(short_block) and bool(long_block) and short_block["cls"] and long_block["cls"],
+            line_info,
+        )
+        check(
+            "文章 短块行号逐行且从 1 开始",
+            bool(short_block) and short_block["nums"] == ["1", "2", "3"],
+            short_block and short_block["nums"],
+        )
+        check(
+            "文章 超长行块也有行号（本次改动核心：不再为了折行而撤掉行号）",
+            bool(long_block) and long_block["nums"] == ["1"],
+            long_block and long_block["nums"],
         )
         check(
             "文章 行号字号与代码一致（否则对不齐）",
-            bool(line_info) and line_info["gutter"] and line_info["gutFont"] == line_info["preFont"],
-            line_info and f"{line_info['gutFont']} / {line_info['preFont']}",
+            bool(short_block) and short_block["numFont"] == short_block["preFont"],
+            short_block and f"{short_block['numFont']} / {short_block['preFont']}",
         )
         check(
-            "文章 复制内容不含行号",
-            bool(line_info) and "\n1\n" not in line_info["code"] and line_info["code"].startswith("npm install"),
-            line_info and repr(line_info["code"][:30]),
+            "文章 行号不进正文文本（复制不能带上数字）",
+            bool(short_block)
+            and short_block["lineText"].startswith("npm install")
+            and "\n1\n" not in short_block["lineText"],
+            short_block and repr(short_block["lineText"][:30]),
         )
-        # 放得下的块保持不换行——行号只在"整块能放下"时才有意义。
         check(
-            "文章 短行代码块不换行（行号才留得住）",
-            bool(line_info) and not line_info["wrapped"],
-            line_info and f"wrapped={line_info['wrapped']}",
+            "文章 按行拼回时换行完整（复制出来仍是多行代码）",
+            bool(short_block)
+            and short_block["lineText"].split("\n") == ["npm install", "npm run build", "npm run test"],
+            short_block and repr(short_block["lineText"]),
         )
-        # 放不下的块换成软换行，同时撤掉行号（换行后行号会和视觉行错位）。
-        # 注意溢出量要在 <code> 上量：hljs 给 .hljs 带了 overflow-x:auto，
-        # 真正会横向滚动的是 code 那一层，pre 的 scrollWidth 恒等于 clientWidth。
-        wrap_info = page.evaluate(
+        check(
+            "文章 超长行块没有横向溢出（等于没有滚动条）",
+            bool(long_block) and long_block["overflow"] <= 1,
+            long_block and long_block["overflow"],
+        )
+        # 跨行 token：多行字符串在 hljs 里是**一个** <span>，切行时必须把它在每行各复制一份。
+        # 这是切行实现里风险最高的路径——切坏了要么丢高亮、要么文本错乱。
+        span_info = page.evaluate(
             """() => {
               const pres = [...document.querySelectorAll('#article-body pre')];
-              const pre = pres[1];
+              const pre = pres[2];
               if (!pre) return null;
-              const code = pre.querySelector('code');
+              const rows = [...pre.querySelectorAll('.code-line')];
               return {
-                wrapped: pre.classList.contains('is-wrapped'),
-                overflow: code ? code.scrollWidth - code.clientWidth : 0,
-                whiteSpace: code ? getComputedStyle(code).whiteSpace : '',
-                gutter: getComputedStyle(pre, '::before').content || 'none',
-                padLeft: Math.round(parseFloat(getComputedStyle(pre).paddingLeft)),
+                nums: [...pre.querySelectorAll('.code-line-no')].map(n => n.textContent),
+                texts: rows.map(r => r.querySelector('.code-line-text').textContent),
+                contHasSpan: rows[1] ? !!rows[1].querySelector('.code-line-text span') : false,
               };
             }"""
         )
-        check("文章 超长行代码块自动软换行", bool(wrap_info) and wrap_info["wrapped"], wrap_info)
         check(
-            "文章 换行块没有横向溢出（等于没有滚动条）",
-            bool(wrap_info) and wrap_info["overflow"] <= 1,
-            wrap_info and wrap_info["overflow"],
+            "文章 跨行 token 切行后行号正确（2 行）",
+            bool(span_info) and span_info["nums"] == ["1", "2"],
+            span_info and span_info["nums"],
         )
         check(
-            "文章 换行块不渲染行号（否则会指错行）",
-            bool(wrap_info) and wrap_info["gutter"] in ("none", "normal"),
-            wrap_info and wrap_info["gutter"],
+            "文章 跨行 token 切行后文本完整（没被切开或丢字）",
+            bool(span_info) and span_info["texts"] == ["const s = `alpha", "beta`;"],
+            span_info and span_info["texts"],
         )
         check(
-            "文章 换行块的左内边距已还原（不留给行号的空位）",
-            bool(wrap_info) and wrap_info["padLeft"] <= 30,
-            wrap_info and wrap_info["padLeft"],
+            "文章 跨行 token 的续行仍带着 hljs 标签（祖先链被正确复制）",
+            bool(span_info) and span_info["contHasSpan"],
+            span_info and span_info["contHasSpan"],
+        )
+        # 真的点一次复制按钮，用剪贴板验"纯代码 + 换行都在"——
+        # 行号现在是真实元素，页面上的 textContent 一定含数字，只有剪贴板能证明没带上。
+        page.context.grant_permissions(["clipboard-read", "clipboard-write"])
+        page.locator("#article-body pre").first.hover()
+        page.wait_for_timeout(200)
+        page.locator("#article-body .code-copy-btn").first.click()
+        page.wait_for_timeout(500)
+        copied = page.evaluate("() => navigator.clipboard.readText()")
+        # Windows 上 Chromium 写剪贴板会把 \n 规范成 \r\n，所以先归一化再比。
+        check(
+            "文章 剪贴板里是纯代码（无行号、换行完整）",
+            copied.replace("\r\n", "\n") == "npm install\nnpm run build\nnpm run test"
+            and "\n1\n" not in copied,
+            repr(copied),
         )
         check("评论 两条留言", page.locator("#comment-list .comment-item").count() == 2)
         check("评论 Markdown 粗体渲染", page.locator(".comment-md-strong").count() >= 1)

@@ -369,36 +369,27 @@
 
 .post-content pre { --code-pad-top: 22px; margin: 1.8em 0; padding: var(--code-pad-top) 24px; overflow: auto; border: 1px solid var(--border-color); border-radius: 14px; background: rgba(127, 127, 127, .12); font-size: .88rem; line-height: 1.7; }
 
-/* 代码块行号：post.js 的 addLineNumbers 打上 .has-line-numbers 并填好 data-lines，
-   数字整列由一个伪元素渲染。字号和行高都从 pre 继承，所以天然对齐，
-   这里只需要把顶部内边距同步过来（--code-pad-top 在 520px 断点会变小）。
+/* 代码块行号（post.js 的 renderCodeLines 渲染）。
+   结构是「每行一个 .code-line，内部两列 grid」：行号占第一列、代码占第二列。
+   代码折行时只撑高它自己那一格，行号仍停在该行的第一行位置——「永远显示行号」
+   与「长行软换行」能同时成立，全靠这个结构。
 
-   两条规则都带 :not(.is-wrapped)：代码块放不下时会改成软换行（见下面 .is-wrapped），
-   换行后行号会和视觉行错位，所以那种块干脆不渲染行号，左右内边距也还原。 */
-.post-content pre.has-line-numbers:not(.is-wrapped) { padding-left: 3.9em; }
+   别再改回"整列数字塞进一个伪元素"的写法：那种做法假设一个逻辑行等于一个视觉行，
+   某行一折行，后面的数字就全部错位。 */
+.post-content pre .code-line { display: grid; grid-template-columns: auto 1fr; column-gap: 1.1em; }
 
-.post-content pre.has-line-numbers:not(.is-wrapped)::before {
-  content: attr(data-lines);
-  position: absolute;
-  top: var(--code-pad-top, 22px);
-  left: 0;
-  width: 3.9em;
-  padding-right: 1.1em;
-  box-sizing: border-box;
+.post-content pre .code-line-no {
   text-align: right;
-  white-space: pre;
   color: var(--text-secondary);
-  opacity: .5;
-  pointer-events: none;
+  opacity: .45;
   user-select: none;
+  -webkit-user-select: none;
 }
 
-/* 放不下的代码块改成软换行（post.js 的 syncCodeWrap 打 .is-wrapped）。
-   这么做是为了干掉底部的横向滚动条：长行要读全就得来回拖，很别扭。
-
-   注意 overflow-wrap 用 break-word 而不是 anywhere：只在"整个词放不下"时才断，
-   正常能换行的位置仍然按空格断，长 URL / 无空格长串也不会把块撑破。 */
-.post-content pre.is-wrapped code { white-space: pre-wrap; overflow-wrap: break-word; }
+/* pre-wrap 才能保住行首缩进，同时允许长行折断。
+   overflow-wrap 用 break-word 而不是 anywhere：只在"整个词放不下"时才断，
+   正常能换行的位置仍按空格断，长 URL / 无空格长串也不会把块撑破。 */
+.post-content pre .code-line-text { white-space: pre-wrap; overflow-wrap: break-word; min-width: 0; }
 
 .post-content code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
 

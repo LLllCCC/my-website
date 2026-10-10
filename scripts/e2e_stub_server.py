@@ -26,12 +26,16 @@ POST_1 = {
         # 刻意用多行代码块：代码行号只对 2 行以上生效（单行加行号是噪音），
         # 单行的话这条特性在 e2e 里就永远测不到。
         "```bash\nnpm install\nnpm run build\nnpm run test\n```\n\n"
-        # 刻意放一行超长命令：用来验证"放不下就软换行、并且撤掉行号"这条分支。
-        # 长度要远超正文列宽（约 104 字符），所以它在任何视口下都必然溢出。
+        # 刻意放一行超长命令：用来验证「长行照样有行号 + 不出现横向滚动条」。
+        # 长度要远超正文列宽（约 104 字符），所以它在任何视口下都必然折行。
         "```bash\n"
         "docker run -d --name my-blog-api --restart unless-stopped -p 172.17.0.1:3000:3000 "
         "--env-file /root/myblog-api/.env myblog-api:latest\n"
-        "```\n\n## 注意事项\n\n结尾。\n"
+        "```\n\n"
+        # 刻意的**跨行 token**：多行字符串在 highlight.js 里是**一个** <span>，
+        # 切行时必须把这个 span 在每一行各复制一份，否则要么标签被切坏、
+        # 要么续行丢掉高亮。这是切行实现里风险最高的一条路径，必须有永久用例。
+        "```js\nconst s = `alpha\nbeta`;\n```\n\n## 注意事项\n\n结尾。\n"
     ),
 }
 COMMENTS_1 = [
