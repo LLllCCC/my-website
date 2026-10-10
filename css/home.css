@@ -608,6 +608,50 @@ body.index-page .grid {
   pointer-events: none;
 }
 
+/* --- Hero 指针交互：分层视差 + 光标聚光 ---
+   main.js 把归一化到 -1..1 的指针坐标写进 --hero-x / --hero-y，这里消费。
+   两点取舍：
+   · 视差加在子元素上，不动卡片本身——卡片的 transform 已经被通用 3D 倾斜占用了。
+   · ::before 被 .card::after 之外的第三条规则用掉了？没有，.card::before 是空的，
+     所以聚光用 ::before，和已有的高光 ::after 互不干扰。 */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+
+  .card-hero .hero-text,
+  .card-hero .avatar {
+    transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+  }
+
+  /* 文字位移小、头像位移大 = 文字近、头像远，形成层次 */
+  .card-hero .hero-text {
+    transform: translate3d(calc(var(--hero-x, 0) * -5px), calc(var(--hero-y, 0) * -4px), 0);
+  }
+
+  .card-hero .avatar {
+    transform: translate3d(calc(var(--hero-x, 0) * 11px), calc(var(--hero-y, 0) * 9px), 0);
+  }
+
+  .card-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 320ms ease;
+    background: radial-gradient(
+      300px circle at calc(50% + var(--hero-x, 0) * 190px) calc(50% + var(--hero-y, 0) * 150px),
+      color-mix(in srgb, var(--accent-color), transparent 87%),
+      transparent 70%
+    );
+  }
+
+  .card-hero:hover::before,
+  .card-hero:focus-within::before {
+    opacity: 1;
+  }
+}
+
 .card:hover::after {
   opacity: 1;
 }

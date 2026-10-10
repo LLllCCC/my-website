@@ -1,5 +1,5 @@
 // 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=34";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=35";
 
 // =========================================================
 // 1. Email 卡片点击监听
@@ -47,6 +47,33 @@ if (canTiltCards) {
       });
     });
   });
+}
+
+// =========================================================
+// 3. Hero 指针交互：把归一化坐标写进 CSS 变量，视差与聚光由 home.css 消费
+// =========================================================
+// 与卡片倾斜同一套开关（有精确指针 + 未要求减少动效），所以触屏和
+// "减少动效"用户根本不会走到这里；home.css 那边还有一层同条件的媒体查询兜底。
+const heroCard = document.getElementById("home");
+if (heroCard && canTiltCards) {
+  const resetHero = () => {
+    heroCard.style.setProperty("--hero-x", "0");
+    heroCard.style.setProperty("--hero-y", "0");
+  };
+
+  heroCard.addEventListener("pointermove", (e) => {
+    const rect = heroCard.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    // 夹到 -1..1：指针贴边或略微越界时不该把效果放大到失控
+    const clamp = (v) => Math.max(-1, Math.min(1, v));
+    const x = clamp(((e.clientX - rect.left) / rect.width) * 2 - 1);
+    const y = clamp(((e.clientY - rect.top) / rect.height) * 2 - 1);
+    heroCard.style.setProperty("--hero-x", x.toFixed(3));
+    heroCard.style.setProperty("--hero-y", y.toFixed(3));
+  });
+
+  heroCard.addEventListener("pointerleave", resetHero);
+  resetHero();
 }
 
 // 首页博客卡片始终展示最近发布文章的标题和封面。

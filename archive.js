@@ -1,6 +1,6 @@
 // 归档页：按年份切换 + 按月份分组列出全部文章。
 // 数据来自现有 /api/posts 列表接口，纯前端分组，不额外请求后端。
-import { CONFIG, debounce, safeHttpUrl } from "./config.js?v=34";
+import { CONFIG, debounce, safeHttpUrl } from "./config.js?v=35";
 
 function normalizeTags(tags) {
   if (Array.isArray(tags)) return tags.map(String).join(", ");

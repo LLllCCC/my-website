@@ -565,3 +565,16 @@
     flex: 1;
   }
 }
+
+/* 减少动效偏好（管理页）：悬停不位移；输入框的边框/阴影反馈保留 */
+@media (prefers-reduced-motion: reduce) {
+
+  .admin-primary-button,
+  .admin-token-row input {
+    transition: none !important;
+  }
+
+  .admin-primary-button:hover:not(:disabled) {
+    transform: none;
+  }
+}

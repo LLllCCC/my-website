@@ -1,8 +1,8 @@
 // 文章详情页：拉取正文、Markdown 渲染、封面定位、目录、阅读进度。
 // 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=34";
-import { initComments, visitorId } from "./comments.js?v=34";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=35";
+import { initComments, visitorId } from "./comments.js?v=35";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");
@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       articleBody.innerHTML = DOMPurify.sanitize(marked.parse(markdownRaw));
       replaceImageLinks(articleBody);
       buildTOC(articleBody);
+      initTOCScrollSpy(articleBody);
       initReadingProgress();
       renderNeighbors(post);
       initRelatedPosts(post);
@@ -97,6 +98,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       injectArticleJsonLd(post);
       enhanceCodeBlocks(articleBody);
       initLightbox(articleBody);
+      initContentReveal(articleBody);
     } else {
       showMessage("文章格式组件暂时不可用，请刷新页面重试。");
     }
@@ -353,6 +355,95 @@ function initReadingProgress() {
     { passive: true }
   );
   update();
+}
+
+// 让目录随滚动高亮当前章节。
+// 与 buildTOC 的产出一一对应：buildTOC 按 articleBody 里 h2/h3 的文档顺序生成链接，
+// 这里用同一个顺序取标题，所以 links[i] 与 headings[i] 必然指向同一节。
+function initTOCScrollSpy(articleBody) {
+  const tocContainer = document.getElementById("article-toc");
+  if (!tocContainer || tocContainer.hidden) return;
+  const links = Array.prototype.slice.call(tocContainer.querySelectorAll(".article-toc-item a"));
+  const headings = Array.prototype.slice.call(articleBody.querySelectorAll("h2, h3"));
+  if (!links.length || links.length !== headings.length) return;
+
+  // 顶栏是 fixed 的，阈值要留出它的高度，否则"当前章节"总比视觉上慢一拍
+  const OFFSET = 140;
+  let activeIndex = -1;
+  let scheduled = false;
+
+  function apply(index) {
+    if (index === activeIndex) return;
+    activeIndex = index;
+    links.forEach(function (link, i) {
+      if (i === index) {
+        link.classList.add("is-active");
+        link.setAttribute("aria-current", "true");
+      } else {
+        link.classList.remove("is-active");
+        link.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  function update() {
+    scheduled = false;
+    let index = 0;
+    for (let i = 0; i < headings.length; i++) {
+      if (headings[i].getBoundingClientRect().top - OFFSET <= 0) index = i;
+      else break;
+    }
+    // 滚到底部时强制选中最后一节：末尾几节可能永远到不了阈值线
+    const root = document.documentElement;
+    if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) {
+      index = headings.length - 1;
+    }
+    apply(index);
+  }
+
+  function schedule() {
+    if (!scheduled) {
+      scheduled = true;
+      window.requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule, { passive: true });
+  update();
+}
+
+// 正文元素滚动渐入。正文由 JS 渲染，所以不需要 no-JS 兜底——元素存在即说明 JS 在跑；
+// 但"减少动效"必须尊重，不满足就直接整段跳过，连类都不加。
+function initContentReveal(articleBody) {
+  if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+  if (!("IntersectionObserver" in window)) return;
+
+  // 只选块级元素：图片多包在 <p> 或 <figure> 里，单独动一个行内元素会很怪
+  const targets = Array.prototype.slice.call(
+    articleBody.querySelectorAll("pre, blockquote, figure, table")
+  );
+  if (!targets.length) return;
+
+  const observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-revealed");
+        observer.unobserve(entry.target);
+      });
+    },
+    // 观察区往下扩 8% = 提前揭示。用负边距（"进视口后再等一会儿"）会让
+    // 正好卡在折叠线上的元素一直不揭示，留出一段空白，看起来像内容丢了。
+    { rootMargin: "0px 0px 8% 0px", threshold: 0 }
+  );
+
+  targets.forEach(function (el) {
+    // 首屏里已有的元素不参与：给它们加初始位移，反而会让首屏抖一下
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
+    el.classList.add("content-reveal");
+    observer.observe(el);
+  });
 }
 
 function renderNeighbors(post) {

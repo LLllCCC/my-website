@@ -318,9 +318,12 @@
 
 .article-toc-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
 
-.article-toc-item a { color: var(--text-secondary); font-size: .78rem; line-height: 1.5; text-decoration: none; }
+.article-toc-item a { color: var(--text-secondary); font-size: .78rem; line-height: 1.5; text-decoration: none; transition: color 160ms ease; }
 
 .article-toc-item a:hover { color: var(--accent-color); }
+
+/* 滚动到当前章节时由 post.js 的 initTOCScrollSpy 打上 is-active */
+.article-toc-item a.is-active { color: var(--accent-color); font-weight: 600; }
 
 .article-toc-item--sub { padding-left: 12px; }
 
@@ -782,3 +785,77 @@ html.lightbox-open { overflow: hidden; }
 
 /* hidden 属性必须真正隐藏（上面两条 display 规则会盖过 UA 样式的 [hidden]）*/
 .article-neighbors[hidden], .article-reactions[hidden], .article-related[hidden] { display: none; }
+
+/* =========================================
+   正文元素滚动渐入
+   类由 post.js 的 initContentReveal 打上，且只在允许动效时才打。
+   只用 opacity + transform，不碰任何布局属性，避免累积布局偏移（CLS）。
+   ========================================= */
+.content-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.content-reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* =========================================
+   减少动效偏好（文章页）
+   中和位移/缩放类动效，保留颜色与透明度反馈——
+   颜色变化不是前庭触发源，砍掉反而损失交互反馈。
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+
+  /* 阅读进度条：宽度变化本身就是"移动的几何"，改成跳变 */
+  .reading-progress span {
+    transition: none;
+  }
+
+  /* 封面拖动定位 */
+  .post-cover {
+    transition: none !important;
+  }
+
+  .comment-submit,
+  .comment-reaction,
+  .article-neighbor,
+  .article-reaction,
+  .article-related-item,
+  .notfound-btn {
+    transition: none !important;
+  }
+
+  /* 悬停不再位移——注意要连同 transform 一起中和，
+     只取消 transition 会让元素瞬间"跳"过去，比动画更难受。 */
+  .comment-submit:hover,
+  .comment-reaction:hover,
+  .article-neighbor:hover,
+  .article-reaction:hover,
+  .article-related-item:hover,
+  .notfound-btn:hover {
+    transform: none;
+  }
+
+  /* 文章封面悬停缩放 */
+  .article-card:hover .article-cover img {
+    transform: none;
+  }
+
+  /* 灯箱淡入 */
+  .lightbox-overlay {
+    animation: none;
+  }
+
+  /* 双保险：.content-reveal 本来就只在允许动效时才会被 post.js 打上 */
+  .content-reveal,
+  .content-reveal.is-revealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

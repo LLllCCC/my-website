@@ -143,14 +143,29 @@ async function buildFeed() {
 }
 
 // sitemap 和 feed 一样在每次发布/重建时全量重写，删除的文章自然消失。
+// 静态页必须在这个列表里显式登记：它们不在文章接口里，漏一个下次发布就被抹掉。
+const STATIC_SITEMAP_PAGES = [
+  "/",
+  "/blog.html",
+  "/archive.html",
+  "/site.html",
+  // motion-web 案例集：7 个案例各自是独立页面，全部登记，否则搜索引擎收不到。
+  "/motion-web/cases/",
+  "/motion-web/cases/char-curtain/",
+  "/motion-web/cases/ink-crowd/",
+  "/motion-web/cases/lyre-crows/",
+  "/motion-web/cases/press-stack/",
+  "/motion-web/cases/string-clock/",
+  "/motion-web/cases/toy-flipbook/",
+  "/motion-web/cases/wheel-rail/",
+];
+
 async function buildSitemap() {
   const posts = await fetchPosts();
-  const urls = [
-    { loc: SITE + "/", lastmod: "" },
-    { loc: SITE + "/blog.html", lastmod: "" },
-    // 归档页是静态页，不在文章接口里，每次重建 sitemap 都要带上它，否则会被抹掉。
-    { loc: SITE + "/archive.html", lastmod: "" },
-  ].concat(
+  const urls = STATIC_SITEMAP_PAGES.map((path) => ({
+    loc: SITE + path,
+    lastmod: "",
+  })).concat(
     posts.map((post) => ({
       loc: SITE + "/post.html?id=" + encodeURIComponent(post.id),
       lastmod: typeof post.date === "string" ? post.date.slice(0, 10) : "",

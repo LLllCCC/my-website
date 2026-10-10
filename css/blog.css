@@ -111,8 +111,20 @@
   .nav-theme-toggle,
   .blog-page .blog-post-card,
   .blog-page .blog-post-link,
+  .archive-item,
+  .archive-year-btn,
   .back-to-top {
     transition: none !important;
+  }
+
+  /* 只取消 transition 会让元素瞬间"跳"过去，比有动画更难受——位移要一并中和 */
+  .blog-page .blog-post-card:hover,
+  .archive-item:hover {
+    transform: none;
+  }
+
+  .archive-item:hover::before {
+    transform: none;
   }
 }
 
@@ -299,7 +311,10 @@
   background-size: cover;
   background-position: center;
   color: var(--text-primary);
-  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  /* 动效语言与首页/归档保持一致：同一条缓动曲线 + 200ms 级时长 */
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .blog-page .blog-post-card:not(.blog-post-card--cover)::before {
@@ -322,7 +337,7 @@
 }
 
 .blog-page .blog-post-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.006);
   border-color: color-mix(in srgb, var(--accent-color), var(--border-color) 55%);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.16);
 }

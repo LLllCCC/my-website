@@ -70,6 +70,41 @@ def run_checks():
         if shot_dir:
             page.screenshot(path=os.path.join(shot_dir, "index.png"), full_page=True)
 
+        # 滚动入场（theme-init.js 打标记 + reveal.js 观察视口）。
+        # 断言的是不变量，不是"立刻全都可见"——下折叠下方的元素本来就该等到滚进视口再入场。
+        check("首页 滚动入场已启用", page.evaluate("() => document.documentElement.classList.contains('has-reveal')"))
+        # 首屏元素有 70ms 递增的错峰 + 520ms 动画，等它播完再判断
+        page.wait_for_timeout(1200)
+        in_view_hidden = page.evaluate(
+            "() => [...document.querySelectorAll('.fade-in')].filter(el => {"
+            " const r = el.getBoundingClientRect();"
+            " return r.top < window.innerHeight && r.bottom > 0 && getComputedStyle(el).opacity === '0'; }).length"
+        )
+        check("首页 视口内的入场元素已显示", in_view_hidden == 0, in_view_hidden)
+        # 真正要防的是"元素被永久留在隐藏状态"：分步滚过整页，一个都不该剩下
+        page.evaluate(
+            """async () => {
+                 const step = Math.round(window.innerHeight * 0.8);
+                 for (let y = 0; y <= document.documentElement.scrollHeight; y += step) {
+                   window.scrollTo(0, y);
+                   await new Promise(r => setTimeout(r, 90));
+                 }
+               }"""
+        )
+        page.wait_for_timeout(600)
+        stuck = page.evaluate(
+            "() => [...document.querySelectorAll('.fade-in')].filter(el => getComputedStyle(el).opacity === '0').length"
+        )
+        check("首页 滚过整页后无残留隐藏", stuck == 0, stuck)
+        page.evaluate("window.scrollTo(0, 0)")
+        page.wait_for_timeout(200)
+        # Hero 指针交互：真实移动指针，CSS 变量必须变化
+        hero_box = page.locator("#home").bounding_box()
+        page.mouse.move(hero_box["x"] + hero_box["width"] * 0.25, hero_box["y"] + hero_box["height"] * 0.3)
+        page.wait_for_timeout(150)
+        hero_x = page.evaluate("() => document.getElementById('home').style.getPropertyValue('--hero-x')")
+        check("首页 hero 指针交互生效（--hero-x）", hero_x != "", hero_x)
+
         page.goto(BASE + "/blog.html", wait_until="networkidle")
         check("博客 文章卡片 3 张", page.locator(".blog-post-card").count() == 3)
         check("博客 标签云有按钮", page.locator(".tag-btn").count() >= 2)
@@ -115,6 +150,23 @@ def run_checks():
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
         check("文章 正文渲染出 h2", page.locator("#article-body h2").count() == 2)
         check("文章 目录生成", page.locator("#article-toc li").count() == 2)
+        # 目录随滚动高亮：滚到底部时恰好一项处于激活态（末尾几节靠"到底强制选中"兜底）
+        page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+        page.wait_for_timeout(300)
+        check(
+            "文章 目录随滚动高亮（恰好一项）",
+            page.locator("#article-toc .article-toc-item a.is-active").count() == 1,
+            page.locator("#article-toc .article-toc-item a.is-active").count(),
+        )
+        # 正文滚动渐入：不变量是"没有任何元素被永久留在隐藏状态"。
+        # 注意短文章可能整篇都在首屏内，那种情况下本来就不该有元素被打上类。
+        stuck = page.evaluate(
+            "() => [...document.querySelectorAll('.content-reveal')]"
+            ".filter(el => !el.classList.contains('is-revealed')).length"
+        )
+        check("文章 正文渐入无残留隐藏", stuck == 0, stuck)
+        page.evaluate("window.scrollTo(0, 0)")
+        page.wait_for_timeout(200)
         check("文章 上一篇/下一篇只显示下一篇", page.locator("#article-neighbors .article-neighbor").count() == 1)
         # 文章1 标签「代码,生活」：文章2「代码」与文章3「生活」各命中一个共同标签，
         # 因此两篇都应被推荐（只要求有结果且不把自己算进去）。

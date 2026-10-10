@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>磁吸索引墙 — 指针距离衰减与滚轮档位</title>
+<meta name="description" content="一面卡片墙：指针靠近时每张卡片按自己的距离衰减朝你倾斜，离开后各自归位；滚轮在紧凑/标准/舒展三档之间咔哒切换，两端夹住。">
+<meta property="og:title" content="磁吸索引墙">
+<meta property="og:description" content="距离衰减的磁吸倾斜，加上三个精确落位的密度档位。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23f4f2ee'/><rect x='5' y='7' width='9' height='7' rx='1' fill='%2316150f'/><rect x='17' y='10' width='10' height='8' rx='1' fill='%238a3312'/><rect x='7' y='18' width='12' height='7' rx='1' fill='%23d9d5c9'/><rect x='22' y='21' width='5' height='5' rx='1' fill='%2316150f'/></svg>">
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   机制层 / 皮层 声明  ·  依据 cases/AUTHORING.md 第 3 阶段
+   ──────────────────────────────────────────────────────────────────────
+   机制层（可以照搬）——下面凡是标了 @mechanism 的地方：
+     · 三个档位的变量契约（--gap / --tile-min / --reach / --lean / --tilt）
+     · .tile 的 transform 表达式：把 --mx/--my/--lift 三个数换成几何
+     · JS 里 restGeo() 的"静止坐标"取法，和 wheel 的边界放行逻辑
+     · reduced-motion 整块
+   这些是 JS 与 CSS 之间的坐标契约，改一个数字不会报错，只会让物理看起来不对。
+
+   皮层（不许照搬，照搬的是推理不是数值）：
+     全部颜色令牌、字号、这套"索引墙"的排版与文案。
+
+   为什么静止坐标要单独取：卡片自己是带 transform 的。如果每帧用
+   getBoundingClientRect() 读它当前的位置去算距离，卡片被推近之后矩形也跟着变，
+   距离又变、位移又变——会自己抖起来。所以几何一律从 offsetLeft/offsetTop 读，
+   那是布局值，不受 transform 影响。
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  --ground:#f4f2ee;
+  --panel:#fffdfa;
+  --ink:#16150f;
+  --dim:#6d6a5e;
+  --line:#d9d5c9;
+  --accent:#8a3312;
+  --tag:#eae6da;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --radius:4px;
+  --frame:1px solid var(--line);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#12110e; --panel:#1a1915; --ink:#efece2; --dim:#918c7c;
+    --line:#2e2c25; --accent:#e0763f; --tag:#26241d;
+  }
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+
+/* 14px 正文 → h1 最小 56px，显示字与正文字号比正好 4×（AUTHORING 的下限） */
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ── 区块 1：通栏头 —— 铺满，无边框，只有一条基线 ───────────────── */
+.hero{max-width:1180px;margin:0 auto;padding:64px 28px 0}
+.back{display:inline-flex;margin:0 0 34px;color:var(--accent);
+      font:12px var(--mono);text-decoration:none}
+.back:hover{text-decoration:underline}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+         text-transform:uppercase;color:var(--dim);margin:0 0 18px}
+h1{margin:0;font-size:clamp(56px,8vw,88px);line-height:.98;
+   letter-spacing:-.035em;font-weight:600}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{max-width:52ch;margin:20px 0 0;color:var(--dim);font-size:15px}
+.rule{max-width:1180px;margin:0 auto;padding:0 28px}
+.rule hr{border:0;border-top:1px solid var(--line);margin:38px 0 0}
+
+/* ── 区块 2：墙 —— 有边框的内嵌面板，和通栏头形成对比 ───────────── */
+.wall-wrap{max-width:1180px;margin:0 auto;padding:34px 28px 0}
+.wall-panel{background:var(--panel);border:var(--frame);border-radius:6px;
+            padding:22px 22px 18px}
+.wall-head{display:flex;align-items:center;justify-content:space-between;
+           gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.wall-head h2{margin:0;font-size:13px;font-weight:600;letter-spacing:.02em}
+.wall-head .hint{margin:0;color:var(--dim);font:11px var(--mono)}
+
+/* 档位按钮：原生的三个按钮，键盘可用。选中态同时给颜色和边框，
+   不靠颜色单独表意。 */
+.steps{display:flex;gap:6px}
+.steps button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  padding:6px 12px;border:var(--frame);border-radius:3px;
+  background:var(--panel);color:var(--dim);cursor:pointer;
+  transition:color 200ms var(--ease),border-color 200ms var(--ease),
+             background-color 200ms var(--ease);
+}
+.steps button:hover{color:var(--ink);border-color:var(--ink)}
+.steps button[aria-pressed="true"]{
+  background:var(--accent);border-color:var(--accent);
+  color:#fff;font-weight:600;
+}
+
+/* @mechanism 档位契约：三个档位只改这五个数，别的什么都不动。
+   默认档写在标记里（data-step="1"），所以没有 JS 也是标准档。 */
+.wall{
+  position:relative;            /* @mechanism 让 tile 的 offsetParent 是墙本身 */
+  perspective:1000px;           /* @mechanism 倾斜共享一个灭点 */
+  display:grid;
+  gap:var(--gap);
+  grid-template-columns:repeat(auto-fill,minmax(var(--tile-min),1fr));
+  margin:0;padding:0;list-style:none;
+  --gap:16px; --tile-min:190px; --reach:250px; --lean:12px; --tilt:8deg;
+}
+.wall[data-step="0"]{--gap:8px;--tile-min:150px;--reach:190px;--lean:8px;--tilt:5deg}
+.wall[data-step="2"]{--gap:28px;--tile-min:250px;--reach:330px;--lean:17px;--tilt:11deg}
+
+.tile{
+  display:flex;flex-direction:column;gap:6px;
+  min-height:104px;padding:14px 15px;
+  background:var(--tag);
+  border:var(--frame);
+  border-radius:var(--radius);
+  transform-style:preserve-3d;
+  /* @mechanism 三个数换成几何：方向 × 位移量；倾角沿用站内"朝指针倾斜"的符号约定 */
+  transform:
+    translate3d(calc(var(--mx,0) * var(--lean)), calc(var(--my,0) * var(--lean)), 0)
+    rotateX(calc(var(--my,0) * var(--tilt) * -1))
+    rotateY(calc(var(--mx,0) * var(--tilt)))
+    scale(calc(1 + var(--lift,0) * .035));
+  transition:
+    transform 260ms var(--ease),
+    border-color 260ms var(--ease),
+    background-color 260ms var(--ease);
+}
+/* 离指针越近边框越重——这条让静帧也看得出磁场的形状 */
+.tile{border-color:color-mix(in srgb,var(--accent) calc(var(--lift,0) * 100%),var(--line))}
+
+.tile-k{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.tile-v{font:11px var(--mono);color:var(--accent);letter-spacing:.06em}
+.tile-m{margin-top:auto;color:var(--dim);font-size:11.5px;line-height:1.45}
+
+.wall-foot{margin:16px 0 0;color:var(--dim);font:11px var(--mono);
+           display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* ── 区块 3：机制说明 —— 两列定义列表，第三种区块形状 ─────────────── */
+.notes{max-width:1180px;margin:0 auto;padding:52px 28px 0}
+.notes h2{margin:0 0 22px;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.notes dl{margin:0;display:grid;gap:20px 34px;
+          grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.notes dt{font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;
+          color:var(--accent);margin-bottom:6px}
+.notes dd{margin:0;color:var(--dim);font-size:13.5px}
+.notes dd b{color:var(--ink);font-weight:600}
+
+/* ── 区块 4：页脚 ──────────────────────────────────────────────── */
+footer{max-width:1180px;margin:0 auto;padding:56px 28px 84px;
+       color:var(--dim);font-size:12.5px;border-top:1px solid var(--line);
+       margin-top:52px}
+footer p{margin:0 0 8px}
+footer code{font-family:var(--mono);font-size:11.5px;
+            background:var(--tag);padding:2px 5px;border-radius:2px}
+
+@media (max-width:720px){
+  .hero{padding:40px 18px 0}
+  .back{margin-bottom:24px}
+  h1{font-size:clamp(56px,15vw,72px)}
+  .rule,.wall-wrap,.notes{padding-left:18px;padding-right:18px}
+  .wall-panel{padding:16px 14px 14px}
+  footer{padding:44px 18px 66px}
+}
+
+/* ── @mechanism 减少动效：给一整页，不是给一个空页 ────────────────
+   倾斜是纯装饰，直接关掉；档位按钮仍然可用，只是切换变成瞬时的。
+   墙本身是静态标记渲染的，所以关掉动效后页面内容是完整的。 */
+@media (prefers-reduced-motion:reduce){
+  .tile{transform:none !important;transition:none !important}
+  .steps button{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back" href="./../">← 返回案例集</a>
+  <p class="eyebrow">动效案例 / 08</p>
+  <h1>磁吸<em>索引墙</em></h1>
+  <p class="lede">指针靠近时，每张卡片按自己的距离衰减朝你倾斜，离开后各自归位；
+  滚轮在紧凑 / 标准 / 舒展三档之间咔哒切换，两端夹住，滚过头不会翻车。</p>
+</header>
+
+<div class="rule"><hr></div>
+
+<section class="wall-wrap" id="wall-section" aria-labelledby="wall-title">
+  <div class="wall-panel">
+    <div class="wall-head">
+      <h2 id="wall-title">索引 · 12 个条目</h2>
+      <div class="steps" role="group" aria-label="密度档位">
+        <button type="button" data-step="0">紧凑</button>
+        <button type="button" data-step="1" aria-pressed="true">标准</button>
+        <button type="button" data-step="2">舒展</button>
+      </div>
+    </div>
+
+    <!-- 墙是静态标记：没有 JS 也是完整的一页，只是不动 -->
+    <ul class="wall" id="wall" data-step="1">
+      <li class="tile"><span class="tile-k">前端</span><span class="tile-v">18 篇</span><span class="tile-m">HTML · CSS · 原生 ES Module</span></li>
+      <li class="tile"><span class="tile-k">运维</span><span class="tile-v">11 篇</span><span class="tile-m">Docker · nginx · 备份与回滚</span></li>
+      <li class="tile"><span class="tile-k">数据库</span><span class="tile-v">7 篇</span><span class="tile-m">MySQL · 建表与外键类型</span></li>
+      <li class="tile"><span class="tile-k">评论系统</span><span class="tile-v">6 篇</span><span class="tile-m">自建 · 免登录 · 先审后发</span></li>
+      <li class="tile"><span class="tile-k">Obsidian</span><span class="tile-v">14 篇</span><span class="tile-m">库结构 · 插件 · 写作链路</span></li>
+      <li class="tile"><span class="tile-k">图床</span><span class="tile-v">5 篇</span><span class="tile-m">简悦 · PicList · 孤儿图清理</span></li>
+      <li class="tile"><span class="tile-k">VPS</span><span class="tile-v">9 篇</span><span class="tile-m">965MB 内存下的取舍实录</span></li>
+      <li class="tile"><span class="tile-k">动效</span><span class="tile-v">8 篇</span><span class="tile-m">指针 · 滚动 · 距离衰减</span></li>
+      <li class="tile"><span class="tile-k">RSS</span><span class="tile-v">4 篇</span><span class="tile-m">feed 与 sitemap 的全量重建</span></li>
+      <li class="tile"><span class="tile-k">无障碍</span><span class="tile-v">3 篇</span><span class="tile-m">减少动效 · 对比度 · 焦点顺序</span></li>
+      <li class="tile"><span class="tile-k">剪藏</span><span class="tile-v">12 篇</span><span class="tile-m">SimpRead 到图床的工作流</span></li>
+      <li class="tile"><span class="tile-k">归档</span><span class="tile-v">2 篇</span><span class="tile-m">按年筛选 · 按月分组</span></li>
+    </ul>
+
+    <p class="wall-foot">
+      <span>指针移动 → 距离衰减倾斜</span>
+      <span id="step-label">当前档位：标准</span>
+    </p>
+  </div>
+</section>
+
+<section class="notes" aria-labelledby="notes-title">
+  <h2 id="notes-title">这个机制怎么工作</h2>
+  <dl>
+    <div>
+      <dt>距离衰减</dt>
+      <dd>每张卡片读到指针的距离 <b>d</b>，先取 <b>1 − d / 半径</b>，再过一次
+      smoothstep（<b>t²(3−2t)</b>）。线性衰减在半径边缘有明显的"突然出现"，
+      smoothstep 让力在两端都趋近于零，所以磁场没有可见的边界。</dd>
+    </div>
+    <div>
+      <dt>静止坐标</dt>
+      <dd>几何一律从 <b>offsetLeft / offsetTop</b> 读，不用
+      <b>getBoundingClientRect()</b>。因为卡片自己被 transform 推着走，
+      用变换后的矩形算距离会形成反馈回路，卡片会自己抖起来。</dd>
+    </div>
+    <div>
+      <dt>倾角约定</dt>
+      <dd><b>rotateX = −y、rotateY = +x</b>，和站内卡片倾斜是同一套符号。
+      这样一来磁吸和倾斜不会打架，改造时可以直接互换。</dd>
+    </div>
+    <div>
+      <dt>档位落位</dt>
+      <dd>档位只有 0 / 1 / 2 三个整数，不存在中间值——每次切换都精确落在
+      定义好的几何上。到边界时<b>不再拦截滚轮</b>，页面继续正常滚动，
+      所以这一块不会变成滚不出去的陷阱。</dd>
+    </div>
+    <div>
+      <dt>减动效</dt>
+      <dd>开启"减少动效"后，倾斜整体关闭，档位按钮仍然可用、切换变成瞬时。
+      墙是静态标记，所以关闭动效拿到的是<b>一整页</b>，不是一个空页。</dd>
+    </div>
+    <div>
+      <dt>可以照搬的部分</dt>
+      <dd>档位变量契约、transform 表达式、静止坐标的取法、滚轮边界放行。
+      颜色、字号和这套索引墙的排版属于皮层，<b>照搬是错的</b>——
+      该照搬的是上面这些推理。</dd>
+    </div>
+  </dl>
+</section>
+
+<footer>
+  <p>单文件，无构建，无依赖。直接打开或本地起服务都可以。</p>
+  <p>案例集说明见 <a href="./../">cases/</a>；本案例的完整记录在同目录 <code>README.md</code>。</p>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   机制层（可以照搬）：restGeo() 的静止坐标取法、applyMagnet() 的衰减公式、
+   wheel 的边界放行。皮层（不许照搬）：文案、档位名称、12 个条目的内容。
+   ══════════════════════════════════════════════════════════════════════ */
+
+const wall = document.getElementById("wall");
+const wallSection = document.getElementById("wall-section");
+const stepLabel = document.getElementById("step-label");
+const stepButtons = Array.from(document.querySelectorAll(".steps button"));
+const tiles = Array.from(wall.querySelectorAll(".tile"));
+
+const STEP_NAMES = ["紧凑", "标准", "舒展"];
+const STEP_MIN = 0;
+const STEP_MAX = STEP_NAMES.length - 1;
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+let step = Number(wall.dataset.step) || 1;
+let pointerX = 0;
+let pointerY = 0;
+let pointerInside = false;
+let frame = 0;
+let wheelLock = 0;
+
+/* ── 档位 ─────────────────────────────────────────────────────────── */
+
+function setStep(next){
+  step = Math.max(STEP_MIN, Math.min(STEP_MAX, next));
+  wall.dataset.step = String(step);
+  stepButtons.forEach(function(btn){
+    const on = Number(btn.dataset.step) === step;
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  if (stepLabel) stepLabel.textContent = "当前档位：" + STEP_NAMES[step];
+  clearMagnet();   // 档位变了，几何也变了，先归位再由下一帧重新计算
+}
+
+stepButtons.forEach(function(btn){
+  btn.addEventListener("click", function(){ setStep(Number(btn.dataset.step)); });
+});
+
+/* ── 磁吸 ─────────────────────────────────────────────────────────── */
+
+function readNumber(name){
+  const v = parseFloat(getComputedStyle(wall).getPropertyValue(name));
+  return Number.isFinite(v) ? v : 0;
+}
+
+function clearMagnet(){
+  tiles.forEach(function(tile){
+    tile.style.removeProperty("--mx");
+    tile.style.removeProperty("--my");
+    tile.style.removeProperty("--lift");
+  });
+}
+
+function applyMagnet(){
+  frame = 0;
+  if (!pointerInside || reduceMotion.matches || !finePointer.matches) return;
+
+  const reach = readNumber("--reach");
+  const wallRect = wall.getBoundingClientRect();
+  if (!reach || !wallRect.width) return;
+
+  tiles.forEach(function(tile){
+    // @mechanism 静止坐标：offsetLeft/Top 是布局值，不会被自己的 transform 影响
+    const cx = wallRect.left + tile.offsetLeft + tile.offsetWidth / 2;
+    const cy = wallRect.top + tile.offsetTop + tile.offsetHeight / 2;
+    const dx = pointerX - cx;
+    const dy = pointerY - cy;
+    const dist = Math.hypot(dx, dy);
+
+    const linear = Math.max(0, 1 - dist / reach);
+    if (linear <= 0.001){
+      tile.style.removeProperty("--mx");
+      tile.style.removeProperty("--my");
+      tile.style.removeProperty("--lift");
+      return;
+    }
+    // @mechanism smoothstep：让力在半径边缘平滑归零，磁场没有可见边界
+    const fall = linear * linear * (3 - 2 * linear);
+    // 方向取单位向量，大小交给衰减——这样近处的卡片是"朝指针倒"，不是"越近越歪"
+    const ux = dist < 1 ? 0 : dx / dist;
+    const uy = dist < 1 ? 0 : dy / dist;
+
+    tile.style.setProperty("--mx", (ux * fall).toFixed(3));
+    tile.style.setProperty("--my", (uy * fall).toFixed(3));
+    tile.style.setProperty("--lift", fall.toFixed(3));
+  });
+}
+
+function scheduleMagnet(){
+  if (!frame) frame = window.requestAnimationFrame(applyMagnet);
+}
+
+wall.addEventListener("pointermove", function(e){
+  pointerX = e.clientX;
+  pointerY = e.clientY;
+  pointerInside = true;
+  scheduleMagnet();
+}, { passive: true });
+
+wall.addEventListener("pointerleave", function(){
+  pointerInside = false;
+  clearMagnet();
+});
+
+// 滚动会让墙相对视口移动，静止坐标跟着变；不与指针事件耦合，单独重算
+window.addEventListener("scroll", function(){
+  if (pointerInside) scheduleMagnet();
+}, { passive: true });
+
+window.addEventListener("resize", function(){
+  clearMagnet();
+  if (pointerInside) scheduleMagnet();
+}, { passive: true });
+
+/* ── 滚轮档位（@mechanism 边界放行） ────────────────────────────────
+   到两端就不再 preventDefault，让滚轮交还给页面——
+   否则指针恰好停在墙上时，整页就滚不动了。 */
+wallSection.addEventListener("wheel", function(e){
+  const dir = e.deltaY > 0 ? 1 : -1;
+  const next = step + dir;
+  if (next < STEP_MIN || next > STEP_MAX) return;
+
+  e.preventDefault();
+  const now = performance.now();
+  if (now - wheelLock < 220) return;   // 快速连滚不要一次跳两档
+  wheelLock = now;
+  setStep(next);
+}, { passive: false });
+
+/* ── 初始化 ───────────────────────────────────────────────────────── */
+
+setStep(step);
+
+if (typeof reduceMotion.addEventListener === "function"){
+  reduceMotion.addEventListener("change", function(){
+    if (reduceMotion.matches) clearMagnet();
+  });
+}
+</script>
+</body>
+</html>

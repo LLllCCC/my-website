@@ -242,6 +242,19 @@ nav {
   }
 }
 
+/* 滚动入场：由 theme-init.js 在首次绘制前打上的 has-reveal 类启用（细节见 reveal.js 注释）。
+   类不存在时上面那条 .fade-in 就是唯一行为——加载即播、内容始终可见，
+   所以 JS 失效或用户要求减少动效都不会把内容藏起来。 */
+.has-reveal .fade-in {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: none;
+}
+
+.has-reveal .fade-in.is-revealed {
+  animation: fadeInUp 520ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
 /* Toast 通知 */
 .toast-notification {
   position: fixed;
