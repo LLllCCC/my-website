@@ -1,5 +1,5 @@
 // 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=35";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=37";
 
 // =========================================================
 // 1. Email 卡片点击监听

@@ -1,7 +1,7 @@
 // 博客列表页：搜索、标签云、文章卡片。
 // 搜索分两级：短关键词走本地（标题/摘要/标签，即时响应），
 // 关键词达到长度阈值时再调 /api/posts/search 取正文命中的结果，两级合并去重。
-import { CONFIG, safeHttpUrl } from "./config.js?v=35";
+import { CONFIG, safeHttpUrl } from "./config.js?v=37";
 
 // 关键词到这个长度才发网络请求：更短的词本地就能筛完，省一次往返。
 const FULL_TEXT_MIN_LENGTH = 2;

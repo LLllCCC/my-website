@@ -104,6 +104,12 @@ def run_checks():
         page.wait_for_timeout(150)
         hero_x = page.evaluate("() => document.getElementById('home').style.getPropertyValue('--hero-x')")
         check("首页 hero 指针交互生效（--hero-x）", hero_x != "", hero_x)
+        # 卡片是 <a>，不显式关掉下划线就会在文字下面画出一条多余的分隔线
+        check(
+            "首页 卡片链接无默认下划线",
+            page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine") == "none",
+            page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine"),
+        )
 
         page.goto(BASE + "/blog.html", wait_until="networkidle")
         check("博客 文章卡片 3 张", page.locator(".blog-post-card").count() == 3)
@@ -150,6 +156,39 @@ def run_checks():
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
         check("文章 正文渲染出 h2", page.locator("#article-body h2").count() == 2)
         check("文章 目录生成", page.locator("#article-toc li").count() == 2)
+        # 空目录必须完全不渲染：加载期它已经是个带背景和边框的框了，
+        # 不隐藏就会在正文左侧闪出一个空方块。
+        empty_display = page.evaluate(
+            "() => { const t = document.querySelector('#article-toc'); const keep = t.innerHTML;"
+            " t.innerHTML = ''; const d = getComputedStyle(t).display; t.innerHTML = keep; return d; }"
+        )
+        check("文章 空目录不渲染", empty_display == "none", empty_display)
+        # 目录必须完整落在视口内。以前沟槽版规则写在文件末尾且不带媒体查询，
+        # 盖掉了所有窄屏规则：1280 下左边缘是 -48，手机上更是完全看不见。
+        # 只断言"目录有几项"是抓不到这种错的——必须查几何。
+        vw = page.viewport_size["width"]
+        toc_box = page.locator("#article-toc").bounding_box()
+        check(
+            "文章 目录完整落在视口内（宽屏）",
+            toc_box and toc_box["x"] >= 0 and toc_box["x"] + toc_box["width"] <= vw,
+            toc_box,
+        )
+        page.set_viewport_size({"width": 375, "height": 800})
+        page.wait_for_timeout(300)
+        toc_narrow = page.locator("#article-toc").bounding_box()
+        main_narrow = page.locator(".article-main").bounding_box()
+        check(
+            "文章 目录完整落在视口内（窄屏 375px）",
+            toc_narrow and toc_narrow["x"] >= 0 and toc_narrow["x"] + toc_narrow["width"] <= 375,
+            toc_narrow,
+        )
+        check(
+            "文章 窄屏下目录不与正文重叠",
+            toc_narrow and main_narrow and toc_narrow["y"] + toc_narrow["height"] <= main_narrow["y"] + 1,
+            f"toc bottom={toc_narrow['y'] + toc_narrow['height'] if toc_narrow else '?'} main top={main_narrow['y'] if main_narrow else '?'}",
+        )
+        page.set_viewport_size({"width": 1280, "height": 800})
+        page.wait_for_timeout(250)
         # 目录随滚动高亮：滚到底部时恰好一项处于激活态（末尾几节靠"到底强制选中"兜底）
         page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
         page.wait_for_timeout(300)

@@ -314,6 +314,10 @@
 
 .article-toc[hidden] { display: none; }
 
+/* 正文还在加载时目录是空的，但它这时候已经是一个带背景和边框的圆角框了——
+   会在正文左侧闪出一个空方块。:empty 让它在填进内容之前完全不渲染。 */
+.article-toc:empty { display: none; }
+
 .article-toc-title { margin-bottom: 12px; color: var(--text-primary); font-size: .82rem; font-weight: 700; }
 
 .article-toc-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
@@ -599,21 +603,27 @@
   .article-page { width: calc(100% - 32px); }
 }
 
-/* 文章目录 + 侧边栏布局 */
+/* 文章目录 + 侧边栏布局
+   ──────────────────────────────────────────────────────────────────
+   目录有两种摆放形态，按窗口宽度二选一：
+     · ≥1440px —— 挂进正文左侧的沟槽（float + 负边距 + sticky）
+     · <1440px —— 正文上方的横向标签式目录
+
+   为什么必须分档：沟槽版靠 `margin-left: calc(-200px - 48px)` 把自己拉出正文列，
+   窗口不够宽时沟槽放不下这 248px，目录就会被推到屏幕左边外面。实测：
+   1440 起左边缘才有 32px 余量，1399 只剩 12px，1280 被切 48px、1000 只剩 12px 可见，
+   ≤900 完全不可见（手机上目录一直是空白的就是这个原因）。
+
+   以前这里把沟槽版写在文件末尾、且不带媒体查询，源顺序上盖掉了前面所有窄屏规则
+   （媒体查询不会降低优先级，同特异性比的是源顺序）——所以窄屏规则写了等于没写。 */
 .article-layout {
   max-width: 920px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
+/* 两种形态共用的外观 */
 .article-toc {
-  float: left;
-  position: sticky;
-  top: 90px;
-  width: 200px;
-  margin-left: calc(-200px - 48px);
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 14px;
@@ -635,6 +645,38 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
+}
+
+@media (min-width: 1440px) {
+
+  /* 沟槽版：左侧外面，随滚动吸顶 */
+  .article-toc {
+    float: left;
+    position: sticky;
+    top: 90px;
+    width: 200px;
+    margin-left: calc(-200px - 48px);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 1439.98px) {
+
+  /* 窄窗口版：正文上方的横向标签，不再往侧边挤 */
+  .article-toc {
+    float: none;
+    position: static;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0 0 28px;
+  }
+
+  .article-toc-list {
+    flex-flow: row wrap;
+    gap: 5px 12px;
+  }
 }
 
 .article-toc-item a {

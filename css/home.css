@@ -12,6 +12,9 @@
   padding: 30px;
   display: flex;
   flex-direction: column;
+  /* 卡片本身可能是 <a>（#my-projects 就是这样）。不显式写 none 的话，
+     浏览器默认的链接下划线会画在卡片文字下面，看起来像一条多余的分隔线。 */
+  text-decoration: none;
   transition:
     transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
     background-color 220ms ease,
