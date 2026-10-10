@@ -129,6 +129,34 @@ def run_checks():
         page.fill("#blog-search", "")
         page.wait_for_timeout(700)
         check("博客 清空搜索后恢复全部文章", page.locator(".blog-post-card").count() == 3)
+
+        # 键盘快捷键（keys.js）。重点是那条铁律：在输入框里打字时单键快捷键必须让路。
+        page.locator("#blog-search").blur()
+        page.keyboard.press("/")
+        page.wait_for_timeout(150)
+        check(
+            "快捷键 / 聚焦搜索框",
+            page.evaluate("() => document.activeElement && document.activeElement.id") == "blog-search",
+            page.evaluate("() => document.activeElement && document.activeElement.id"),
+        )
+        theme_before = page.evaluate("() => document.documentElement.getAttribute('data-theme')")
+        page.keyboard.type("ttt", delay=20)
+        page.wait_for_timeout(200)
+        check(
+            "快捷键 输入框内打字不触发（主题未变）",
+            page.evaluate("() => document.documentElement.getAttribute('data-theme')") == theme_before
+            and page.evaluate("() => document.getElementById('blog-search').value") == "ttt",
+            theme_before,
+        )
+        page.evaluate("() => { const s = document.getElementById('blog-search'); s.value = ''; s.blur(); }")
+        page.keyboard.press("t")
+        page.wait_for_timeout(150)
+        check(
+            "快捷键 t 切换主题",
+            page.evaluate("() => document.documentElement.getAttribute('data-theme')") != theme_before,
+        )
+        page.keyboard.press("t")  # 切回来，别影响后面的截图
+        page.wait_for_timeout(150)
         if shot_dir:
             page.screenshot(path=os.path.join(shot_dir, "blog.png"), full_page=True)
 
@@ -232,6 +260,37 @@ def run_checks():
         )
         check("文章 表情回应栏 4 个按钮", page.locator("#article-reactions .article-reaction").count() == 4)
         check("文章 代码块有复制按钮", page.locator("#article-body .code-copy-btn").count() == 1)
+        # 行号由伪元素渲染：数字不进 code.textContent，所以复制内容必须是纯代码。
+        line_info = page.evaluate(
+            """() => {
+              const pre = document.querySelector('#article-body pre');
+              if (!pre) return null;
+              return {
+                cls: pre.classList.contains('has-line-numbers'),
+                lines: pre.dataset.lines || '',
+                gutter: getComputedStyle(pre, '::before').content || '',
+                code: (pre.querySelector('code') || {}).textContent || '',
+                gutFont: getComputedStyle(pre, '::before').fontSize,
+                preFont: getComputedStyle(pre).fontSize,
+              };
+            }"""
+        )
+        check("文章 多行代码块有行号", bool(line_info) and line_info["cls"], line_info and line_info["lines"])
+        check(
+            "文章 行号逐行渲染且行数正确",
+            bool(line_info) and line_info["lines"] == "1\n2\n3",
+            line_info and repr(line_info["lines"]),
+        )
+        check(
+            "文章 行号字号与代码一致（否则对不齐）",
+            bool(line_info) and line_info["gutter"] and line_info["gutFont"] == line_info["preFont"],
+            line_info and f"{line_info['gutFont']} / {line_info['preFont']}",
+        )
+        check(
+            "文章 复制内容不含行号",
+            bool(line_info) and "\n1\n" not in line_info["code"] and line_info["code"].startswith("npm install"),
+            line_info and repr(line_info["code"][:30]),
+        )
         check("评论 两条留言", page.locator("#comment-list .comment-item").count() == 2)
         check("评论 Markdown 粗体渲染", page.locator(".comment-md-strong").count() >= 1)
         check("评论 楼中楼回复标记", page.locator(".comment-item--reply").count() == 1)
