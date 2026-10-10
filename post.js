@@ -691,6 +691,31 @@ function injectArticleJsonLd(post) {
   document.head.appendChild(script);
 }
 
+// 给代码块加行号。
+//
+// 做法：把整列数字写进 pre 的 data-lines（换行分隔），由 post.css 用
+// `content: attr(data-lines)` + `white-space: pre` 一次性渲染出来。
+//
+// 为什么不用"逐行包一个 span"那种常见写法：代码已经被 highlight.js 处理过，
+// 它的标签是可能跨行的，按 \n 切分 HTML 字符串会把标签切坏。走伪元素既绕开了
+// 这个问题，又天然满足"行号不该被复制"——伪元素的内容不进 textContent，
+// 复制按钮拿到的仍然只有纯代码。
+function addLineNumbers(pre) {
+  const code = pre.querySelector("code");
+  if (!code || pre.dataset.lines) return;
+
+  // 结尾的换行不算一行，顺带兼容 CRLF
+  const text = code.textContent.replace(/\r?\n$/, "");
+  if (!text) return;
+  const count = text.split(/\r?\n/).length;
+  if (count < 2) return; // 单行代码加行号是纯噪音
+
+  const lines = [];
+  for (let i = 1; i <= count; i++) lines.push(i);
+  pre.dataset.lines = lines.join("\n");
+  pre.classList.add("has-line-numbers");
+}
+
 function enhanceCodeBlocks(articleBody) {
   articleBody.querySelectorAll("pre code").forEach(function (code) {
     if (window.hljs && !code.dataset.highlighted) {
@@ -703,6 +728,8 @@ function enhanceCodeBlocks(articleBody) {
   });
   articleBody.querySelectorAll("pre").forEach(function (pre) {
     if (pre.querySelector(".code-copy-btn")) return;
+    // 行号要在高亮之后算——高亮会改动 code 里的节点，文本这时才是最终版
+    addLineNumbers(pre);
     const button = document.createElement("button");
     button.type = "button";
     button.className = "code-copy-btn";

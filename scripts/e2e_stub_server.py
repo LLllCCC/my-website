@@ -21,7 +21,9 @@ POST_1 = {
     "newer": {"id": 2, "title": "第二篇文章"},
     "content": (
         "开篇一段话。\n\n## 安装步骤\n\n正文里有 **粗体** 和一个 [图片链接](https://example.com/a.jpg)。\n\n"
-        "```bash\nnpm install && npm run build\n```\n\n## 注意事项\n\n结尾。\n"
+        # 刻意用多行代码块：代码行号只对 2 行以上生效（单行加行号是噪音），
+        # 单行的话这条特性在 e2e 里就永远测不到。
+        "```bash\nnpm install\nnpm run build\nnpm run test\n```\n\n## 注意事项\n\n结尾。\n"
     ),
 }
 COMMENTS_1 = [

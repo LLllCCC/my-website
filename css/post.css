@@ -367,7 +367,32 @@
 
 .post-content li { padding-left: .25em; margin: .35em 0; }
 
-.post-content pre { margin: 1.8em 0; padding: 22px 24px; overflow: auto; border: 1px solid var(--border-color); border-radius: 14px; background: rgba(127, 127, 127, .12); font-size: .88rem; line-height: 1.7; }
+.post-content pre { --code-pad-top: 22px; margin: 1.8em 0; padding: var(--code-pad-top) 24px; overflow: auto; border: 1px solid var(--border-color); border-radius: 14px; background: rgba(127, 127, 127, .12); font-size: .88rem; line-height: 1.7; }
+
+/* 代码块行号：post.js 的 addLineNumbers 打上 .has-line-numbers 并填好 data-lines，
+   数字整列由一个伪元素渲染。字号和行高都从 pre 继承，所以天然对齐，
+   这里只需要把顶部内边距同步过来（--code-pad-top 在 520px 断点会变小）。
+
+   已知取舍：pre 横向滚动时行号会跟着滑出左边。要让它固定就得把代码块拆成
+   "固定边栏 + 滚动区"两层结构，那会动到复制按钮和一堆既有的 pre 选择器，
+   收益不抵风险。行号滑走时代码本身仍完整可读，属可接受的降级。 */
+.post-content pre.has-line-numbers { padding-left: 3.9em; }
+
+.post-content pre.has-line-numbers::before {
+  content: attr(data-lines);
+  position: absolute;
+  top: var(--code-pad-top, 22px);
+  left: 0;
+  width: 3.9em;
+  padding-right: 1.1em;
+  box-sizing: border-box;
+  text-align: right;
+  white-space: pre;
+  color: var(--text-secondary);
+  opacity: .5;
+  pointer-events: none;
+  user-select: none;
+}
 
 .post-content code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
 
@@ -542,7 +567,7 @@
   .article-meta-row { gap: 8px; font-size: .8rem; }
   .post-content h2 { font-size: 1.55rem; }
   .post-content h3 { font-size: 1.22rem; }
-  .post-content pre { padding: 16px; border-radius: 10px; font-size: .8rem; }
+  .post-content pre { --code-pad-top: 16px; padding: var(--code-pad-top) 16px; border-radius: 10px; font-size: .8rem; }
   .article-hero-cover { max-height: 300px; margin-bottom: 30px; border-radius: 15px; }
 }
 
