@@ -31,18 +31,18 @@
     <link rel="preload" as="image" href="/img/project-3.jpg" fetchpriority="high" />
 
     <link
-      href="/lib/remixicon.css?v=44"
+      href="/lib/remixicon.css?v=45"
       rel="stylesheet"
     />
 
-    <script src="theme-init.js?v=44"></script>
+    <script src="theme-init.js?v=45"></script>
 
-    <link rel="stylesheet" href="css/base.css?v=44" />
-    <link rel="stylesheet" href="css/home.css?v=44" />
-    <link rel="stylesheet" href="css/blog.css?v=44" />
-    <link rel="stylesheet" href="css/post.css?v=44" />
-    <link rel="stylesheet" href="css/admin.css?v=44" />
-    <link rel="stylesheet" href="css/site.css?v=44" />
+    <link rel="stylesheet" href="css/base.css?v=45" />
+    <link rel="stylesheet" href="css/home.css?v=45" />
+    <link rel="stylesheet" href="css/blog.css?v=45" />
+    <link rel="stylesheet" href="css/post.css?v=45" />
+    <link rel="stylesheet" href="css/admin.css?v=45" />
+    <link rel="stylesheet" href="css/site.css?v=45" />
   </head>
 
   <body class="index-page">
@@ -131,15 +131,41 @@
           <span class="motion-web-title">动效实验</span>
           <span class="motion-web-description">7 个可交互的动画 demo</span>
         </a>
+
+        <!-- 新增页面的三张入口卡：数字由 main.js 动态填（标签数 / 壁纸数），
+             拉不到就保持占位文案，不阻塞也不报错。 -->
+        <a class="card card-mini fade-in delay-06" href="/tag.html" aria-label="按标签翻文章">
+          <div class="project-info">
+            <div class="project-title"><i class="ri-price-tag-3-fill card-mini-icon" aria-hidden="true"></i>标签</div>
+            <div class="project-desc">按主题翻文章</div>
+            <div class="home-blog-badge-wrap"><span class="home-blog-badge" id="home-tag-badge">全部标签</span></div>
+          </div>
+        </a>
+
+        <a class="card card-mini fade-in delay-06" href="/stats.html" aria-label="看写作统计">
+          <div class="project-info">
+            <div class="project-title"><i class="ri-bar-chart-grouped-fill card-mini-icon" aria-hidden="true"></i>统计</div>
+            <div class="project-desc">字数、热力图、标签分布</div>
+            <div class="home-blog-badge-wrap"><span class="home-blog-badge">写作地图</span></div>
+          </div>
+        </a>
+
+        <a class="card card-mini fade-in delay-06" href="/gallery.html" aria-label="看壁纸集">
+          <div class="project-info">
+            <div class="project-title"><i class="ri-landscape-fill card-mini-icon" aria-hidden="true"></i>壁纸</div>
+            <div class="project-desc">收集的手机壁纸</div>
+            <div class="home-blog-badge-wrap"><span class="home-blog-badge" id="home-gallery-badge">壁纸集</span></div>
+          </div>
+        </a>
       </div>
 
       <div id="global-footer"></div>
-      <script src="/footer.js?v=44" type="module"></script>
+      <script src="/footer.js?v=45" type="module"></script>
     </main>
 
-    <script src="/nav.js?v=44" type="module"></script>
-    <script src="/keys.js?v=44" type="module"></script>
-    <script src="/reveal.js?v=44" type="module"></script>
-    <script src="main.js?v=44" type="module"></script>
+    <script src="/nav.js?v=45" type="module"></script>
+    <script src="/keys.js?v=45" type="module"></script>
+    <script src="/reveal.js?v=45" type="module"></script>
+    <script src="main.js?v=45" type="module"></script>
   </body>
 </html>

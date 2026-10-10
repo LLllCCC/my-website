@@ -1,5 +1,5 @@
 // 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=44";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=45";
 
 // =========================================================
 // 1. Email 卡片点击监听
@@ -109,7 +109,40 @@ document.addEventListener("DOMContentLoaded", async function () {
       card.style.backgroundImage = "url(" + JSON.stringify(coverUrl) + ")";
     }
     card.setAttribute("aria-label", "打开最新博客文章：" + (newest.title || "博客"));
+
+    // 标签卡的徽章：列表数据已经在手上，顺手算 unique 标签数。
+    // 失败就保持占位文案「全部标签」，不影响页面其它部分。
+    const tagBadge = document.getElementById("home-tag-badge");
+    if (tagBadge) {
+      const tags = new Set();
+      posts.forEach((post) => {
+        const raw = Array.isArray(post && post.tags)
+          ? post.tags.map(String)
+          : String((post && post.tags) || "");
+        raw
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+          .forEach((tag) => tags.add(tag));
+      });
+      if (tags.size) tagBadge.textContent = tags.size + " 个标签";
+    }
   } catch (error) {
     console.warn("首页博客卡片未能更新:", error);
+  }
+});
+
+// 壁纸卡的徽章：张数在静态清单里，import 即得，不发任何请求。
+// 清单本身由 scripts/build-gallery.py 生成，永远和实际图数一致。
+document.addEventListener("DOMContentLoaded", async function () {
+  const badge = document.getElementById("home-gallery-badge");
+  if (!badge) return;
+  try {
+    const { GALLERY } = await import("./gallery.data.js?v=45");
+    if (Array.isArray(GALLERY) && GALLERY.length) {
+      badge.textContent = GALLERY.length + " 张壁纸";
+    }
+  } catch (_) {
+    // 保持占位文案「壁纸集」
   }
 });

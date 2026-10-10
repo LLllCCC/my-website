@@ -130,6 +130,25 @@ def run_checks():
             page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine") == "none",
             page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine"),
         )
+        # 新页面入口小卡：三张卡要都在，且徽章数字与数据源一致。
+        # 标签数来自 /api/posts 的 unique tags（stub 是 3 个），
+        # 壁纸数来自 gallery.data.js 静态清单（= 图床实际张数）。
+        for href in ("/tag.html", "/stats.html", "/gallery.html"):
+            check(
+                f"首页 入口卡 {href} 已挂上",
+                page.locator(f'a.card-mini[href="{href}"]').count() == 1,
+            )
+        check(
+            "首页 标签卡徽章与列表去重一致",
+            page.locator("#home-tag-badge").inner_text() == "3 个标签",
+            page.locator("#home-tag-badge").inner_text(),
+        )
+        gallery_badge = page.locator("#home-gallery-badge").inner_text()
+        check(
+            "首页 壁纸卡徽章与清单一致",
+            gallery_badge.replace(" 张壁纸", "").isdigit() and int(gallery_badge.replace(" 张壁纸", "")) >= 1,
+            gallery_badge,
+        )
         # 搜索框只在博客/归档/标签页上。别的页面按 "/" 不能"什么都没发生"，
         # 而要带人过去并在落地时把光标放进搜索框（URL 里的 #search 就是干这个的）。
         check("首页 本身没有搜索框", page.locator("#blog-search").count() == 0)

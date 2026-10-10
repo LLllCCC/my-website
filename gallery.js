@@ -6,7 +6,7 @@
 //   2. 站点不直连 GitHub API（跨境慢，且未鉴权限流 60 次/小时），
 //      所以清单是构建时生成好的 gallery.data.js，页面只读它。
 //      新增壁纸要跑 scripts/build-gallery.py（见 AGENTS.md）。
-import { GALLERY, GALLERY_CDN } from "./gallery.data.js?v=44";
+import { GALLERY, GALLERY_CDN } from "./gallery.data.js?v=45";
 
 document.addEventListener("DOMContentLoaded", function () {
   const grid = document.getElementById("gallery-grid");
