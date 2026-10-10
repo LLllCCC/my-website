@@ -1,7 +1,7 @@
 /* base.css — 全站基础：主题变量、基础布局、导航、页脚、Toast、回到顶部、通用工具。
    由 style.css 按规则拆分而来；所有页面都按 base→home→blog→post→admin→site 顺序加载全部文件，顺序不要调换。改了任何 css 文件后全站 ?v= 一起 +1。 */
 
-/* --- 1. 变量与主题定义 (清新蓝 #98F5F9) --- */
+/* --- 1. 变量与主题定义（浅色 = 淡蓝底 + 白卡片） --- */
 :root {
   --bg-color: #08090b;
   --card-bg: #17181b;
@@ -21,13 +21,17 @@
 
 [data-theme="light"] {
   color-scheme: light;
-  --bg-color: #eaf6f7;
+  /* 底色从原来的 #eaf6f7（近乎白的青）换成明确一点的淡蓝。
+     原因：卡片是白的（--card-bg 约等于 #fff），底色一旦也接近白，
+     卡片和页面之间就没有分界线，整个首页看起来是"糊"在一起的一片白。
+     拉开这层明度差之后，白卡片才立得起来。改这个值前先想清楚这一点。 */
+  --bg-color: #dce8f7;
   --card-bg: rgba(255, 255, 255, 0.92);
   --card-hover: #ffffff;
   --text-primary: #1d1d1f;
   --text-secondary: #45535b;
-  --nav-bg: rgba(234, 246, 247, 0.88);
-  --border-color: rgba(21, 46, 55, 0.11);
+  --nav-bg: rgba(220, 232, 247, 0.88);
+  --border-color: rgba(21, 46, 55, 0.14);
   --accent-color: #006ba7;
 }
 

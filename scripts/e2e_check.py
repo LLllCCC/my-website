@@ -259,7 +259,7 @@ def run_checks():
             related_hrefs,
         )
         check("文章 表情回应栏 4 个按钮", page.locator("#article-reactions .article-reaction").count() == 4)
-        check("文章 代码块有复制按钮", page.locator("#article-body .code-copy-btn").count() == 1)
+        check("文章 代码块有复制按钮", page.locator("#article-body .code-copy-btn").count() == 2)
         # 行号由伪元素渲染：数字不进 code.textContent，所以复制内容必须是纯代码。
         line_info = page.evaluate(
             """() => {
@@ -272,6 +272,7 @@ def run_checks():
                 code: (pre.querySelector('code') || {}).textContent || '',
                 gutFont: getComputedStyle(pre, '::before').fontSize,
                 preFont: getComputedStyle(pre).fontSize,
+                wrapped: pre.classList.contains('is-wrapped'),
               };
             }"""
         )
@@ -290,6 +291,46 @@ def run_checks():
             "文章 复制内容不含行号",
             bool(line_info) and "\n1\n" not in line_info["code"] and line_info["code"].startswith("npm install"),
             line_info and repr(line_info["code"][:30]),
+        )
+        # 放得下的块保持不换行——行号只在"整块能放下"时才有意义。
+        check(
+            "文章 短行代码块不换行（行号才留得住）",
+            bool(line_info) and not line_info["wrapped"],
+            line_info and f"wrapped={line_info['wrapped']}",
+        )
+        # 放不下的块换成软换行，同时撤掉行号（换行后行号会和视觉行错位）。
+        # 注意溢出量要在 <code> 上量：hljs 给 .hljs 带了 overflow-x:auto，
+        # 真正会横向滚动的是 code 那一层，pre 的 scrollWidth 恒等于 clientWidth。
+        wrap_info = page.evaluate(
+            """() => {
+              const pres = [...document.querySelectorAll('#article-body pre')];
+              const pre = pres[1];
+              if (!pre) return null;
+              const code = pre.querySelector('code');
+              return {
+                wrapped: pre.classList.contains('is-wrapped'),
+                overflow: code ? code.scrollWidth - code.clientWidth : 0,
+                whiteSpace: code ? getComputedStyle(code).whiteSpace : '',
+                gutter: getComputedStyle(pre, '::before').content || 'none',
+                padLeft: Math.round(parseFloat(getComputedStyle(pre).paddingLeft)),
+              };
+            }"""
+        )
+        check("文章 超长行代码块自动软换行", bool(wrap_info) and wrap_info["wrapped"], wrap_info)
+        check(
+            "文章 换行块没有横向溢出（等于没有滚动条）",
+            bool(wrap_info) and wrap_info["overflow"] <= 1,
+            wrap_info and wrap_info["overflow"],
+        )
+        check(
+            "文章 换行块不渲染行号（否则会指错行）",
+            bool(wrap_info) and wrap_info["gutter"] in ("none", "normal"),
+            wrap_info and wrap_info["gutter"],
+        )
+        check(
+            "文章 换行块的左内边距已还原（不留给行号的空位）",
+            bool(wrap_info) and wrap_info["padLeft"] <= 30,
+            wrap_info and wrap_info["padLeft"],
         )
         check("评论 两条留言", page.locator("#comment-list .comment-item").count() == 2)
         check("评论 Markdown 粗体渲染", page.locator(".comment-md-strong").count() >= 1)

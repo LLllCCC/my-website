@@ -23,7 +23,13 @@ POST_1 = {
         "开篇一段话。\n\n## 安装步骤\n\n正文里有 **粗体** 和一个 [图片链接](https://example.com/a.jpg)。\n\n"
         # 刻意用多行代码块：代码行号只对 2 行以上生效（单行加行号是噪音），
         # 单行的话这条特性在 e2e 里就永远测不到。
-        "```bash\nnpm install\nnpm run build\nnpm run test\n```\n\n## 注意事项\n\n结尾。\n"
+        "```bash\nnpm install\nnpm run build\nnpm run test\n```\n\n"
+        # 刻意放一行超长命令：用来验证"放不下就软换行、并且撤掉行号"这条分支。
+        # 长度要远超正文列宽（约 104 字符），所以它在任何视口下都必然溢出。
+        "```bash\n"
+        "docker run -d --name my-blog-api --restart unless-stopped -p 172.17.0.1:3000:3000 "
+        "--env-file /root/myblog-api/.env myblog-api:latest\n"
+        "```\n\n## 注意事项\n\n结尾。\n"
     ),
 }
 COMMENTS_1 = [

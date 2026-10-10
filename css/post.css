@@ -373,12 +373,11 @@
    数字整列由一个伪元素渲染。字号和行高都从 pre 继承，所以天然对齐，
    这里只需要把顶部内边距同步过来（--code-pad-top 在 520px 断点会变小）。
 
-   已知取舍：pre 横向滚动时行号会跟着滑出左边。要让它固定就得把代码块拆成
-   "固定边栏 + 滚动区"两层结构，那会动到复制按钮和一堆既有的 pre 选择器，
-   收益不抵风险。行号滑走时代码本身仍完整可读，属可接受的降级。 */
-.post-content pre.has-line-numbers { padding-left: 3.9em; }
+   两条规则都带 :not(.is-wrapped)：代码块放不下时会改成软换行（见下面 .is-wrapped），
+   换行后行号会和视觉行错位，所以那种块干脆不渲染行号，左右内边距也还原。 */
+.post-content pre.has-line-numbers:not(.is-wrapped) { padding-left: 3.9em; }
 
-.post-content pre.has-line-numbers::before {
+.post-content pre.has-line-numbers:not(.is-wrapped)::before {
   content: attr(data-lines);
   position: absolute;
   top: var(--code-pad-top, 22px);
@@ -393,6 +392,13 @@
   pointer-events: none;
   user-select: none;
 }
+
+/* 放不下的代码块改成软换行（post.js 的 syncCodeWrap 打 .is-wrapped）。
+   这么做是为了干掉底部的横向滚动条：长行要读全就得来回拖，很别扭。
+
+   注意 overflow-wrap 用 break-word 而不是 anywhere：只在"整个词放不下"时才断，
+   正常能换行的位置仍然按空格断，长 URL / 无空格长串也不会把块撑破。 */
+.post-content pre.is-wrapped code { white-space: pre-wrap; overflow-wrap: break-word; }
 
 .post-content code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
 

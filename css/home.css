@@ -328,6 +328,21 @@
   border-color: color-mix(in srgb, var(--accent-color), var(--border-color) 66%);
 }
 
+/* 浅色模式下卡片默认就要有边界感。底色是淡蓝、卡片是白，明度差本来就够，
+   再补一道很淡的投影，卡片才是"浮在页面上"而不是"印在页面上"。
+   深色模式不需要——那里的明度差比这里大得多。 */
+[data-theme="light"] .card:not(.card-social-container) {
+  box-shadow: 0 1px 2px rgba(20, 45, 70, 0.05), 0 10px 28px rgba(20, 45, 70, 0.07);
+}
+
+/* 翻转卡（GitHub / Email）的可见面不是 .card，而是 .flip-front / .flip-back，
+   它们的 border 默认是 transparent，浅色下等于没有边，一并补上。 */
+[data-theme="light"] .flip-front,
+[data-theme="light"] .flip-back {
+  border-color: var(--border-color);
+  box-shadow: 0 1px 2px rgba(20, 45, 70, 0.05), 0 10px 28px rgba(20, 45, 70, 0.07);
+}
+
 .card-social-container:hover {
   transform: none;
   box-shadow: none;

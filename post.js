@@ -1,8 +1,8 @@
 // 文章详情页：拉取正文、Markdown 渲染、封面定位、目录、阅读进度。
 // 另含：代码高亮与复制、图片灯箱、上一篇/下一篇、文章级表情回应、JSON-LD。
 // 评论区逻辑在 comments.js，不要在这里加评论相关代码。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=37";
-import { initComments, visitorId } from "./comments.js?v=37";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=39";
+import { initComments, visitorId } from "./comments.js?v=39";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const postId = new URLSearchParams(window.location.search).get("id");
@@ -716,6 +716,43 @@ function addLineNumbers(pre) {
   pre.classList.add("has-line-numbers");
 }
 
+// 长行代码到底是"换行"还是"横向滚动"，只能二选一：
+// 一旦换行，行号那一列（整列由一个伪元素一次性渲染）就和视觉行对不上了，
+// 留着只会指错行。所以按实测宽度决定——整块放得下就保留行号，
+// 放不下就换成软换行、同时把行号撤掉（CSS 侧用 :not(.is-wrapped) 排除）。
+//
+// 两个坑：
+// 1. 量的对象是 <code>，不是 <pre>。hljs 给 .hljs 带了 `display:block; overflow-x:auto`，
+//    真正会横向滚动、scrollWidth 会超出来的是 code 那一层；pre 的 scrollWidth
+//    在这个结构下恒等于 clientWidth，拿它量永远得出"没溢出"。
+// 2. 量之前必须先退回"不换行"状态：已经处于换行状态时 scrollWidth 恒等于
+//    clientWidth，同样量不出溢出。
+function syncCodeWrap(pre) {
+  const code = pre.querySelector("code");
+  if (!code) return false;
+  pre.classList.remove("is-wrapped");
+  const overflowing = code.scrollWidth > code.clientWidth + 1;
+  if (overflowing) pre.classList.add("is-wrapped");
+  return overflowing;
+}
+
+// 视口宽度变了，"放不放得下"的结论就会变，得跟着重量一遍。
+// 监听器只绑一次：enhanceCodeBlocks 每渲染一篇文章都会走到这里。
+const codeBlocks = [];
+let codeWrapResizeBound = false;
+
+function bindCodeWrapResize() {
+  if (codeWrapResizeBound) return;
+  codeWrapResizeBound = true;
+  let timer = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      codeBlocks.forEach(syncCodeWrap);
+    }, 180);
+  });
+}
+
 function enhanceCodeBlocks(articleBody) {
   articleBody.querySelectorAll("pre code").forEach(function (code) {
     if (window.hljs && !code.dataset.highlighted) {
@@ -730,6 +767,10 @@ function enhanceCodeBlocks(articleBody) {
     if (pre.querySelector(".code-copy-btn")) return;
     // 行号要在高亮之后算——高亮会改动 code 里的节点，文本这时才是最终版
     addLineNumbers(pre);
+    // 再决定这个块是保留行号（放得下）还是改成软换行（放不下）
+    syncCodeWrap(pre);
+    codeBlocks.push(pre);
+    bindCodeWrapResize();
     const button = document.createElement("button");
     button.type = "button";
     button.className = "code-copy-btn";
