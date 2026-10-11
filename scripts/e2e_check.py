@@ -130,10 +130,10 @@ def run_checks():
             page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine") == "none",
             page.evaluate("() => getComputedStyle(document.getElementById('my-projects')).textDecorationLine"),
         )
-        # 新页面入口小卡：三张卡要都在，且徽章数字与数据源一致。
+        # 新页面入口小卡：页脚里每个真实页面都要在主页有卡。
         # 标签数来自 /api/posts 的 unique tags（stub 是 3 个），
-        # 壁纸数来自 gallery.data.js 静态清单（= 图床实际张数）。
-        for href in ("/tag.html", "/stats.html", "/gallery.html"):
+        # 文章数直接取列表长度（stub 3 篇），壁纸数来自静态清单（= 图床实际张数）。
+        for href in ("/tag.html", "/stats.html", "/gallery.html", "/archive.html", "/guestbook.html"):
             check(
                 f"首页 入口卡 {href} 已挂上",
                 page.locator(f'a.card-mini[href="{href}"]').count() == 1,
@@ -143,12 +143,36 @@ def run_checks():
             page.locator("#home-tag-badge").inner_text() == "3 个标签",
             page.locator("#home-tag-badge").inner_text(),
         )
+        check(
+            "首页 归档卡徽章与列表长度一致",
+            page.locator("#home-archive-badge").inner_text() == "3 篇文章",
+            page.locator("#home-archive-badge").inner_text(),
+        )
         gallery_badge = page.locator("#home-gallery-badge").inner_text()
         check(
             "首页 壁纸卡徽章与清单一致",
             gallery_badge.replace(" 张壁纸", "").isdigit() and int(gallery_badge.replace(" 张壁纸", "")) >= 1,
             gallery_badge,
         )
+        # 壁纸卡的轮换照片：图源必须是本站缩略图，且真的挂上了（轮换层不是空的）。
+        page.wait_for_function(
+            "() => [...document.querySelectorAll('.card-mini-photo')].some(i => i.classList.contains('is-showing'))",
+            timeout=8000,
+        )
+        photo_info = page.evaluate(
+            """() => {
+              const imgs = [...document.querySelectorAll('.card-mini[href="/gallery.html"] .card-mini-photo')];
+              return { count: imgs.length, withSrc: imgs.filter(i => (i.getAttribute('src')||'').startsWith('/img/wallpaper/')).length,
+                       showing: imgs.filter(i => i.classList.contains('is-showing')).length };
+            }"""
+        )
+        check(
+            "首页 壁纸轮换层已挂本站缩略图",
+            photo_info["count"] == 2 and photo_info["withSrc"] >= 1,
+            photo_info,
+        )
+        # onload 后必须真的显示（opacity 过渡开启）——上一版就栽在只设 src 没挂 onload
+        check("首页 壁纸照片已淡入显示", photo_info["showing"] == 1, photo_info["showing"])
         # 搜索框只在博客/归档/标签页上。别的页面按 "/" 不能"什么都没发生"，
         # 而要带人过去并在落地时把光标放进搜索框（URL 里的 #search 就是干这个的）。
         check("首页 本身没有搜索框", page.locator("#blog-search").count() == 0)

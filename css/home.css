@@ -420,6 +420,69 @@ body.index-page .grid {
   vertical-align: -2px;
 }
 
+/* 宽卡（归档/留言板）：一行放两张，与上面三张小卡补满页脚入口。 */
+.card-mini--wide {
+  grid-column: span 6;
+}
+
+/* 壁纸卡的轮换照片：两层 img 交替淡入淡出（main.js 驱动）。
+   遮罩沿用博客卡的配方——左深右浅的渐变，保证白字在任何照片上都可读；
+   照片模式下文字必须强制白色：主题变量的深色文字在照片上看不清。 */
+.card-mini--photo {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-mini-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .8s ease;
+  z-index: 0;
+}
+
+.card-mini-photo.is-showing {
+  opacity: 1;
+}
+
+.card-mini--photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(12, 14, 18, 0.82) 0%,
+    rgba(12, 14, 18, 0.45) 55%,
+    rgba(12, 14, 18, 0.2) 100%
+  );
+  z-index: 1;
+}
+
+.card-mini--photo .project-info {
+  position: relative;
+  z-index: 2;
+}
+
+.card-mini--photo .project-title,
+.card-mini--photo .project-desc {
+  color: #fff;
+}
+
+.card-mini--photo .project-title {
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card-mini--photo .project-desc {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card-mini--photo .card-mini-icon {
+  color: #fff;
+}
+
 [data-theme="light"] .card-mini {
   box-shadow: 0 1px 2px rgba(20, 45, 70, .05), 0 10px 28px rgba(20, 45, 70, .07);
 }

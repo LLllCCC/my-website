@@ -1,5 +1,5 @@
 // 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=45";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=46";
 
 // =========================================================
 // 1. Email 卡片点击监听
@@ -127,22 +127,67 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
       if (tags.size) tagBadge.textContent = tags.size + " 个标签";
     }
+
+    // 归档卡的徽章：同一份列表，总数直接取长度。
+    const archiveBadge = document.getElementById("home-archive-badge");
+    if (archiveBadge && posts.length) {
+      archiveBadge.textContent = posts.length + " 篇文章";
+    }
   } catch (error) {
     console.warn("首页博客卡片未能更新:", error);
   }
 });
 
-// 壁纸卡的徽章：张数在静态清单里，import 即得，不发任何请求。
-// 清单本身由 scripts/build-gallery.py 生成，永远和实际图数一致。
+// 壁纸卡：徽章张数来自静态清单（import 即得，不发请求）；
+// 卡片背景在清单的缩略图里循环轮换（本地图，约 45KB/张，加载无压力）。
+const PHOTO_INTERVAL = 8000;
+
 document.addEventListener("DOMContentLoaded", async function () {
+  const card = document.querySelector('a.card-mini[href="/gallery.html"]');
   const badge = document.getElementById("home-gallery-badge");
-  if (!badge) return;
+  if (!badge || !card) return;
   try {
-    const { GALLERY } = await import("./gallery.data.js?v=45");
-    if (Array.isArray(GALLERY) && GALLERY.length) {
-      badge.textContent = GALLERY.length + " 张壁纸";
-    }
+    const { GALLERY } = await import("./gallery.data.js?v=46");
+    if (!Array.isArray(GALLERY) || !GALLERY.length) return;
+    badge.textContent = GALLERY.length + " 张壁纸";
+
+    // 减少动效用户只放一张静态图，不轮换。
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const frames = card.querySelectorAll(".card-mini-photo");
+    if (!frames.length) return;
+
+    // 随机起点、顺序循环：每次访问看到的第一张都不同，且全量轮到。
+    let index = Math.floor(Math.random() * GALLERY.length);
+    let showing = 0;
+
+    const place = function (frame, photo) {
+      // onload 之后才淡入：首屏这张也一样，不挂 onload 图加载完了也不显示。
+      frame.onload = function () {
+        frame.classList.add("is-showing");
+      };
+      frame.src = photo.thumb;
+    };
+
+    const swapTo = function (photo) {
+      const incoming = frames[1 - showing];
+      const outgoing = frames[showing];
+      // 先让备用图层加载好再交替：onload 之后才淡入，不会闪出空档。
+      incoming.onload = function () {
+        incoming.classList.add("is-showing");
+        outgoing.classList.remove("is-showing");
+        showing = 1 - showing;
+      };
+      incoming.src = photo.thumb;
+    };
+
+    place(frames[0], GALLERY[index]);
+    if (reduced) return;
+
+    setInterval(function () {
+      index = (index + 1) % GALLERY.length;
+      swapTo(GALLERY[index]);
+    }, PHOTO_INTERVAL);
   } catch (_) {
-    // 保持占位文案「壁纸集」
+    // 保持占位文案「壁纸集」，照片层保持空白
   }
 });

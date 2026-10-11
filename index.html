@@ -31,18 +31,18 @@
     <link rel="preload" as="image" href="/img/project-3.jpg" fetchpriority="high" />
 
     <link
-      href="/lib/remixicon.css?v=45"
+      href="/lib/remixicon.css?v=46"
       rel="stylesheet"
     />
 
-    <script src="theme-init.js?v=45"></script>
+    <script src="theme-init.js?v=46"></script>
 
-    <link rel="stylesheet" href="css/base.css?v=45" />
-    <link rel="stylesheet" href="css/home.css?v=45" />
-    <link rel="stylesheet" href="css/blog.css?v=45" />
-    <link rel="stylesheet" href="css/post.css?v=45" />
-    <link rel="stylesheet" href="css/admin.css?v=45" />
-    <link rel="stylesheet" href="css/site.css?v=45" />
+    <link rel="stylesheet" href="css/base.css?v=46" />
+    <link rel="stylesheet" href="css/home.css?v=46" />
+    <link rel="stylesheet" href="css/blog.css?v=46" />
+    <link rel="stylesheet" href="css/post.css?v=46" />
+    <link rel="stylesheet" href="css/admin.css?v=46" />
+    <link rel="stylesheet" href="css/site.css?v=46" />
   </head>
 
   <body class="index-page">
@@ -150,22 +150,43 @@
           </div>
         </a>
 
-        <a class="card card-mini fade-in delay-06" href="/gallery.html" aria-label="看壁纸集">
+        <!-- 壁纸卡带照片轮换：两张 img 交替淡入淡出（main.js 驱动），
+             图源是壁纸页的本地缩略图（约 45KB/张），加载无压力。 -->
+        <a class="card card-mini card-mini--photo fade-in delay-06" href="/gallery.html" aria-label="看壁纸集">
+          <img class="card-mini-photo" alt="" aria-hidden="true" />
+          <img class="card-mini-photo" alt="" aria-hidden="true" />
           <div class="project-info">
             <div class="project-title"><i class="ri-landscape-fill card-mini-icon" aria-hidden="true"></i>壁纸</div>
             <div class="project-desc">收集的手机壁纸</div>
             <div class="home-blog-badge-wrap"><span class="home-blog-badge" id="home-gallery-badge">壁纸集</span></div>
           </div>
         </a>
+
+        <!-- 页脚里每个真实页面都该在主页有入口：归档、留言板这两张补齐。 -->
+        <a class="card card-mini card-mini--wide fade-in delay-06" href="/archive.html" aria-label="看文章归档">
+          <div class="project-info">
+            <div class="project-title"><i class="ri-archive-2-fill card-mini-icon" aria-hidden="true"></i>归档</div>
+            <div class="project-desc">按年份和月份翻全部文章</div>
+            <div class="home-blog-badge-wrap"><span class="home-blog-badge" id="home-archive-badge">全部文章</span></div>
+          </div>
+        </a>
+
+        <a class="card card-mini card-mini--wide fade-in delay-06" href="/guestbook.html" aria-label="去留言板说两句">
+          <div class="project-info">
+            <div class="project-title"><i class="ri-chat-3-fill card-mini-icon" aria-hidden="true"></i>留言板</div>
+            <div class="project-desc">想说的话、想纠的错，都在这儿</div>
+            <div class="home-blog-badge-wrap"><span class="home-blog-badge">先审后上墙</span></div>
+          </div>
+        </a>
       </div>
 
       <div id="global-footer"></div>
-      <script src="/footer.js?v=45" type="module"></script>
+      <script src="/footer.js?v=46" type="module"></script>
     </main>
 
-    <script src="/nav.js?v=45" type="module"></script>
-    <script src="/keys.js?v=45" type="module"></script>
-    <script src="/reveal.js?v=45" type="module"></script>
-    <script src="main.js?v=45" type="module"></script>
+    <script src="/nav.js?v=46" type="module"></script>
+    <script src="/keys.js?v=46" type="module"></script>
+    <script src="/reveal.js?v=46" type="module"></script>
+    <script src="main.js?v=46" type="module"></script>
   </body>
 </html>
