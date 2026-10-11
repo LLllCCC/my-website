@@ -1,6 +1,6 @@
 // 「现在」页：从 /api/now 拉当前快照，填三块内容 + 最后更新时间。
 // 内容在 /admin.html 的「现在」编辑区改，保存即上线——不用动这页代码。
-import { CONFIG, formatDateTime } from "./config.js?v=48";
+import { CONFIG, formatDateTime } from "./config.js?v=49";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const updatedEl = document.getElementById("now-updated");

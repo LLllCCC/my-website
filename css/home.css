@@ -103,8 +103,11 @@
 }
 
 .hero-text h1 {
+  /* 2026-10-11 UI 评审 P0-1：与 blog/tag/gallery 页首统一衬线版式签名
+     （那些页的 h1 都是 ui-serif 栈，唯独首页 hero 漏了，Windows 上一个黑体一个宋体） */
+  font-family: ui-serif, "Songti SC", "STSong", Georgia, serif;
   font-size: clamp(3rem, 5vw, 4.6rem);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.08;
   margin: 0;
   letter-spacing: -0.035em;
@@ -206,7 +209,12 @@
   margin-bottom: 5px;
 }
 
-/* --- 3D 翻转卡片 --- */
+/* --- 翻转卡片 --- */
+
+/* 社交卡成对包裹层（桌面端透明参与网格，见 index.html 注释） */
+.social-pair {
+  display: contents;
+}
 
 /* 舞台容器 */
 .card-social-container {
@@ -640,6 +648,33 @@ body.index-page .grid {
   #my-skills {
     grid-column: span 1;
     width: 100%;
+  }
+
+  /* 2026-10-11 UI 评审 P0-2：移动端 GitHub / Email 两卡并排成小卡，
+     不再让 1:1 全宽方卡一屏只装得下一张半 */
+  .social-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .card-social-container {
+    aspect-ratio: auto;
+  }
+
+  .card-social-flip {
+    height: 170px;
+    border-radius: 22px;
+  }
+
+  .flip-front,
+  .flip-back {
+    border-radius: 22px;
+  }
+
+  .card-social i,
+  .flip-front i {
+    font-size: 2.6rem;
   }
 
   .card-project,

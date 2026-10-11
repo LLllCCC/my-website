@@ -697,11 +697,11 @@
 .tag-chip-count {
   font-size: 0.7rem;
   font-variant-numeric: tabular-nums;
-  opacity: 0.6;
+  opacity: 0.8; /* 2026-10-11 评审 P1-2：0.6 时小字号灰字对比不足 4.5:1 */
 }
 
 .tag-chip.is-active .tag-chip-count {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .archive-toolbar .blog-search {
