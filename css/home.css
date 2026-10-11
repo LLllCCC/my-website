@@ -62,7 +62,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(rgba(245, 229, 199, 0.08) 1px, transparent 1px),
+  background-image:
+    linear-gradient(rgba(245, 229, 199, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(245, 229, 199, 0.08) 1px, transparent 1px);
   background-size: 30px 30px;
   mask-image: linear-gradient(110deg, #000 0%, transparent 88%);
@@ -194,6 +195,14 @@
 
 .bg-project-3 {
   background-image: url("/img/project-3.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* 站点配置的第三张预置图（2026-10-11）：img/ 里没有 project-2.jpg，
+   复用现成的 map.jpg，仓库不重复存图。 */
+.bg-project-2 {
+  background-image: url("/img/map.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -345,7 +354,9 @@
    再补一道很淡的投影，卡片才是"浮在页面上"而不是"印在页面上"。
    深色模式不需要——那里的明度差比这里大得多。 */
 [data-theme="light"] .card:not(.card-social-container) {
-  box-shadow: 0 1px 2px rgba(20, 45, 70, 0.05), 0 10px 28px rgba(20, 45, 70, 0.07);
+  box-shadow:
+    0 1px 2px rgba(20, 45, 70, 0.05),
+    0 10px 28px rgba(20, 45, 70, 0.07);
 }
 
 /* 翻转卡（GitHub / Email）的可见面不是 .card，而是 .flip-front / .flip-back，
@@ -353,7 +364,9 @@
 [data-theme="light"] .flip-front,
 [data-theme="light"] .flip-back {
   border-color: var(--border-color);
-  box-shadow: 0 1px 2px rgba(20, 45, 70, 0.05), 0 10px 28px rgba(20, 45, 70, 0.07);
+  box-shadow:
+    0 1px 2px rgba(20, 45, 70, 0.05),
+    0 10px 28px rgba(20, 45, 70, 0.07);
 }
 
 .card-social-container:hover {
@@ -370,7 +383,6 @@ body.index-page .grid {
 }
 
 @media (max-width: 768px) {
-
   body.index-page .grid {
     display: flex;
     flex-direction: column;
@@ -398,7 +410,6 @@ body.index-page .grid {
     grid-column: auto;
   }
   body.index-page .card-project {
-
     min-height: 240px;
     background-attachment: scroll;
   }
@@ -453,7 +464,7 @@ body.index-page .grid {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity .8s ease;
+  transition: opacity 0.8s ease;
   z-index: 0;
 }
 
@@ -497,7 +508,9 @@ body.index-page .grid {
 }
 
 [data-theme="light"] .card-mini {
-  box-shadow: 0 1px 2px rgba(20, 45, 70, .05), 0 10px 28px rgba(20, 45, 70, .07);
+  box-shadow:
+    0 1px 2px rgba(20, 45, 70, 0.05),
+    0 10px 28px rgba(20, 45, 70, 0.07);
 }
 
 /* --- 首页博客卡片 --- */
@@ -626,7 +639,6 @@ body.index-page .grid {
    手机端强制适配
    ========================================= */
 @media (max-width: 768px) {
-
   .grid {
     grid-template-columns: 1fr;
     gap: 15px;
@@ -695,10 +707,9 @@ body.index-page .grid {
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-
   .card.is-tilting {
-    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg))
-      rotateY(var(--tilt-y, 0deg)) scale3d(1.02, 1.02, 1.02);
+    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+      scale3d(1.02, 1.02, 1.02);
     transition: none;
   }
 
@@ -716,14 +727,12 @@ body.index-page .grid {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .avatar {
     animation: none !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .card:not(.card-social-container):hover,
   .card.is-tilting,
   .card-social-container:hover .card-social-flip,
@@ -758,7 +767,6 @@ body.index-page .grid {
    · ::before 被 .card::after 之外的第三条规则用掉了？没有，.card::before 是空的，
      所以聚光用 ::before，和已有的高光 ::after 互不干扰。 */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-
   .card-hero .hero-text,
   .card-hero .avatar {
     transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);

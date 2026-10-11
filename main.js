@@ -1,5 +1,5 @@
 // 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=51";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=52";
 
 // =========================================================
 // 1. Email 卡片点击监听
@@ -146,10 +146,42 @@ document.addEventListener("DOMContentLoaded", async function () {
   const card = document.querySelector('a.card-mini[href="/gallery.html"]');
   const badge = document.getElementById("home-gallery-badge");
   if (!badge || !card) return;
+
+  // 站点配置（2026-10-11）：项目卡选图 + 壁纸精选池。
+  // 公开 GET；接口失败 / 字段缺省 → 原样回退现状，页面永不因它坏掉。
+  let featured = [];
   try {
-    const { GALLERY } = await import("./gallery.data.js?v=51");
+    const res = await fetch(CONFIG.API_BASE + "/site-config", { cache: "no-store" });
+    if (res.ok) {
+      const cfg = await res.json();
+      if (cfg && typeof cfg.projectCard === "string" && /^project-[123]$/.test(cfg.projectCard)) {
+        const projectCard = document.getElementById("my-projects");
+        if (projectCard) {
+          projectCard.classList.remove("bg-project-1", "bg-project-2", "bg-project-3");
+          projectCard.classList.add(cfg.projectCard);
+        }
+      }
+      if (cfg && Array.isArray(cfg.wallpaperFeatured) && cfg.wallpaperFeatured.length) {
+        featured = cfg.wallpaperFeatured;
+      }
+    }
+  } catch (_) {
+    /* 后端不可达 → 全部回退默认 */
+  }
+
+  try {
+    const { GALLERY } = await import("./gallery.data.js?v=52");
     if (!Array.isArray(GALLERY) || !GALLERY.length) return;
     badge.textContent = GALLERY.length + " 张壁纸";
+
+    // 精选池：后台勾选了哪些文件就只轮换哪些；勾了但一个都对不上（清单变了）
+    // 就回退全量，壁纸卡永远有图可放。
+    const pool = featured.length
+      ? GALLERY.filter(function (x) {
+          return x && featured.includes(x.file);
+        })
+      : GALLERY;
+    const rotate = pool.length ? pool : GALLERY;
 
     // 减少动效用户只放一张静态图，不轮换。
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -157,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!frames.length) return;
 
     // 随机起点、顺序循环：每次访问看到的第一张都不同，且全量轮到。
-    let index = Math.floor(Math.random() * GALLERY.length);
+    let index = Math.floor(Math.random() * rotate.length);
     let showing = 0;
 
     const place = function (frame, photo) {
@@ -180,12 +212,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       incoming.src = photo.thumb;
     };
 
-    place(frames[0], GALLERY[index]);
+    place(frames[0], rotate[index]);
     if (reduced) return;
 
     setInterval(function () {
-      index = (index + 1) % GALLERY.length;
-      swapTo(GALLERY[index]);
+      index = (index + 1) % rotate.length;
+      swapTo(rotate[index]);
     }, PHOTO_INTERVAL);
   } catch (_) {
     // 保持占位文案「壁纸集」，照片层保持空白

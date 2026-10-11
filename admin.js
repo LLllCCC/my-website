@@ -1,5 +1,89 @@
 // 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
-import { CONFIG, formatDateTime } from "./config.js?v=51";
+import { CONFIG, formatDateTime } from "./config.js?v=52";
+
+// =========================================================
+// 0. 站点配置：项目卡选图 + 壁纸精选池（公开读，保存要令牌）
+// =========================================================
+document.addEventListener("DOMContentLoaded", async function () {
+  const list = document.getElementById("admin-config-wallpapers");
+  const select = document.getElementById("admin-config-project");
+  const saveButton = document.getElementById("admin-config-save");
+  const status = document.getElementById("admin-config-status");
+  if (!list || !select || !saveButton || !status) return;
+  // setStatus 定义在下面文章管理的监听器作用域里，这里够不着，就地写一个。
+  const setCfgStatus = function (message, isError) {
+    status.textContent = message;
+    status.classList.toggle("admin-status--error", Boolean(isError));
+  };
+
+  // 勾选列表来自静态清单（import 即得，不发请求）
+  let files = [];
+  try {
+    const { GALLERY } = await import("./gallery.data.js?v=52");
+    if (Array.isArray(GALLERY)) files = GALLERY.map((x) => x && x.file).filter(Boolean);
+  } catch (_) {
+    /* 清单缺失就只有项目卡可配 */
+  }
+  const boxes = files.map(function (file) {
+    const label = document.createElement("label");
+    label.className = "admin-config-wallpaper";
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.value = file;
+    label.appendChild(box);
+    label.appendChild(document.createTextNode(" " + file));
+    list.appendChild(label);
+    return box;
+  });
+
+  // 当前配置是公开数据，未登录也回填；保存时才要求令牌。
+  try {
+    const res = await fetch(CONFIG.API_BASE + "/site-config", { cache: "no-store" });
+    if (res.ok) {
+      const cfg = await res.json();
+      if (cfg && typeof cfg.projectCard === "string") select.value = cfg.projectCard;
+      if (cfg && Array.isArray(cfg.wallpaperFeatured)) {
+        boxes.forEach(function (box) {
+          box.checked = cfg.wallpaperFeatured.includes(box.value);
+        });
+      }
+    }
+  } catch (_) {
+    setCfgStatus("当前配置读取失败（后端不可达），保存仍可尝试。", true);
+  }
+
+  saveButton.addEventListener("click", async function () {
+    const featured = boxes.filter((b) => b.checked).map((b) => b.value);
+    if (featured.length > 30) {
+      setCfgStatus("精选池最多 30 张，当前 " + featured.length + " 张。", true);
+      return;
+    }
+    saveButton.disabled = true;
+    setCfgStatus("保存中…", false);
+    try {
+      const token = document.getElementById("admin-token").value.trim();
+      const response = await fetch(CONFIG.API_BASE + "/site-config", {
+        method: "PUT",
+        cache: "no-store",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ projectCard: select.value, wallpaperFeatured: featured }),
+      });
+      const result = await response.json().catch(function () {
+        return {};
+      });
+      if (!response.ok) throw new Error(result.error || "保存失败（HTTP " + response.status + "）");
+      setCfgStatus("已保存，首页下次访问生效。", false);
+    } catch (error) {
+      setCfgStatus(error.message, true);
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   let token = "";

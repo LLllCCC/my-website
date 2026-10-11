@@ -139,6 +139,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(POSTS)
         if path == "/api/guestbook":
             return self.send_json(GUESTBOOK)
+        if path == "/api/site-config":
+            return self.send_json({})
         if path == "/api/now":
             return self.send_json(NOW_PAGE)
         if path == "/api/shorts":

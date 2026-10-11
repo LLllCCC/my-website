@@ -681,9 +681,26 @@ def run_checks():
         if shot_dir:
             page.screenshot(path=os.path.join(shot_dir, "post.png"), full_page=True)
 
+        # 站点配置：桩返回空对象 → 首页项目卡回退默认 bg-project-3
+        page.goto(BASE + "/index.html", wait_until="networkidle")
+        check(
+            "站点配置 空配置时项目卡回退默认图",
+            page.locator("#my-projects.bg-project-3").count() == 1
+            and page.locator("#my-projects.bg-project-1").count() == 0,
+        )
+        check(
+            "站点配置 空精选池时壁纸卡正常渲染",
+            page.locator('a.card-mini[href="/gallery.html"] .card-mini-photo').count() == 2,
+        )
+
         page.goto(BASE + "/admin.html", wait_until="networkidle")
         check("后台 登录区可见", page.locator("#admin-auth").is_visible())
         check("后台 工作台隐藏", page.locator("#admin-workspace").is_hidden())
+        check("后台 站点配置区存在", page.locator("#admin-config-project").count() == 1)
+        check(
+            "后台 壁纸精选勾选列表已填充",
+            page.locator("#admin-config-wallpapers input[type=checkbox]").count() >= 1,
+        )
 
         page.goto(BASE + "/site.html", wait_until="networkidle")
         check("site 导航已注入", page.locator(".nav-container").count() == 1)
