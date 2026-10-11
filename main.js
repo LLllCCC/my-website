@@ -1,5 +1,5 @@
 // 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=52";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=53";
 
 // =========================================================
 // 1. Email 卡片点击监听
@@ -169,8 +169,24 @@ document.addEventListener("DOMContentLoaded", async function () {
     /* 后端不可达 → 全部回退默认 */
   }
 
+  // 「现在」卡徽章：显示「现在」页的最后更新日期（MM-DD）；失败保持占位文案。
   try {
-    const { GALLERY } = await import("./gallery.data.js?v=52");
+    const nowBadge = document.getElementById("home-now-badge");
+    if (nowBadge) {
+      const res = await fetch(CONFIG.API_BASE + "/now", { cache: "no-store" });
+      if (res.ok) {
+        const now = await res.json();
+        const m =
+          typeof now.updated_at === "string" ? now.updated_at.match(/^\d{4}-(\d{2}-\d{2})/) : null;
+        if (m) nowBadge.textContent = "更新于 " + m[1];
+      }
+    }
+  } catch (_) {
+    /* 保持「此刻的我」占位 */
+  }
+
+  try {
+    const { GALLERY } = await import("./gallery.data.js?v=53");
     if (!Array.isArray(GALLERY) || !GALLERY.length) return;
     badge.textContent = GALLERY.length + " 张壁纸";
 

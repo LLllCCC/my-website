@@ -1,6 +1,6 @@
 // 短记：只读时间线。发布与删除在 /admin.html，这里只展示。
 // 视觉复用 post.css 的评论样式类，另加少量时间线专属样式（css/blog.css 的 shorts-*）。
-import { CONFIG, formatDateTime } from "./config.js?v=52";
+import { CONFIG, formatDateTime } from "./config.js?v=53";
 
 const API_URL = CONFIG.API_BASE + "/shorts";
 

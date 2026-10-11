@@ -1,5 +1,5 @@
 // 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
-import { CONFIG, formatDateTime } from "./config.js?v=52";
+import { CONFIG, formatDateTime } from "./config.js?v=53";
 
 // =========================================================
 // 0. 站点配置：项目卡选图 + 壁纸精选池（公开读，保存要令牌）
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // 勾选列表来自静态清单（import 即得，不发请求）
   let files = [];
   try {
-    const { GALLERY } = await import("./gallery.data.js?v=52");
+    const { GALLERY } = await import("./gallery.data.js?v=53");
     if (Array.isArray(GALLERY)) files = GALLERY.map((x) => x && x.file).filter(Boolean);
   } catch (_) {
     /* 清单缺失就只有项目卡可配 */
