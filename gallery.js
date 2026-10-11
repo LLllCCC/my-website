@@ -6,7 +6,7 @@
 //   2. 站点不直连 GitHub API（跨境慢，且未鉴权限流 60 次/小时），
 //      所以清单是构建时生成好的 gallery.data.js，页面只读它。
 //      新增壁纸要跑 scripts/build-gallery.py（见 AGENTS.md）。
-import { GALLERY, GALLERY_CDN } from "./gallery.data.js?v=49";
+import { GALLERY, GALLERY_CDN } from "./gallery.data.js?v=51";
 
 document.addEventListener("DOMContentLoaded", function () {
   const grid = document.getElementById("gallery-grid");
@@ -114,8 +114,31 @@ document.addEventListener("DOMContentLoaded", function () {
       img.width = item.w;
       img.height = item.h;
     }
+
+    // ---- 图片信息行（2026-10-11 评审遗留一）：文件名 / 真实分辨率 / 文件大小 ----
+    // 分辨率等原图加载完读 naturalWidth/Height（清单里的 w/h 是缩略图尺寸，不能用）；
+    // 大小用 HEAD 请求拿 Content-Length（jsDelivr 支持 CORS），拿不到就只显示已知部分。
+    const info = document.createElement("p");
+    info.className = "lightbox-info";
+    info.textContent = item.file;
+
     img.addEventListener("load", function () {
       hint.remove();
+      const resText = img.naturalWidth + " × " + img.naturalHeight;
+      info.textContent = item.file + " · " + resText;
+      fetch(fullUrl(item), { method: "HEAD" })
+        .then(function (r) {
+          const len = Number(r.headers.get("content-length"));
+          if (!r.ok || !len) return;
+          const sizeText =
+            len >= 1024 * 1024
+              ? (len / (1024 * 1024)).toFixed(1) + " MB"
+              : Math.round(len / 1024) + " KB";
+          info.textContent = item.file + " · " + resText + " · " + sizeText;
+        })
+        .catch(function () {
+          /* 拿不到大小就保持已显示的文件名+分辨率，不报错 */
+        });
     });
     img.addEventListener("error", function () {
       hint.textContent = "原图没加载出来，点下面的「查看原图」再试一次。";
@@ -135,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
     openLink.textContent = "查看 / 下载原图";
     caption.appendChild(openLink);
 
-    figure.append(hint, img, caption);
+    figure.append(hint, img, caption, info);
     overlay.appendChild(figure);
 
     overlay.addEventListener("click", function (event) {

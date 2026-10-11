@@ -116,11 +116,16 @@
 }
 
 .avatar {
-  width: 150px;
-  height: 150px;
+  /* 2026-10-11 评审遗留二（方案 A）：头像放大一档 + accent 光环，
+     让 hero 右侧不再偏空；光环色随主题 accent 走 */
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--accent-color), transparent 72%),
+    0 18px 46px rgba(0, 0, 0, 0.35);
 }
 
 /* --- 6. 社交卡片 --- */
