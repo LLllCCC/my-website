@@ -146,6 +146,7 @@ async function buildFeed() {
 // 静态页必须在这个列表里显式登记：它们不在文章接口里，漏一个下次发布就被抹掉。
 const STATIC_SITEMAP_PAGES = [
   "/",
+  "/now.html",
   "/blog.html",
   "/guestbook.html",
   "/archive.html",

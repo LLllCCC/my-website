@@ -16,6 +16,13 @@ GUESTBOOK = [
     {"id": 2, "nickname": "晚风柴犬456", "content": "第二回合，站点越来越顺眼了。", "created_at": "2026-10-05T09:30:00.000Z"},
     {"id": 1, "nickname": "青柠水母123", "content": "第一句话留在你的留言板上！", "created_at": "2026-10-05T08:00:00.000Z"},
 ]
+# 「现在」页：单条快照。三段都有内容，方便 e2e 验证「空块隐藏」的反面（全显示）。
+NOW_PAGE = {
+    "doing": "在写一个代码生成器\n顺便修留言板的几处样式",
+    "reading": "《代码大全》第二版",
+    "tinkering": "Obsidian 的 Dataview 插件",
+    "updated_at": "2026-10-11T07:30:00.000Z",
+}
 POST_1 = {
     "id": 1,
     "title": "ESM 验证文章",
@@ -127,6 +134,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(POSTS)
         if path == "/api/guestbook":
             return self.send_json(GUESTBOOK)
+        if path == "/api/now":
+            return self.send_json(NOW_PAGE)
         # 搜索要排在 /api/posts/1 之前判断，否则 "search" 会被当成文章编号。
         if path == "/api/posts/search":
             return self.send_json(search_posts(self.query_keyword("q")))

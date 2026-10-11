@@ -313,14 +313,18 @@ def run_checks():
         if shot_dir:
             page.screenshot(path=os.path.join(shot_dir, "tag.png"), full_page=True)
 
-        # 「现在」页：目前只搭了框架、内容待填，所以**故意不进导航**。
-        # 这里只验框架本身是好的（标题 / 内容块 / 日期脚本），不管内容。
+        # 「现在」页：内容从 /api/now 动态拉，改内容走 admin 编辑区（不再手改 HTML）。
         page.goto(BASE + "/now.html", wait_until="networkidle")
+        page.wait_for_timeout(400)
         check("现在 标题为现在", "现在" in page.locator(".blog-hero h1").inner_text())
-        check("现在 三个内容块", page.locator("[data-now-block]").count() == 3)
+        # 桩数据三段都有内容，三块都得显示（验证「空块隐藏」的反面）
+        visible_blocks = page.locator("[data-now-block]:not([hidden])").count()
+        check("现在 三块都渲染（桩数据非空）", visible_blocks == 3, visible_blocks)
+        first_li = page.locator("[data-now-block] li").first.inner_text()
+        check("现在 内容来自 API（不是占位）", "载入中" not in first_li, first_li)
         updated = page.locator("#now-updated").inner_text()
-        check("现在 最后更新日期已填充", bool(updated) and updated != "—", updated)
-        check("现在 导航尚未挂链接（内容填好后才挂）", page.locator('a[href="/now.html"]').count() == 0)
+        check("现在 最后更新已填充", updated not in ("—", "载入中", "读取失败"), updated)
+        check("现在 导航已挂链接", page.locator('a[href="/now.html"]').count() >= 1)
 
         # 壁纸页。张数会随用户加图变化，所以断言只绑定"页面自洽"，
         # 不绑定具体数字（绑死数字的断言迟早会因为加了几张图而变红）。

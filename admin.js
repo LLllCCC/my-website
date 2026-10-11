@@ -1,5 +1,5 @@
 // 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
-import { CONFIG, formatDateTime } from "./config.js?v=46";
+import { CONFIG, formatDateTime } from "./config.js?v=47";
 
 document.addEventListener("DOMContentLoaded", function () {
   let token = "";
@@ -135,6 +135,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const guestbookFilter = document.getElementById("admin-guestbook-filter");
   const guestbookCount = document.getElementById("admin-guestbook-count");
   const guestbookStatus = document.getElementById("admin-guestbook-status");
+  const nowForm = document.getElementById("admin-now-form");
+  const nowDoing = document.getElementById("now-doing");
+  const nowReading = document.getElementById("now-reading");
+  const nowTinkering = document.getElementById("now-tinkering");
+  const nowStatus = document.getElementById("admin-now-status");
+  const nowUpdatedBadge = document.getElementById("admin-now-updated");
 
   function renderComments(comments) {
     commentList.replaceChildren();
@@ -407,6 +413,55 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // --- 「现在」页：单条快照，加载填表 + 保存即上线 ---
+
+  async function loadNow() {
+    if (!nowDoing) return;
+    try {
+      const data = await apiRequest("/now");
+      nowDoing.value = data.doing || "";
+      nowReading.value = data.reading || "";
+      nowTinkering.value = data.tinkering || "";
+      if (nowUpdatedBadge) {
+        nowUpdatedBadge.textContent = data.updated_at
+          ? "更新于 " + formatDateTime(data.updated_at)
+          : "尚未填写";
+      }
+      setStatus(nowStatus, "", false);
+    } catch (error) {
+      setStatus(
+        nowStatus,
+        error.status === 401 ? "令牌已失效，请退出后重新验证。" : "「现在」内容读取失败。",
+        true
+      );
+      if (error.status === 401) lockWorkspace();
+    }
+  }
+
+  async function saveNow() {
+    const payload = {
+      doing: nowDoing.value,
+      reading: nowReading.value,
+      tinkering: nowTinkering.value,
+    };
+    setStatus(nowStatus, "正在保存…", false);
+    try {
+      await apiRequest("/now", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      setStatus(nowStatus, "已保存，「现在」页已更新。", false);
+      await loadNow();
+    } catch (error) {
+      setStatus(
+        nowStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "保存失败：" + error.message,
+        true
+      );
+    }
+  }
+
   async function editPost(id) {
     setStatus(formStatus, "正在载入文章…", false);
     try {
@@ -454,6 +509,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadPosts();
     loadComments();
     loadGuestbook();
+    loadNow();
   }
 
   function lockWorkspace() {
@@ -546,6 +602,12 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("admin-comments-refresh").addEventListener("click", loadComments);
   guestbookFilter.addEventListener("change", loadGuestbook);
   document.getElementById("admin-guestbook-refresh").addEventListener("click", loadGuestbook);
+  if (nowForm) {
+    nowForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      saveNow();
+    });
+  }
   document.getElementById("admin-comments-clear").addEventListener("click", async function () {
     if (!window.confirm("确定清空所有「待审核」评论吗？已显示和已拒绝的不受影响，此操作无法撤销。"))
       return;
