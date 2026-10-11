@@ -1,5 +1,5 @@
 // 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
-import { CONFIG, formatDateTime } from "./config.js?v=53";
+import { CONFIG, formatDateTime } from "./config.js?v=54";
 
 // =========================================================
 // 0. 站点配置：项目卡选图 + 壁纸精选池（公开读，保存要令牌）
@@ -16,22 +16,41 @@ document.addEventListener("DOMContentLoaded", async function () {
     status.classList.toggle("admin-status--error", Boolean(isError));
   };
 
-  // 勾选列表来自静态清单（import 即得，不发请求）
-  let files = [];
+  // 勾选列表来自静态清单（import 即得，不发请求）；
+  // 每项渲染成缩略图块（thumb 是本地 480px 小图，约 45KB/张），文件名做悬停提示。
+  let items = [];
   try {
-    const { GALLERY } = await import("./gallery.data.js?v=53");
-    if (Array.isArray(GALLERY)) files = GALLERY.map((x) => x && x.file).filter(Boolean);
+    const { GALLERY } = await import("./gallery.data.js?v=54");
+    if (Array.isArray(GALLERY)) {
+      items = GALLERY.filter((x) => x && x.file && x.thumb);
+    }
   } catch (_) {
     /* 清单缺失就只有项目卡可配 */
   }
-  const boxes = files.map(function (file) {
+  const boxes = items.map(function (item) {
     const label = document.createElement("label");
     label.className = "admin-config-wallpaper";
+    label.title = item.file;
+
     const box = document.createElement("input");
     box.type = "checkbox";
-    box.value = file;
+    box.value = item.file;
+    box.className = "admin-config-wallpaper-box";
+
+    const img = document.createElement("img");
+    img.className = "admin-config-wallpaper-img";
+    img.src = item.thumb;
+    img.alt = "";
+    img.loading = "lazy";
+    img.decoding = "async";
+
+    const name = document.createElement("span");
+    name.className = "admin-config-wallpaper-name";
+    name.textContent = item.file;
+
     label.appendChild(box);
-    label.appendChild(document.createTextNode(" " + file));
+    label.appendChild(img);
+    label.appendChild(name);
     list.appendChild(label);
     return box;
   });
