@@ -4,8 +4,8 @@
 // 搜索引擎也看不到。这个页面让每个标签都有一个可分享、可被收录的独立链接。
 //
 // 数据来自现有 /api/posts，纯前端聚合，不额外请求后端。
-import { CONFIG, debounce } from "./config.js?v=47";
-import { tagValuesOf, dateKeyOf, matchesKeyword, buildPostRow } from "./postList.js?v=47";
+import { CONFIG, debounce } from "./config.js?v=48";
+import { tagValuesOf, dateKeyOf, matchesKeyword, buildPostRow } from "./postList.js?v=48";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const cloudBox = document.getElementById("tag-cloud");

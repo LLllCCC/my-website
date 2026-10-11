@@ -23,6 +23,11 @@ NOW_PAGE = {
     "tinkering": "Obsidian 的 Dataview 插件",
     "updated_at": "2026-10-11T07:30:00.000Z",
 }
+# 短记：两条倒序桩数据，验证时间线渲染。
+SHORTS = [
+    {"id": 2, "content": "第二条短记：晚风不错。", "created_at": "2026-10-06T09:00:00.000Z"},
+    {"id": 1, "content": "第一条短记：短记页上线了。", "created_at": "2026-10-05T08:00:00.000Z"},
+]
 POST_1 = {
     "id": 1,
     "title": "ESM 验证文章",
@@ -136,6 +141,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(GUESTBOOK)
         if path == "/api/now":
             return self.send_json(NOW_PAGE)
+        if path == "/api/shorts":
+            return self.send_json(SHORTS)
         # 搜索要排在 /api/posts/1 之前判断，否则 "search" 会被当成文章编号。
         if path == "/api/posts/search":
             return self.send_json(search_posts(self.query_keyword("q")))

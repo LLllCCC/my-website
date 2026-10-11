@@ -1,5 +1,5 @@
 // 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
-import { CONFIG, formatDateTime } from "./config.js?v=47";
+import { CONFIG, formatDateTime } from "./config.js?v=48";
 
 document.addEventListener("DOMContentLoaded", function () {
   let token = "";
@@ -141,6 +141,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const nowTinkering = document.getElementById("now-tinkering");
   const nowStatus = document.getElementById("admin-now-status");
   const nowUpdatedBadge = document.getElementById("admin-now-updated");
+  const shortsForm = document.getElementById("admin-shorts-form");
+  const shortsContent = document.getElementById("admin-shorts-content");
+  const shortsList = document.getElementById("admin-shorts-list");
+  const shortsCount = document.getElementById("admin-shorts-count");
+  const shortsStatus = document.getElementById("admin-shorts-status");
+  const shortsSubmit = document.getElementById("admin-shorts-submit");
 
   function renderComments(comments) {
     commentList.replaceChildren();
@@ -462,6 +468,102 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // --- 短记：发布即上线，无审核流程 ---
+
+  async function loadShorts() {
+    if (!shortsList) return;
+    try {
+      const items = await apiRequest("/shorts");
+      shortsList.replaceChildren();
+      if (shortsCount) shortsCount.textContent = String(items.length).padStart(2, "0");
+      if (!items.length) {
+        const empty = document.createElement("p");
+        empty.className = "admin-list-placeholder";
+        empty.textContent = "还没有短记，发第一条吧。";
+        shortsList.appendChild(empty);
+        return;
+      }
+      items.forEach(function (item) {
+        const row = document.createElement("article");
+        row.className = "admin-comment-item";
+
+        const main = document.createElement("div");
+        main.className = "admin-comment-main";
+        const head = document.createElement("div");
+        head.className = "admin-comment-head";
+        const time = document.createElement("span");
+        time.className = "admin-comment-time";
+        time.textContent = formatDateTime(item.created_at);
+        head.append(time);
+        const body = document.createElement("p");
+        body.className = "admin-comment-body";
+        body.textContent = item.content || "";
+        main.append(head, body);
+
+        const actions = document.createElement("div");
+        actions.className = "admin-comment-actions";
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "admin-action-button admin-action-button--danger";
+        del.textContent = "删除";
+        del.addEventListener("click", function () {
+          removeShort(item);
+        });
+        actions.appendChild(del);
+
+        row.append(main, actions);
+        shortsList.appendChild(row);
+      });
+      setStatus(shortsStatus, "", false);
+    } catch (error) {
+      setStatus(shortsStatus, "短记读取失败。", true);
+    }
+  }
+
+  async function postShort(event) {
+    event.preventDefault();
+    const content = (shortsContent.value || "").trim();
+    if (!content) {
+      setStatus(shortsStatus, "短记内容不能为空。", true);
+      return;
+    }
+    shortsSubmit.disabled = true;
+    setStatus(shortsStatus, "正在发布…", false);
+    try {
+      await apiRequest("/shorts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: content }),
+      });
+      shortsContent.value = "";
+      setStatus(shortsStatus, "已发布，短记页已上线。", false);
+      await loadShorts();
+    } catch (error) {
+      setStatus(
+        shortsStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "发布失败：" + error.message,
+        true
+      );
+    } finally {
+      shortsSubmit.disabled = false;
+    }
+  }
+
+  async function removeShort(item) {
+    if (!window.confirm("确定删除这条短记吗？此操作无法撤销。")) return;
+    try {
+      await apiRequest("/shorts/" + encodeURIComponent(String(item.id)), { method: "DELETE" });
+      setStatus(shortsStatus, "短记已删除。", false);
+      await loadShorts();
+    } catch (error) {
+      setStatus(
+        shortsStatus,
+        error.status === 401 ? "令牌无效，请重新验证。" : "删除失败，请检查 API 服务。",
+        true
+      );
+    }
+  }
+
   async function editPost(id) {
     setStatus(formStatus, "正在载入文章…", false);
     try {
@@ -510,6 +612,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadComments();
     loadGuestbook();
     loadNow();
+    loadShorts();
   }
 
   function lockWorkspace() {
@@ -523,6 +626,11 @@ document.addEventListener("DOMContentLoaded", function () {
     guestbookList.innerHTML = '<p class="admin-list-placeholder">登录后显示留言。</p>';
     guestbookCount.textContent = "—";
     setStatus(guestbookStatus, "", false);
+    if (shortsList) {
+      shortsList.innerHTML = '<p class="admin-list-placeholder">登录后显示短记。</p>';
+      shortsCount.textContent = "—";
+      setStatus(shortsStatus, "", false);
+    }
     tokenInput.focus();
   }
 
@@ -607,6 +715,9 @@ document.addEventListener("DOMContentLoaded", function () {
       event.preventDefault();
       saveNow();
     });
+  }
+  if (shortsForm) {
+    shortsForm.addEventListener("submit", postShort);
   }
   document.getElementById("admin-comments-clear").addEventListener("click", async function () {
     if (!window.confirm("确定清空所有「待审核」评论吗？已显示和已拒绝的不受影响，此操作无法撤销。"))

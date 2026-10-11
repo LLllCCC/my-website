@@ -424,6 +424,14 @@ def run_checks():
             page.locator("#guestbook-list .comment-item").count() == 2,
         )
 
+        # 短记页：只读时间线，发布/删除走 admin。
+        page.goto(BASE + "/shorts.html", wait_until="networkidle")
+        check("短记 标题含短记", "短记" in page.locator(".blog-hero h1").inner_text())
+        check("短记 导航已挂链接", page.locator('a[href="/shorts.html"]').count() >= 1)
+        check("短记 列表渲染出桩数据", page.locator("#shorts-list .comment-item").count() == 2, page.locator("#shorts-list .comment-item").count())
+        check("短记 头部条数与列表一致", page.locator("#shorts-count").inner_text() == "2", page.locator("#shorts-count").inner_text())
+        check("短记 倒序：首条是桩 id 2", "晚风" in page.locator("#shorts-list .comment-item").first.inner_text(), page.locator("#shorts-list .comment-item").first.inner_text())
+
         page.goto(BASE + "/post.html?id=1", wait_until="networkidle")
         check("文章 标题", page.locator("#article-title").inner_text() == "ESM 验证文章")
         check("文章 正文渲染出 h2", page.locator("#article-body h2").count() == 2)

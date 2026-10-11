@@ -7,14 +7,14 @@
     <meta name="description" content="Yopo 博客文章管理" />
     <title>文章管理 · Yopo</title>
     <link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg" />
-    <link href="/lib/remixicon.css?v=47" rel="stylesheet" />
-    <script src="/theme-init.js?v=47"></script>
-    <link rel="stylesheet" href="css/base.css?v=47" />
-    <link rel="stylesheet" href="css/home.css?v=47" />
-    <link rel="stylesheet" href="css/blog.css?v=47" />
-    <link rel="stylesheet" href="css/post.css?v=47" />
-    <link rel="stylesheet" href="css/admin.css?v=47" />
-    <link rel="stylesheet" href="css/site.css?v=47" />
+    <link href="/lib/remixicon.css?v=48" rel="stylesheet" />
+    <script src="/theme-init.js?v=48"></script>
+    <link rel="stylesheet" href="css/base.css?v=48" />
+    <link rel="stylesheet" href="css/home.css?v=48" />
+    <link rel="stylesheet" href="css/blog.css?v=48" />
+    <link rel="stylesheet" href="css/post.css?v=48" />
+    <link rel="stylesheet" href="css/admin.css?v=48" />
+    <link rel="stylesheet" href="css/site.css?v=48" />
   </head>
   <body class="admin-page">
     <div id="global-nav"></div>
@@ -165,14 +165,37 @@
             </div>
           </form>
         </section>
+
+        <section class="admin-editor-card" aria-labelledby="admin-shorts-title">
+          <div class="admin-section-heading">
+            <div>
+              <p class="admin-editor-mode">发布即上线</p>
+              <h3 id="admin-shorts-title">短记</h3>
+            </div>
+            <span id="admin-shorts-count" class="admin-count">—</span>
+          </div>
+          <form id="admin-shorts-form" class="admin-post-form">
+            <label for="admin-shorts-content">新短记 <span class="admin-label-note">一句一条，最多 500 字</span></label>
+            <textarea id="admin-shorts-content" maxlength="500" required placeholder="不成文章的零碎想法，一句就够"></textarea>
+            <div class="admin-editor-footer">
+              <span id="admin-shorts-status" class="admin-status" role="status" aria-live="polite"></span>
+              <div class="admin-editor-actions">
+                <button id="admin-shorts-submit" class="admin-primary-button" type="submit">发布短记</button>
+              </div>
+            </div>
+          </form>
+          <div id="admin-shorts-list" class="admin-comment-list" aria-live="polite">
+            <p class="admin-list-placeholder">登录后显示短记。</p>
+          </div>
+        </section>
       </section>
 
       <div id="global-footer"></div>
-      <script src="/footer.js?v=47" type="module"></script>
+      <script src="/footer.js?v=48" type="module"></script>
     </main>
 
-    <script src="/nav.js?v=47" type="module"></script>
-    <script src="/keys.js?v=47" type="module"></script>
-    <script src="/admin.js?v=47" type="module"></script>
+    <script src="/nav.js?v=48" type="module"></script>
+    <script src="/keys.js?v=48" type="module"></script>
+    <script src="/admin.js?v=48" type="module"></script>
   </body>
 </html>

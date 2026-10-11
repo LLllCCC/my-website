@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     '<a href="/index.html">首页</a>' +
     '<a href="/now.html">现在</a>' +
     '<a href="/blog.html">博客</a>' +
+    '<a href="/shorts.html">短记</a>' +
     '<a href="/guestbook.html">留言板</a>' +
     '<a href="/tag.html">标签</a>' +
     '<a href="/archive.html">归档</a>' +

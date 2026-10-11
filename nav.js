@@ -21,6 +21,7 @@ function loadNavbar() {
     '          <a href="/index.html" class="nav-dropdown-link">主页</a>' +
     '          <a href="/now.html" class="nav-dropdown-link">现在</a>' +
     '          <a href="/blog.html" class="nav-dropdown-link">博客</a>' +
+    '          <a href="/shorts.html" class="nav-dropdown-link">短记</a>' +
     '          <a href="/guestbook.html" class="nav-dropdown-link">留言板</a>' +
     '          <a href="/tag.html" class="nav-dropdown-link">标签</a>' +
     '          <a href="/archive.html" class="nav-dropdown-link">归档</a>' +
