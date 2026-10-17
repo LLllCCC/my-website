@@ -1,7 +1,7 @@
 // 留言板：列表 + 提交。安全模型与评论共用（蜜罐、先审后发、同一访客昵称）。
 // 视觉与结构复用 post.css 的评论样式类，这里不写新样式。
-import { CONFIG, formatDateTime } from "./config.js?v=54";
-import { rememberedNickname, rememberNickname, randomNickname } from "./comments.js?v=54";
+import { CONFIG, formatDateTime } from "./config.js?v=55";
+import { rememberedNickname, rememberNickname, randomNickname } from "./comments.js?v=55";
 
 const API_URL = CONFIG.API_BASE + "/guestbook";
 

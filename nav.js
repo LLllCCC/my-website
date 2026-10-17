@@ -44,11 +44,14 @@ function loadNavbar() {
     navPlaceholder.innerHTML = navHTML;
   }
 
-  const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+  // 路径归一：Cloudflare Pages 会把 /blog.html 308 跳到 /blog，
+  // 两边都按去掉 .html 与结尾斜杠的形式比较，避免栏目高亮失效。
+  const normalizePath = (p) => p.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+  const currentPath = normalizePath(window.location.pathname);
   document.querySelectorAll(".nav-dropdown-link").forEach(function (link) {
-    const linkPath = new URL(link.href, window.location.href).pathname.replace(/\/$/, "") || "/";
+    const linkPath = normalizePath(new URL(link.href, window.location.href).pathname);
     const isCurrent =
-      currentPath === linkPath || (linkPath === "/blog.html" && currentPath === "/post.html");
+      currentPath === linkPath || (linkPath === "/blog" && currentPath === "/post");
     if (isCurrent) link.setAttribute("aria-current", "page");
   });
 
