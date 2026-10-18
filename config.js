@@ -1,12 +1,11 @@
 // 全站共享配置与工具。页面脚本统一用 import 引用本模块；
 // import 路径和 HTML 里的引用一样都带 ?v= 版本号，改动后全站一起 +1。
-// API 走独立子域（api.888431.xyz）：静态站与 API 分离后，静态托管（CF Pages）不再代理 /api。
-// 本地开发与 e2e 测试桩仍用相对路径 /api。
-const API_ORIGIN = "https://api.888431.xyz";
-const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+// API 走同域 /api：由 Pages Functions（functions/api/[[path]].js）反代到后端——
+// 大陆部分 ISP 到 CF zone 网段（104.21.x）不可达，但 Pages 网段可达，同域后整站免代理；
+// 本地开发与 e2e 测试桩也直接用相对路径 /api，不再需要分支判断。
 export const CONFIG = {
-  API_BASE: isLocal ? "/api" : API_ORIGIN + "/api",
-  POSTS_URL: isLocal ? "/api/posts" : API_ORIGIN + "/api/posts",
+  API_BASE: "/api",
+  POSTS_URL: "/api/posts",
   SITE_NAME: "Yopo",
   SITE_URL: "https://yopoo.888431.xyz",
 };

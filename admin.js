@@ -1,5 +1,5 @@
 // 后台工作台：文章管理与评论审核，全部操作需要管理员令牌。
-import { CONFIG, formatDateTime } from "./config.js?v=55";
+import { CONFIG, formatDateTime } from "./config.js?v=56";
 
 // =========================================================
 // 0. 站点配置：项目卡选图 + 壁纸精选池（公开读，保存要令牌）
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // 每项渲染成缩略图块（thumb 是本地 480px 小图，约 45KB/张），文件名做悬停提示。
   let items = [];
   try {
-    const { GALLERY } = await import("./gallery.data.js?v=55");
+    const { GALLERY } = await import("./gallery.data.js?v=56");
     if (Array.isArray(GALLERY)) {
       items = GALLERY.filter((x) => x && x.file && x.thumb);
     }

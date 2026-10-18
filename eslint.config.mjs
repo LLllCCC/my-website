@@ -30,6 +30,32 @@ export default [
     },
   },
   {
+    // functions/**/*.js 是 Cloudflare Pages Functions（Workers 运行时，非浏览器非 Node）。
+    files: ["functions/**/*.js"],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: "module",
+      globals: {
+        URL: "readonly",
+        URLSearchParams: "readonly",
+        Request: "readonly",
+        Response: "readonly",
+        Headers: "readonly",
+        fetch: "readonly",
+        caches: "readonly",
+        crypto: "readonly",
+        FormData: "readonly",
+        Blob: "readonly",
+        ArrayBuffer: "readonly",
+        TextEncoder: "readonly",
+        TextDecoder: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        console: "readonly",
+      },
+    },
+  },
+  {
     rules: {
       // localStorage 等调用统一用 catch (_) {} 静默降级，是本仓库的约定写法。
       "no-unused-vars": ["error", { args: "none", caughtErrors: "none" }],

@@ -1,5 +1,5 @@
 // 首页专用脚本：邮件卡片、卡片视差、最新文章卡片。
-import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=55";
+import { CONFIG, safeHttpUrl, showToast } from "./config.js?v=56";
 
 // =========================================================
 // 1. Email 卡片点击监听
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   try {
-    const { GALLERY } = await import("./gallery.data.js?v=55");
+    const { GALLERY } = await import("./gallery.data.js?v=56");
     if (!Array.isArray(GALLERY) || !GALLERY.length) return;
     badge.textContent = GALLERY.length + " 张壁纸";
 

@@ -7,7 +7,7 @@
 // 热力图窗口默认是「今天往前一年」。e2e 用 ?until=YYYY-MM-DD 把窗口钉在
 // 测试数据所在的那一周——否则「哪几天该亮」的断言会依赖跑测试那天的日期，
 // 过一年就全部变红。线上页面不带参数，不受影响。
-import { CONFIG } from "./config.js?v=55";
+import { CONFIG } from "./config.js?v=56";
 
 const WORDS_FAILED = -1; // 详情拉取失败；区别于「这篇真是 0 字」
 
