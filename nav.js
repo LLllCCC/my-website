@@ -50,8 +50,7 @@ function loadNavbar() {
   const currentPath = normalizePath(window.location.pathname);
   document.querySelectorAll(".nav-dropdown-link").forEach(function (link) {
     const linkPath = normalizePath(new URL(link.href, window.location.href).pathname);
-    const isCurrent =
-      currentPath === linkPath || (linkPath === "/blog" && currentPath === "/post");
+    const isCurrent = currentPath === linkPath || (linkPath === "/blog" && currentPath === "/post");
     if (isCurrent) link.setAttribute("aria-current", "page");
   });
 
