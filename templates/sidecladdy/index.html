@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sideloadly — iOS, Apple Silicon & TV Sideloading</title>
+<meta name="description" content="Sideloadly：安装任意 IPA，无需越狱。支持 iOS 7–26+、Apple Silicon、Apple TV、Windows 与 macOS。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --bg:#0d0a14; --ink:#f4f1ff; --dim:#8e88a8; --line:rgba(180,170,230,.18);
+  --teal:#4fe0c0; --blue:#3aa7ff; --purple:#6b4fff;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.7 var(--sans);
+  overflow-x:hidden;display:flex;flex-direction:column;
+  background-image:radial-gradient(ellipse at 50% 18%,rgba(107,79,255,.28),transparent 46%),
+    radial-gradient(ellipse at 50% 80%,rgba(58,167,255,.10),transparent 45%)}
+a{color:inherit}
+::selection{background:var(--teal);color:#06110e}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px;width:100%}
+header{padding:18px 0}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:20px;font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.nav a{text-decoration:none}
+.nav a:hover{color:var(--ink)}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 0 34px}
+.hero{text-align:center;max-width:760px}
+.mark{width:120px;height:120px;margin:0 auto 26px;position:relative;display:grid;place-items:center;filter:drop-shadow(0 22px 38px rgba(79,224,192,.18))}
+.mark svg{width:100%;height:100%}
+h1{margin:0;font:700 clamp(46px,6.4vw,76px)/1.05 var(--sans);letter-spacing:-.045em;color:#fff}
+.lede{margin:14px 0 0;font-size:15px;color:#b9b2cd}
+.lede b{color:var(--teal);font-weight:400}
+.note{margin:6px 0 0;font-size:11px;color:var(--dim)}
+.platforms{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:28px}
+.platforms a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 16px;
+  font:10px var(--mono);letter-spacing:.04em;color:#c9c4dc;background:rgba(20,16,32,.45);transition:.2s}
+.platforms a:hover{border-color:var(--teal);color:var(--teal);transform:translateY(-1px)}
+.actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:7px;padding:11px 18px;font-size:12px}
+.btn.main{background:linear-gradient(120deg,var(--teal),var(--blue));color:#06110e;font-weight:600}
+.btn.main:hover{filter:brightness(1.06)}
+.btn.ghost{border:1px solid var(--line);color:#cfc9e2;background:rgba(20,16,32,.45)}
+.btn.ghost:hover{border-color:#6f6888}
+.trust{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:26px;font:8.5px var(--mono);letter-spacing:.08em;color:var(--dim)}
+.trust span{display:inline-flex;align-items:center;gap:5px}
+.trust i{width:4px;height:4px;border-radius:50%;background:var(--teal);display:block}
+footer{padding:14px 0 22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font:8.5px var(--mono);letter-spacing:.08em;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--teal)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);background:var(--ink);color:#0d0a14;
+  font:9px var(--mono);padding:7px 12px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px){
+  .wrap{padding:0 18px}
+  .mark{width:92px;height:92px}
+  h1{font-size:clamp(40px,12vw,58px)}
+  .lede{font-size:13px}
+  .trust{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top">Sideloadly</a>
+    <div style="display:flex;gap:16px"><a href="#top">Download</a><a href="#top">FAQ</a><a href="../index.html" target="_top">模板展厅</a></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 120 120">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#4fe0c0"/><stop offset="1" stop-color="#3aa7ff"/>
+          </linearGradient>
+        </defs>
+        <path d="M60 6l10 8 12-3 5 12 12 4-1 13 8 10-8 10 1 13-12 4-5 12-12-3-10 8-10-8-12 3-5-12-12-4 1-13-8-10 8-10-1-13 12-4 5-12 12 3z"
+          fill="none" stroke="url(#g)" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M60 30v34M45 52l15 15 15-15" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M38 86h44" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Sideloadly</h1>
+    <p class="lede">iOS, Apple Silicon &amp; TV Sideloading</p>
+    <p class="note">Install any IPA. No jailbreak required.</p>
+    <div class="platforms" aria-label="支持平台"><a href="#top">iOS 7 — 26+</a><a href="#top">Apple Silicon</a><a href="#top">Apple TV</a><a href="#top">Windows</a><a href="#top">macOS</a></div>
+    <div class="actions"><a class="btn main" href="#top" id="download">↓ Download for macOS</a><a class="btn ghost" href="#top">View source ↗</a></div>
+    <div class="trust"><span><i></i>No jailbreak</span><span><i></i>Open source</span><span><i></i>Local only</span></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 28px">
+    <span>sideloadly.io · 演示页面</span>
+    <a href="../index.html" target="_top">← 模板展厅</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast">下载即将开始（演示）</div>
+<script>
+document.getElementById("download").addEventListener("click", e => {
+  e.preventDefault();
+  const t = document.getElementById("toast");
+  t.classList.add("on");
+  setTimeout(() => t.classList.remove("on"), 1800);
+});
+</script>
+</body>
+</html>

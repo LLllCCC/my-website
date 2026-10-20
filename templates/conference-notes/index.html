@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIGNAL /26 — A conference for the people who build systems</title>
+<meta name="description" content="SIGNAL /26 第六届系统构建者大会，里斯本，2026 年 5 月 14–16 日。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --bg:#0a0a0a; --panel:#121212; --ink:#f1ece2; --dim:#928c80; --line:#2a2926;
+  --orange:#de8a42; --orange-2:#b85a24; --cream:#f1ece2;
+  --serif:"Times New Roman","Songti SC","STSong",Georgia,serif;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.7 var(--sans);overflow-x:hidden;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:52px 52px}
+a{color:inherit}
+::selection{background:var(--orange);color:#111}
+.wrap{max-width:1440px;margin:0 auto;padding:0 36px}
+
+header{border-bottom:1px solid var(--line);background:rgba(10,10,10,.86);backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:20}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:22px;padding-top:14px;padding-bottom:14px}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font:600 13px/1 var(--mono);letter-spacing:.12em}
+.logo i{width:7px;height:7px;border-radius:50%;background:var(--orange);display:block}
+.logo span{color:var(--dim);margin-left:2px}
+.nav-mid{display:flex;gap:24px;font-size:11.5px;color:var(--dim)}
+.nav-mid a{text-decoration:none}
+.nav-mid a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:8px;font:9.5px var(--mono);letter-spacing:.04em}
+.nav-right a{text-decoration:none}
+.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--dim)}
+.pill:hover{color:var(--ink);border-color:var(--ink)}
+.pill.solid{background:var(--orange);border-color:var(--orange);color:#111}
+
+.hero{display:grid;grid-template-columns:1.18fr .82fr;gap:40px;padding-top:36px;align-items:start}
+.eyebrow{font:8.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:0 0 22px}
+h1{margin:0;font:400 clamp(58px,7.6vw,118px)/.87 var(--serif);letter-spacing:-.055em;max-width:10ch}
+h1 em{font-style:italic;color:var(--orange)}
+.hero-left .sub{margin:20px 0 0;color:var(--dim);font-size:12.5px;max-width:46ch;line-height:1.8}
+.details{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px}
+.detail span{display:block;font:8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.detail b{display:block;margin-top:4px;font-size:11.5px;font-weight:500}
+.detail small{display:block;font:8.5px var(--mono);color:var(--dim);margin-top:2px}
+.actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:3px;padding:11px 16px;font-size:12px;border:1px solid var(--line)}
+.btn.main{background:var(--orange);border-color:var(--orange);color:#111;font-weight:600}
+.btn.main:hover{background:#ee9a50}
+.btn:hover{border-color:#6f675a}
+.price-note{font:9px var(--mono);color:var(--dim)}
+
+.planet{position:relative;border-radius:8px;overflow:hidden;min-height:420px;
+  background:
+    radial-gradient(circle at 48% 46%,#ffe1b0 0 3%,#f4b86e 4% 7%,#d9853d 8% 15%,#a95525 16% 34%,#71351a 35% 52%,#3b1b0f 53% 72%,#1a0d08 73% 100%);
+  border:1px solid rgba(222,138,66,.28)}
+.planet::before{content:"";position:absolute;inset:-18%;border:1px solid rgba(255,214,160,.18);border-radius:50%;
+  box-shadow:0 0 0 24px rgba(255,214,160,.06),0 0 0 64px rgba(255,214,160,.035),0 0 0 120px rgba(255,214,160,.02)}
+.planet-top{position:absolute;left:16px;right:16px;top:12px;display:flex;justify-content:space-between;gap:10px;
+  font:8px var(--mono);letter-spacing:.1em;color:rgba(255,236,210,.75);z-index:2}
+.planet-foot{position:absolute;left:16px;right:16px;bottom:12px;display:flex;justify-content:space-between;
+  font:8px var(--mono);letter-spacing:.1em;color:rgba(255,236,210,.7);z-index:2}
+.planet .orb{position:absolute;left:50%;top:50%;width:42%;aspect-ratio:1;transform:translate(-50%,-50%);
+  border-radius:50%;background:radial-gradient(circle at 36% 32%,#fff0cf,#f6b86d 34%,#c86b2c 64%,#6e2d13 100%);
+  box-shadow:0 0 70px rgba(255,160,80,.5),inset -20px -24px 44px rgba(70,24,8,.6)}
+.planet .orb::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:repeating-radial-gradient(circle at 50% 50%,transparent 0 4px,rgba(255,255,255,.025) 4px 5px)}
+
+.speakers{padding-top:38px}
+.s-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;font-size:11.5px;padding-bottom:10px}
+.s-head b{font-weight:500}
+.s-head span{font:8.5px var(--mono);color:var(--dim)}
+.speaker-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.speaker{border:1px solid var(--line);border-radius:5px;padding:8px;background:rgba(18,18,18,.7);text-decoration:none;transition:.2s}
+.speaker:hover{border-color:#6f675a;transform:translateY(-2px)}
+.speaker .pic{height:120px;border-radius:3px;background:var(--c);position:relative;overflow:hidden}
+.speaker .pic::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.16),transparent 52%)}
+.speaker b{display:block;margin-top:8px;font-weight:500;font-size:11.5px}
+.speaker span{display:block;font:8.5px var(--mono);color:var(--dim);margin-top:2px}
+
+.program{margin-top:40px;border-top:1px solid var(--line);padding-top:22px;padding-bottom:30px}
+.program-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:14px}
+.program-head h2{margin:0;font:400 24px var(--serif)}
+.program-head span{font:8.5px var(--mono);color:var(--dim)}
+.sessions{display:grid;gap:0}
+.session{display:grid;grid-template-columns:78px 1.3fr .8fr .5fr;gap:14px;align-items:baseline;
+  padding:11px 0;border-bottom:1px solid var(--line);font-size:11.5px;text-decoration:none}
+.session:hover{color:var(--orange)}
+.session time{font:9px var(--mono);color:var(--dim)}
+.session b{font-weight:500}
+.session span{font:9px var(--mono);color:var(--dim)}
+
+footer{border-top:1px solid var(--line);padding:14px 0 22px;display:flex;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font:8.5px var(--mono);letter-spacing:.08em;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--orange)}
+
+@media(max-width:1000px){
+  .wrap{padding:0 22px}
+  .hero{grid-template-columns:1fr;gap:26px}
+  .planet{min-height:340px}
+  .nav-mid{display:none}
+  .speaker-row{grid-template-columns:1fr 1fr}
+  .details{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .wrap{padding:0 16px}
+  .nav-right .pill:not(.solid){display:none}
+  h1{font-size:clamp(44px,13vw,68px)}
+  .session{grid-template-columns:60px 1fr}
+  .session span:last-child{display:none}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.speaker{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top"><i></i>SIGNAL <span>/26</span></a>
+    <nav class="nav-mid" aria-label="主导航"><a href="#program">Programme</a><a href="#speakers">Speakers</a><a href="#program">Workshops</a><a href="#top">Venue</a><a href="#top">Past editions</a></nav>
+    <div class="nav-right"><span class="pill">Early-bird ends Apr 30</span><a class="pill" href="#top">Sign in</a><a class="pill solid" href="#program">Get ticket →</a></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-left">
+        <p class="eyebrow">Sixth edition · 14 — 16 May · Lisbon, PT</p>
+        <h1>A conference for the people <em>who build / systems.</em></h1>
+        <p class="sub">两天主舞台、八个专题轨道、十四场动手工作坊。给那些真的把系统跑起来的人。</p>
+        <div class="details">
+          <div class="detail"><span>Dates</span><b>Thu — Sat</b><small>14 — 16 May 2026</small></div>
+          <div class="detail"><span>Venue</span><b>Carlos Lopes Pavilion</b><small>Lisbon, Portugal</small></div>
+          <div class="detail"><span>Format</span><b>Two stages, eight tracks</b><small>+ 14 hands-on workshops</small></div>
+          <div class="detail"><span>Attendees</span><b>≈ 1,400</b><small>40+ countries</small></div>
+        </div>
+        <div class="actions"><a class="btn main" href="#program">Reserve a seat</a><a class="btn" href="#program">Programme PDF</a><span class="price-note">From €340 · Student €120 · Team rate available</span></div>
+      </div>
+      <div class="planet" aria-label="SIGNAL 26 主视觉：橙色星球">
+        <div class="planet-top"><span>SIGNAL/26</span><span>14° 35′ N · 9° 9′ W</span></div>
+        <div class="orb"></div>
+        <div class="planet-foot"><span>LIS · PT</span><span>Edition VI</span></div>
+      </div>
+    </section>
+
+    <section class="speakers" id="speakers">
+      <div class="s-head"><b>Headline speakers</b><span>+ 38 more →</span></div>
+      <div class="speaker-row">
+        <a class="speaker" href="#program"><div class="pic" style="--c:linear-gradient(145deg,#c4783d,#8d4a22)"></div><b>Helen Vass</b><span>Northcape</span></a>
+        <a class="speaker" href="#program"><div class="pic" style="--c:linear-gradient(145deg,#5f6d4f,#38402f)"></div><b>Marco Riva</b><span>Helix Labs</span></a>
+        <a class="speaker" href="#program"><div class="pic" style="--c:linear-gradient(145deg,#6a4c9e,#3d2c65)"></div><b>Sara Kohler</b><span>Forester</span></a>
+        <a class="speaker" href="#program"><div class="pic" style="--c:linear-gradient(145deg,#9a8b70,#5d5342)"></div><b>Jonas Tan</b><span>Argon</span></a>
+      </div>
+    </section>
+
+    <section class="program" id="program">
+      <div class="program-head"><h2>Day one — Opening</h2><span>Thu · 14 May / Main stage</span></div>
+      <div class="sessions">
+        <a class="session" href="#program"><time>09:30</time><b>Designing for resilience</b><span>Helen Vass · Northcape</span><span>KEYNOTE</span></a>
+        <a class="session" href="#program"><time>11:00</time><b>Systems that outlive their authors</b><span>Marco Riva · Helix Labs</span><span>TALK</span></a>
+        <a class="session" href="#program"><time>14:00</time><b>Workshop: failure is a feature</b><span>Small room · 24 seats</span><span>WORKSHOP</span></a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 36px">
+    <span>© 2026 SIGNAL /26 · Lisbon</span>
+    <a href="../index.html" target="_top">← 模板展厅</a>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Signal. — 当 AI 开始替你思考，你还剩下什么？</title>
+<meta name="description" content="Signal 是一本保持好奇的中文科技周刊，关注 AI、设计与数字生活。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#f7f6f3; --ink:#151513; --dim:#77756e; --line:#dcd9d0; --blue:#1d3fc4; --blue-2:#4a63d8;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --serif:Georgia,"Songti SC","STSong",serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.7 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--blue);color:#fff}
+.wrap{max-width:1440px;margin:0 auto;padding:0 38px}
+
+.topline{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);
+  padding:10px 0;font:8.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.topline .right{display:flex;gap:18px;align-items:center}
+.topline i{width:5px;height:5px;border-radius:50%;background:var(--blue);display:inline-block;margin-right:5px}
+
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:16px 0 20px;border-bottom:1px solid var(--ink)}
+.wordmark{margin:0;font:700 clamp(64px,9vw,122px)/.78 var(--sans);letter-spacing:-.075em}
+.wordmark span{color:var(--blue)}
+.mast-mid{flex:1;display:flex;flex-direction:column;gap:4px;padding-left:10px}
+.mast-mid b{font-size:13px;font-weight:500}
+.mast-mid span{font:9px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.mast-right{text-align:right;font:9px var(--mono);letter-spacing:.1em;color:var(--dim)}
+.mast-right b{display:block;font:400 22px/1.2 var(--sans);letter-spacing:-.02em;color:var(--ink);margin-top:4px}
+
+.tabs{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--ink);padding:9px 0;margin-top:6px}
+.tablist{display:flex;gap:18px;font-size:11.5px;color:var(--dim)}
+.tablist a{text-decoration:none;padding-bottom:5px}
+.tablist a:hover{color:var(--ink)}
+.tablist a[aria-current="page"]{color:var(--blue);border-bottom:2px solid var(--blue)}
+.tools{display:flex;gap:12px;align-items:center;font:9px var(--mono);color:var(--dim)}
+.tools a{text-decoration:none}
+.tools b{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--line);font-size:7px;margin-left:3px;font-weight:400}
+
+.hero{display:grid;grid-template-columns:1.05fr 1.25fr .7fr;gap:26px;padding:24px 0 28px;border-bottom:1px solid var(--line)}
+.kicker{display:flex;align-items:center;gap:7px;font:8.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.kicker span{background:var(--blue);color:#fff;padding:3px 6px;letter-spacing:.04em}
+h1{margin:0;font:700 clamp(34px,3.7vw,54px)/1.08 var(--sans);letter-spacing:-.05em}
+h1 em{font-style:normal;color:var(--blue)}
+.lede{margin:14px 0 0;color:var(--dim);font-size:12px;line-height:1.8;max-width:38ch}
+.byline{display:flex;align-items:center;gap:8px;margin-top:16px;font:9px var(--mono);color:var(--dim)}
+.byline i{width:22px;height:22px;border-radius:50%;background:#dfe4f2;display:inline-grid;place-items:center;font-style:normal;color:var(--blue);font-size:8px}
+.cta-row{display:flex;align-items:center;gap:12px;margin-top:18px}
+.cta{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;text-decoration:none;
+  padding:10px 14px;font-size:11.5px;border-radius:2px}
+.cta:hover{background:#1632a4}
+.save{appearance:none;border:1px solid var(--line);background:none;width:34px;height:34px;border-radius:4px;cursor:pointer;color:var(--dim)}
+.save.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.figure{border:1px solid var(--line);background:#f3f5fa;position:relative;min-height:420px;
+  display:flex;flex-direction:column;justify-content:space-between;padding:12px}
+.figure .cap{display:flex;justify-content:space-between;gap:10px;font:8px var(--mono);letter-spacing:.08em;color:var(--dim)}
+.figure canvas{width:100%;flex:1;display:block;min-height:340px}
+.figure .foot{display:flex;justify-content:space-between;gap:10px;font:8px var(--mono);color:var(--dim)}
+
+.note{border-left:1px solid var(--line);padding-left:18px}
+.note .k{font:8.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between}
+.note blockquote{margin:14px 0 0;font:400 27px/1.3 var(--serif);letter-spacing:-.03em}
+.note blockquote em{font-style:normal;color:var(--blue)}
+.note p{margin:14px 0 0;font-size:11px;color:var(--dim);line-height:1.9}
+.sign{margin-top:18px;text-align:right;font:italic 22px var(--serif)}
+.disclaimer{margin-top:18px;border-top:1px dashed var(--line);padding-top:10px;font:8px var(--mono);color:var(--dim);line-height:1.7}
+.disclaimer span{border:1px solid var(--line);padding:2px 5px;border-radius:2px}
+
+.article{padding:34px 0 50px;display:grid;grid-template-columns:.55fr 1fr .55fr;gap:30px;align-items:start}
+.article h2{margin:0;font:700 24px/1.25 var(--sans);letter-spacing:-.03em}
+.article .body{grid-column:2;font-size:13px;color:#3b3a36}
+.article .body p{margin:0 0 1.1em;line-height:1.95}
+.article .body h3{margin:1.6em 0 .5em;font:600 16px/1.4 var(--sans);color:var(--ink)}
+.article .body blockquote{margin:0 0 1.2em;padding:10px 14px;border-left:2px solid var(--blue);background:#eef1fa;color:#3f4a70;font-size:12px}
+.article .side{font:8.5px var(--mono);color:var(--dim);line-height:1.8}
+
+footer{border-top:1px solid var(--line);padding:14px 0 24px;display:flex;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font:8.5px var(--mono);letter-spacing:.08em;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--blue)}
+
+@media(max-width:1000px){
+  .wrap{padding:0 22px}
+  .hero{grid-template-columns:1fr 1fr}
+  .note{grid-column:1 / -1;border-left:0;border-top:1px solid var(--line);padding:16px 0 0}
+  .article{grid-template-columns:1fr}
+  .article .body,.article .side{grid-column:1}
+  .mast-mid{display:none}
+}
+@media(max-width:640px){
+  .wrap{padding:0 16px}
+  .hero{grid-template-columns:1fr}
+  .figure{min-height:320px}
+  .topline .right span:not(:last-child){display:none}
+  .tablist{gap:12px;overflow:auto}
+  .mast-right{display:none}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topline">
+    <span>一本保持好奇的中文科技周刊</span>
+    <span class="right"><span><i></i>独立视角</span><span>每周六见</span></span>
+  </div>
+
+  <header class="mast">
+    <h1 class="wordmark">Signal<span>.</span></h1>
+    <div class="mast-mid"><b>AI、设计与数字生活</b><span>A weekly for the curious mind.</span></div>
+    <div class="mast-right">EST. 2026<b>N° 003 ↓</b></div>
+  </header>
+
+  <div class="tabs">
+    <nav class="tablist" aria-label="栏目"><a href="#article" aria-current="page">最新一期</a><a href="#article">AI</a><a href="#article">设计</a><a href="#article">数字生活</a><a href="#article">往期周刊 ↗</a></nav>
+    <div class="tools"><a href="#article">☑ 稍后阅读 <b id="saved">0</b></a><a href="#article">⌕</a></div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div>
+        <div class="kicker">本期周刊 · 演示 VOL. 003<span>封面故事</span> AI · 人与技术</div>
+        <h1>当 AI 开始<br>替你思考，<br><em>你还剩下什么？</em></h1>
+        <p class="lede">从“帮我完成”到“替我决定”，我们与 AI 的关系正在悄悄改变。真正值得讨论的，也许不是它能做什么，而是我们选择保留什么。</p>
+        <div class="byline"><i>林</i>林序 / 4 分钟阅读</div>
+        <div class="cta-row"><a class="cta" href="#article">阅读封面故事 ↗</a><button class="save" type="button" id="save" aria-label="稍后阅读">☑</button></div>
+      </div>
+
+      <figure class="figure" style="margin:0">
+        <div class="cap"><span>FIG. 003 — HUMAN × MACHINE</span><span>+</span></div>
+        <canvas id="torus" aria-label="蓝色线框环面插图"></canvas>
+        <div class="foot"><span>A LOOP OF THOUGHT</span><span>2026</span></div>
+      </figure>
+
+      <aside class="note">
+        <div class="k"><span>■ 编者的话</span><span>Editor's note</span></div>
+        <blockquote>“在信息洪流里，打捞值得思考的<em>信号</em>。”</blockquote>
+        <p>技术跑得很快，思考可以慢一点。Signal 关注 AI 的进展、设计的温度，以及我们与数字世界相处的方式。</p>
+        <p>每周一次，不追逐所有热点，只留下值得你花时间的内容。</p>
+        <div class="sign">Signal.</div>
+        <div class="disclaimer"><span>演示刊物</span><br>本站所有文章均为原创演示内容，不构成真实新闻报道。</div>
+      </aside>
+    </section>
+
+    <section class="article" id="article">
+      <div class="side">01 / 编辑推荐<br>THE EDIT<br><br>AI · 设计 · 生活<br>2026.09.12</div>
+      <div class="body">
+        <h2>把思考留在自己手里</h2>
+        <p>我们很容易把“效率”当成唯一指标。让 AI 写第一稿、让 AI 列提纲、让 AI 做决定，看起来是把时间省下来了，但省下来的时间又被下一件事填满。</p>
+        <p>问题不在于 AI 能不能替我们思考，而在于我们是否还保留着慢下来、重新组织信息、得出自己结论的能力。</p>
+        <h3>三个可以练习的动作</h3>
+        <p>第一，先自己写一段，再让 AI 补充，而不是反过来。第二，让它给出反方观点，而不是只给一个答案。第三，把不确定的地方标出来，别让流畅的语气替你做担保。</p>
+        <blockquote>工具可以替你做很多事，但“选择保留什么”这件事，最好还是自己来。</blockquote>
+        <p>这并不是拒绝 AI，而是给它一个更合适的位置：它是放大器，不是替代品。</p>
+      </div>
+      <div class="side">阅读原文 ↗<br><br>分享 · 收藏<br><br>本期共 4 篇<br>下一篇：<br>《把提示词写短一点》</div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:0 38px">
+    <span>© 2026 Signal. · 独立科技周刊 / 演示</span>
+    <a href="../index.html" target="_top">← 模板展厅</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const canvas = document.getElementById("torus");
+  const ctx = canvas.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, dpr = Math.min(devicePixelRatio || 1, 2);
+  let angle = 0.5;
+
+  function resize(){
+    const r = canvas.getBoundingClientRect();
+    W = r.width; H = r.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function project(x, y, z){
+    const ca = Math.cos(angle), sa = Math.sin(angle);
+    const x1 = x * ca - z * sa;
+    const z1 = x * sa + z * ca;
+    const tilt = 0.62;
+    const y1 = y * Math.cos(tilt) - z1 * Math.sin(tilt);
+    const z2 = y * Math.sin(tilt) + z1 * Math.cos(tilt);
+    const persp = 1 / (1 - z2 * 0.0024);
+    return [W / 2 + x1 * persp * 1.55, H / 2 + y1 * persp * 1.55, z2];
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = "rgba(29,63,196,.55)";
+    ctx.lineWidth = .7;
+    const R = 100, r = 42, U = 44, V = 20;
+    // U-lines
+    for (let i = 0; i < U; i++){
+      const u = i / U * Math.PI * 2;
+      ctx.beginPath();
+      for (let j = 0; j <= V; j++){
+        const v = j / V * Math.PI * 2;
+        const x = (R + r * Math.cos(v)) * Math.cos(u);
+        const y = (R + r * Math.cos(v)) * Math.sin(u);
+        const z = r * Math.sin(v);
+        const p = project(x, y, z);
+        if (j === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+      }
+      ctx.stroke();
+    }
+    // V-lines
+    for (let j = 0; j < V; j++){
+      const v = j / V * Math.PI * 2;
+      ctx.beginPath();
+      for (let i = 0; i <= U; i++){
+        const u = i / U * Math.PI * 2;
+        const x = (R + r * Math.cos(v)) * Math.cos(u);
+        const y = (R + r * Math.cos(v)) * Math.sin(u);
+        const z = r * Math.sin(v);
+        const p = project(x, y, z);
+        if (i === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+      }
+      ctx.stroke();
+    }
+    // floor grid
+    ctx.strokeStyle = "rgba(29,63,196,.08)";
+    for (let i = 0; i < 9; i++){
+      const y = H * .78 + i * 10;
+      ctx.beginPath(); ctx.moveTo(W * .1, y); ctx.lineTo(W * .9, y); ctx.stroke();
+    }
+    if (!reduce){
+      angle += .0025;
+      requestAnimationFrame(draw);
+    }
+  }
+
+  addEventListener("resize", () => { resize(); if (reduce) draw(); });
+  resize(); draw();
+
+  const save = document.getElementById("save");
+  const saved = document.getElementById("saved");
+  save.addEventListener("click", () => {
+    save.classList.toggle("on");
+    saved.textContent = save.classList.contains("on") ? "1" : "0";
+  });
+})();
+</script>
+</body>
+</html>

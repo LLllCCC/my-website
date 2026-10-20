@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小账本 — 收支概览</title>
+<meta name="description" content="把日子慢慢记好：收入、支出、结余与预算的小账本。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#faf8f4; --panel:#fffdf9; --ink:#2f3530; --dim:#8a8d84; --line:#ebe6dc;
+  --orange:#df8a64; --green:#5f8b6d; --gold:#c9a24b; --purple:#8a7bb8;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:13px/1.65 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--orange);color:#fff}
+.app{display:grid;grid-template-columns:228px 1fr;min-height:100vh}
+
+.side{background:#f4efe7;border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;padding:0 6px}
+.brand i{width:38px;height:38px;border-radius:10px;background:var(--orange);display:grid;place-items:center;color:#fff;font:16px var(--sans)}
+.brand b{display:block;font-size:17px;font-weight:600;letter-spacing:.02em}
+.brand span{display:block;font-size:9px;color:var(--dim);margin-top:2px}
+.side-label{font:8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:0 8px}
+.nav{display:grid;gap:2px}
+.nav a{display:flex;align-items:center;gap:9px;text-decoration:none;color:#5d615a;font-size:11.5px;padding:9px 10px;border-radius:7px}
+.nav a:hover{background:#fff}
+.nav a[aria-current="page"]{background:#f9e7dd;color:#b35f3a}
+.nav a .dot{width:5px;height:5px;border-radius:50%;background:var(--orange);margin-left:auto}
+.side-quote{margin-top:auto;background:#f7f2e8;border:1px solid #eadfce;border-radius:10px;padding:13px;font-size:10.5px;color:#7c7a6c;line-height:1.8}
+.side-quote i{font-style:normal;font-size:18px;color:var(--green);display:block}
+.side-privacy{font-size:9px;color:var(--dim);padding:0 8px;display:flex;justify-content:space-between}
+
+.main{padding:18px 28px 30px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;font:9px var(--mono);color:var(--dim)}
+.top .crumb{letter-spacing:.04em}
+.local{display:inline-flex;align-items:center;gap:5px;background:#eef4ee;color:#4d7359;border-radius:999px;padding:5px 9px;font-size:9px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.head h1{margin:0;font:400 30px/1.2 var(--sans);letter-spacing:-.03em}
+.head h1 span{color:var(--green);font-size:20px;margin-left:4px}
+.head p{margin:4px 0 0;font-size:11px;color:var(--dim)}
+.tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.month{display:inline-flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:7px;overflow:hidden}
+.month button{appearance:none;border:0;background:none;padding:7px 9px;cursor:pointer;color:var(--dim)}
+.month button:hover{color:var(--ink)}
+.month span{font:10px var(--mono);padding:0 8px}
+.chip{font:8px var(--mono);border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 8px;color:var(--dim)}
+.add{appearance:none;border:0;background:var(--orange);color:#fff;border-radius:7px;padding:9px 13px;font-size:11px;cursor:pointer}
+.add:hover{filter:brightness(.96)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.kpi{border-radius:10px;padding:14px 15px;min-height:112px;position:relative;overflow:hidden;border:1px solid rgba(0,0,0,.04)}
+.kpi .l{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#7f8178}
+.kpi .l i{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.6);display:grid;place-items:center;font-style:normal;font-size:10px}
+.kpi b{display:block;font:600 24px/1.25 var(--sans);letter-spacing:-.04em;margin-top:14px}
+.kpi small{display:block;font-size:8.5px;color:#8a8d84;margin-top:5px}
+.kpi.k1{background:#e8f0e9}.kpi.k2{background:#f9e8df}.kpi.k3{background:#f5eeda}.kpi.k4{background:#eeebf7}
+.kpi.k1 b{color:#4d7359}.kpi.k2 b{color:#b35f3a}.kpi.k3 b{color:#9a7a2f}.kpi.k4 b{color:#6d5e9f}
+
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 17px}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.card-head h2{margin:0;font-size:13px;font-weight:600}
+.card-head span{font:8px var(--mono);color:var(--dim)}
+.donut-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut{width:170px;height:170px;position:relative;flex:0 0 auto}
+.donut svg{display:block;width:100%;height:100%;transform:rotate(-90deg)}
+.donut .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.donut .center span{font-size:9px;color:var(--dim)}
+.donut .center b{font:600 20px var(--sans);letter-spacing:-.03em}
+.donut .center small{font-size:8px;color:var(--dim);margin-top:2px}
+.legend2{display:grid;gap:7px;flex:1;min-width:150px}
+.lg{display:grid;grid-template-columns:8px 1fr auto;gap:7px;align-items:center;font-size:10px;color:#5f625a}
+.lg i{width:7px;height:7px;border-radius:2px;background:var(--c)}
+.lg b{font-weight:400;text-align:right;color:var(--ink)}
+.big-amount{font:600 22px var(--sans);letter-spacing:-.03em;margin-top:4px}
+.big-amount small{font:9px var(--mono);color:var(--dim);margin-left:4px}
+.chart{display:block;width:100%;height:auto;margin-top:6px}
+.budget{margin-top:12px}
+.budget .card-head{margin-bottom:12px}
+.budget-row{display:grid;grid-template-columns:26px 1fr 52px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:10px}
+.budget-row:last-child{border-bottom:0}
+.budget-row i{width:24px;height:24px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-style:normal;font-size:10px}
+.budget-row .t b{display:block;font-weight:500}
+.budget-row .t small{display:block;font:8px var(--mono);color:var(--dim)}
+.budget-row .bar{height:5px;border-radius:3px;background:#f0ede6;margin-top:4px;position:relative;overflow:hidden}
+.budget-row .bar span{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--c)}
+.budget-row .pct{text-align:right;font:8.5px var(--mono);color:var(--dim)}
+
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,14px);background:#3a443c;color:#fff;
+  font:9px var(--mono);padding:7px 12px;border-radius:4px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:1000px){
+  .app{grid-template-columns:1fr}
+  .side{flex-direction:row;align-items:center;overflow-x:auto;padding:10px 14px;gap:10px}
+  .brand i{width:30px;height:30px}
+  .brand b{font-size:14px}
+  .brand span,.side-label,.side-quote,.side-privacy{display:none}
+  .nav{display:flex;gap:2px}
+  .nav a{white-space:nowrap;font-size:11px;padding:6px 8px}
+  .main{padding:16px 18px}
+}
+@media(max-width:700px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}
+  .head h1{font-size:24px}
+}
+@media(max-width:480px){
+  .main{padding:14px 12px}
+  .kpis{grid-template-columns:1fr 1fr;gap:8px}
+  .kpi b{font-size:20px}
+  .donut{width:140px;height:140px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="#top"><i>本</i><span><b>小账本</b><span>把日子，慢慢记好</span></span></a>
+    <div class="side-label">我的账本</div>
+    <nav class="nav" aria-label="主导航"><a href="#top" aria-current="page">▦ 收支概览 <span class="dot"></span></a><a href="#top">▤ 全部账单</a><a href="#top">◎ 预算管理</a></nav>
+    <div class="side-quote"><i>❞</i>每一笔小记录，<br>都是认真生活的痕迹。<br>慢慢来，积少成多。</div>
+    <div class="side-privacy"><span>▣ 数据与隐私</span><span>›</span></div>
+    <div class="side-privacy"><span>● 仅存于此浏览器</span></div>
+  </aside>
+
+  <main class="main" id="top">
+    <div class="top"><span class="crumb">我的小账本 / 收支概览</span><span class="local">▣ 本地私享</span></div>
+    <div class="head">
+      <div><h1>生活有数，心里有底 <span>♧</span></h1><p>好好记账，也好好生活。来看看这个月的小日常。</p></div>
+      <div class="tools">
+        <div class="month"><button type="button" id="prev" aria-label="上个月">‹</button><span id="month-label">2026 年 9 月</span><button type="button" id="next" aria-label="下个月">›</button></div>
+        <span class="chip">本月</span><span class="chip">演示数据</span>
+        <button class="add" type="button" id="add">＋ 记一笔</button>
+      </div>
+    </div>
+
+    <section class="kpis">
+      <div class="kpi k1"><div class="l"><span>本月收入</span><i>↙</i></div><b id="income">¥18,500.00</b><small>2 笔收入，每份努力都有回响</small></div>
+      <div class="kpi k2"><div class="l"><span>本月支出</span><i>↗</i></div><b id="expense">¥6,157.50</b><small>↓ 11.5% 较上月少花了一些</small></div>
+      <div class="kpi k3"><div class="l"><span>本月结余</span><i>▣</i></div><b id="balance">¥12,342.50</b><small>结余率 67%，一点点积累小美好</small></div>
+      <div class="kpi k4"><div class="l"><span>预算剩余</span><i>◎</i></div><b id="budget">¥1,842.50</b><small>月预算 ¥8,000.00 · 已用 77%</small></div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card-head"><h2>钱都花在哪儿</h2><span>消费分类</span></div>
+        <div class="donut-row">
+          <div class="donut">
+            <svg viewBox="0 0 120 120" aria-label="支出分类环形图">
+              <circle cx="60" cy="60" r="46" fill="none" stroke="#f1ede5" stroke-width="16"/>
+              <circle cx="60" cy="60" r="46" fill="none" stroke="#e08a64" stroke-width="16" stroke-dasharray="56 245" stroke-dashoffset="0"/>
+              <circle cx="60" cy="60" r="46" fill="none" stroke="#c9a24b" stroke-width="16" stroke-dasharray="67 245" stroke-dashoffset="-56"/>
+              <circle cx="60" cy="60" r="46" fill="none" stroke="#7f9b7e" stroke-width="16" stroke-dasharray="112 245" stroke-dashoffset="-123"/>
+              <circle cx="60" cy="60" r="46" fill="none" stroke="#8a7bb8" stroke-width="16" stroke-dasharray="10 245" stroke-dashoffset="-235"/>
+            </svg>
+            <div class="center"><span>本月总支出</span><b id="donut-total">¥6,157.50</b><small>24 笔小日常</small></div>
+          </div>
+          <div class="legend2">
+            <div class="lg"><i style="--c:#e08a64"></i><span>餐饮美食</span><b>20%</b></div>
+            <div class="lg"><i style="--c:#c9a24b"></i><span>购物消费</span><b>24%</b></div>
+            <div class="lg"><i style="--c:#7f9b7e"></i><span>居家生活</span><b>40%</b></div>
+            <div class="lg"><i style="--c:#8a7bb8"></i><span>交通出行</span><b>4%</b></div>
+            <div class="lg"><i style="--c:#c9b7a6"></i><span>休闲娱乐</span><b>7%</b></div>
+            <div class="lg"><i style="--c:#ded7cc"></i><span>其他支出</span><b>5%</b></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>每日支出趋势</h2><span>每日支出</span></div>
+        <div class="big-amount">¥513.13 <small>日均支出</small></div>
+        <svg class="chart" viewBox="0 0 560 190" role="img" aria-label="每日支出折线图">
+          <g stroke="#f0ede6"><line x1="36" y1="30" x2="540" y2="30"/><line x1="36" y1="75" x2="540" y2="75"/><line x1="36" y1="120" x2="540" y2="120"/><line x1="36" y1="165" x2="540" y2="165"/></g>
+          <path d="M36 140 C70 130 90 150 120 135 S160 120 190 128 230 70 250 58 275 95 300 145 340 160 380 158 430 160 470 158 C500 157 520 156 540 155" fill="none" stroke="#df8a64" stroke-width="2"/>
+          <path d="M36 140 C70 130 90 150 120 135 S160 120 190 128 230 70 250 58 275 95 300 145 340 160 380 158 430 160 470 158 C500 157 520 156 540 155 L540 175 L36 175 Z" fill="#df8a64" opacity=".08"/>
+          <g fill="#a7a49a" font-family="monospace" font-size="8"><text x="34" y="186">1日</text><text x="140" y="186">5日</text><text x="246" y="186">10日</text><text x="350" y="186">15日</text><text x="456" y="186">20日</text><text x="512" y="186">25日</text></g>
+        </svg>
+      </section>
+    </div>
+
+    <section class="card budget">
+      <div class="card-head"><h2>给花销一点小计划 <span style="font:8px var(--mono);color:var(--dim);background:#f4efe7;padding:3px 6px;border-radius:3px">分类预算</span></h2><span>设置预算 ›</span></div>
+      <div class="budget-row" style="--bg:#f7e4da;--c:#e08a64"><i>🍜</i><div class="t"><b>餐饮美食</b><small>¥1,206.50 / ¥1,500.00</small><div class="bar"><span style="width:80%"></span></div></div><span class="pct">80%</span></div>
+      <div class="budget-row" style="--bg:#f7efd9;--c:#c9a24b"><i>🛍</i><div class="t"><b>购物消费</b><small>¥1,479.00 / ¥1,800.00</small><div class="bar"><span style="width:82%"></span></div></div><span class="pct">82%</span></div>
+      <div class="budget-row" style="--bg:#e7efe7;--c:#7f9b7e"><i>🏠</i><div class="t"><b>居家生活</b><small>¥2,471.00 / ¥2,500.00</small><div class="bar"><span style="width:99%"></span></div></div><span class="pct">99%</span></div>
+      <div class="budget-row" style="--bg:#e9e6f4;--c:#8a7bb8"><i>🚌</i><div class="t"><b>交通出行</b><small>¥238.00 / ¥500.00</small><div class="bar"><span style="width:48%"></span></div></div><span class="pct">48%</span></div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast">已记一笔（演示）</div>
+
+<script>
+(() => {
+  const months = [
+    { label:"2026 年 9 月", income:"¥18,500.00", expense:"¥6,157.50", balance:"¥12,342.50", budget:"¥1,842.50", total:"¥6,157.50" },
+    { label:"2026 年 8 月", income:"¥17,200.00", expense:"¥6,958.00", balance:"¥10,242.00", budget:"¥1,042.00", total:"¥6,958.00" },
+    { label:"2026 年 7 月", income:"¥16,800.00", expense:"¥7,420.00", balance:"¥9,380.00", budget:"¥580.00", total:"¥7,420.00" },
+  ];
+  let i = 0;
+  function render(){
+    const m = months[i];
+    document.getElementById("month-label").textContent = m.label;
+    document.getElementById("income").textContent = m.income;
+    document.getElementById("expense").textContent = m.expense;
+    document.getElementById("balance").textContent = m.balance;
+    document.getElementById("budget").textContent = m.budget;
+    document.getElementById("donut-total").textContent = m.total;
+  }
+  document.getElementById("prev").addEventListener("click", () => { i = (i + 1) % months.length; render(); });
+  document.getElementById("next").addEventListener("click", () => { i = (i - 1 + months.length) % months.length; render(); });
+  document.getElementById("add").addEventListener("click", () => {
+    const t = document.getElementById("toast");
+    t.classList.add("on");
+    setTimeout(() => t.classList.remove("on"), 1600);
+  });
+  render();
+})();
+</script>
+</body>
+</html>

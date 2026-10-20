@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lattice — Build AI that reasons like your best analyst</title>
+<meta name="description" content="Lattice 把模型的推理过程变成可读、可验证的结构。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --bg:#0b0b0c; --panel:#101011; --panel-2:#151514; --ink:#f2efe8; --dim:#8b877e;
+  --line:#26251f; --warm:#d8c39c; --cream:#f3efe6; --black:#0b0b0c;
+  --serif:"Times New Roman","Songti SC","STSong",Georgia,serif;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 var(--sans);overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 74% -12%,rgba(216,195,156,.08),transparent 42%)}
+a{color:inherit}
+::selection{background:var(--warm);color:var(--black)}
+.wrap{max-width:1220px;margin:0 auto;padding:0 36px}
+
+header{border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:rgba(11,11,12,.82);backdrop-filter:blur(12px)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:14px 0}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 14px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+.logo i{width:13px;height:13px;background:var(--ink);display:block;position:relative}
+.logo i::after{content:"";position:absolute;inset:4px;background:var(--warm)}
+.nav-mid{display:flex;gap:26px;font:9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.nav-mid a{text-decoration:none}
+.nav-mid a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:14px;font:9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.nav-right a{text-decoration:none;color:var(--dim)}
+.nav-right a:hover{color:var(--ink)}
+.nav-cta{background:var(--ink);color:var(--black)!important;padding:8px 13px;border-radius:2px}
+
+.hero{padding:74px 0 46px}
+.eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 26px;
+  font:9.5px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.eyebrow b{color:var(--warm);font-weight:400}
+h1{margin:0;font:400 clamp(58px,8.6vw,124px)/.89 var(--serif);letter-spacing:-.055em;max-width:11ch}
+h1 em{font-style:italic;color:var(--warm);letter-spacing:-.03em}
+.hero-copy{max-width:50ch;margin:28px 0 0;color:var(--dim);font-size:15.5px;line-height:1.85}
+.hero-copy b{color:var(--ink);font-weight:400}
+.actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:3px;
+  padding:11px 17px;font-size:12.5px;transition:.2s}
+.btn-main{background:var(--cream);color:var(--black);font-weight:600}
+.btn-main:hover{background:var(--warm)}
+.btn-text{font-size:12px;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:2px}
+.btn-text:hover{color:var(--ink);border-color:var(--ink)}
+
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);margin-top:52px}
+.metric{padding:18px 20px 17px;border-right:1px solid var(--line)}
+.metric:last-child{border-right:0}
+.metric b{display:block;font:400 clamp(28px,3.2vw,42px)/1.1 var(--serif);letter-spacing:-.03em}
+.metric b small{font:11px var(--mono);color:var(--dim);margin-left:2px;letter-spacing:0}
+.metric span{display:block;margin-top:6px;font:8.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+.section{padding:66px 0 0}
+.s-head{display:flex;justify-content:space-between;align-items:baseline;gap:24px;border-bottom:1px solid var(--ink);padding-bottom:10px}
+.s-head h2{margin:0;font:400 clamp(28px,3.4vw,42px)/1.15 var(--serif);letter-spacing:-.03em}
+.s-head span{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+/* demo */
+.try{padding:70px 0 0}
+.try-head{display:grid;grid-template-columns:1fr .8fr;gap:30px;align-items:end}
+.try-head h2{margin:0;font:400 clamp(28px,3.4vw,42px)/1.15 var(--serif);letter-spacing:-.03em}
+.try-head p{margin:0;color:var(--dim);font-size:13px;max-width:44ch;line-height:1.8}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:22px 0 12px}
+.presets button{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--dim);
+  padding:7px 11px;font:10px var(--mono);cursor:pointer;border-radius:2px;transition:.18s}
+.presets button:hover{color:var(--ink);border-color:var(--ink)}
+.presets button[aria-pressed="true"]{background:var(--warm);border-color:var(--warm);color:var(--black)}
+.demo-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;align-items:stretch}
+.card-cream{background:var(--cream);color:var(--black);border-radius:8px;padding:22px 24px;
+  display:flex;flex-direction:column;min-height:380px}
+.pane-top{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(11,11,12,.16);padding-bottom:10px}
+.pane-top span{font:8.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#756f63}
+.pane-top button{appearance:none;background:none;border:1px solid rgba(11,11,12,.2);color:#4e4a41;
+  font:8.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;cursor:pointer;border-radius:2px}
+.pane-top button:hover{border-color:var(--black);color:var(--black)}
+.query{font:12.5px/1.7 var(--mono);background:rgba(11,11,12,.055);border-left:2px solid var(--warm);
+  padding:10px 12px;margin:14px 0 16px}
+.answer{display:flex;flex-direction:column;gap:13px;flex:1}
+.block h3{margin:0 0 4px;font:8.5px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#8a8274}
+.block p{margin:0;font-size:13px;line-height:1.75;color:#25231f}
+.structure{display:none;flex:1;margin-top:14px}
+.demo-grid.struct .answer{display:none}
+.demo-grid.struct .structure{display:block}
+.structure svg{display:block;width:100%;height:auto}
+.demo-foot{display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:10px;
+  border-top:1px solid rgba(11,11,12,.14);font:8.5px var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:#8a8274}
+.demo-foot i{display:inline-block;width:5px;height:5px;background:#2f7d5a;border-radius:50%;margin-right:5px}
+.side-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:22px 22px;
+  display:flex;flex-direction:column;gap:14px}
+.side-card .tag{font:8.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--warm)}
+.side-card h3{margin:0;font:400 22px/1.35 var(--serif);letter-spacing:-.02em}
+.side-card p{margin:0;color:var(--dim);font-size:12px;line-height:1.8}
+.side-card .rule{height:1px;background:var(--line);margin:2px 0}
+.side-card .kv{display:flex;justify-content:space-between;gap:10px;font:9px var(--mono);color:var(--dim)}
+.side-card .kv b{color:var(--ink);font-weight:400}
+
+/* capability */
+.cap-table{margin-top:18px}
+.cap-row{display:grid;grid-template-columns:46px 1.1fr 1.4fr auto;gap:18px;align-items:start;
+  padding:16px 0;border-bottom:1px solid var(--line)}
+.cap-row .n{font:9px var(--mono);color:var(--dim);padding-top:3px}
+.cap-row h3{margin:0;font:400 18px/1.3 var(--serif);letter-spacing:-.01em}
+.cap-row p{margin:0;color:var(--dim);font-size:12px;line-height:1.7}
+.cap-row .tag{font:8.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--line);padding:3px 7px;white-space:nowrap;color:var(--dim)}
+
+.cta{margin-top:62px;border-top:1px solid var(--ink);padding:32px 0 40px;
+  display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cta h2{margin:0;font:400 clamp(32px,4.2vw,56px)/1.04 var(--serif);letter-spacing:-.045em}
+.cta h2 em{font-style:italic;color:var(--warm)}
+.cta a{text-decoration:none;background:var(--cream);color:var(--black);padding:12px 18px;border-radius:3px;font-size:12.5px}
+.cta a:hover{background:var(--warm)}
+
+footer{border-top:1px solid var(--line);padding:18px 0 26px;display:flex;justify-content:space-between;
+  gap:18px;flex-wrap:wrap;font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--warm)}
+
+@media(max-width:980px){
+  .wrap{padding:0 22px}
+  .try-head,.demo-grid{grid-template-columns:1fr}
+  .hero{padding-top:46px}
+  h1{font-size:clamp(48px,13vw,84px)}
+  .nav-mid{display:none}
+  .metrics{grid-template-columns:1fr 1fr}
+  .metric:nth-child(2){border-right:0}
+  .metric:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .cap-row{grid-template-columns:28px 1fr;gap:7px 14px}
+  .cap-row p{grid-column:2}
+  .cap-row .tag{grid-column:2;justify-self:start}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .nav-right a:not(.nav-cta){display:none}
+  .hero-copy{font-size:14px}
+  .card-cream{padding:18px}
+  .query{font-size:11.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top"><i aria-hidden="true"></i>Lattice</a>
+    <nav class="nav-mid" aria-label="主导航"><a href="#try">Product</a><a href="#capability">Research</a><a href="#capability">Pricing</a><a href="#try">Docs</a></nav>
+    <div class="nav-right"><a href="#try">Sign in</a><a class="nav-cta" href="#try">Request a demo</a></div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <section class="hero">
+      <p class="eyebrow"><b>Lattice / reasoning engine</b> · Structured AI</p>
+      <h1>Build AI that<br><em>reasons</em><br>like your best<br>analyst.</h1>
+      <p class="hero-copy">大多数模型给你一段话。Lattice 给你一张<b>可以被检查的结构</b>：结论、依据、假设、下一步，各自归位。</p>
+      <div class="actions">
+        <a class="btn btn-main" href="#try">Request a demo →</a>
+        <a class="btn-text" href="#try">Read the docs ↗</a>
+      </div>
+      <div class="metrics">
+        <div class="metric"><b>10,000<small>+</small></b><span>Analysts on Lattice</span></div>
+        <div class="metric"><b>3.2<small>×</small></b><span>Faster analysis</span></div>
+        <div class="metric"><b>99.2<small>%</small></b><span>Structure validity</span></div>
+        <div class="metric"><b>0.8<small>s</small></b><span>Median latency</span></div>
+      </div>
+    </section>
+
+    <section class="try" id="try">
+      <div class="try-head">
+        <h2>A structured answer,<br>not a paragraph.</h2>
+        <p>同一个问题，Lattice 会把结论、证据和不确定的部分分开摆放。你可以逐条检查，也可以换个模型重跑对齐。</p>
+      </div>
+      <div class="presets" role="group" aria-label="预设问题">
+        <button type="button" data-q="summary" aria-pressed="true">总结一份年报</button>
+        <button type="button" data-q="migration" aria-pressed="false">规划一次迁移</button>
+        <button type="button" data-q="explain" aria-pressed="false">解释一个模型</button>
+      </div>
+      <div class="demo-grid" id="demo-grid">
+        <div class="card-cream">
+          <div class="pane-top"><span>Input → structured output</span><button type="button" id="toggle-view">结构视图</button></div>
+          <div class="query" id="query">请用 3 个要点总结这份年报，并标出你不确定的部分。</div>
+          <div class="answer" id="answer"></div>
+          <div class="structure" id="structure" aria-hidden="true"></div>
+          <div class="demo-foot"><span><i></i>schema validated</span><span id="schema-name">summary.v2</span></div>
+        </div>
+        <aside class="side-card">
+          <span class="tag">Why this shape</span>
+          <h3>推理不是黑箱，<br>是可以被追责的。</h3>
+          <p>每个结论都必须落在可以被引用的一句话上。没有来源的断言会被标成 assumption，而不是悄悄混进正文。</p>
+          <div class="rule"></div>
+          <div class="kv"><span>Evidence</span><b>linked</b></div>
+          <div class="kv"><span>Assumptions</span><b>visible</b></div>
+          <div class="kv"><span>Replay</span><b>deterministic</b></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="capability">
+      <div class="s-head"><h2>Structure is the point.</h2><span>Capability / 04</span></div>
+      <div class="cap-table">
+        <div class="cap-row"><span class="n">01</span><h3>Schema-first output</h3><p>用 JSON Schema 约束输出形状，字段缺失、类型漂移、越界枚举都会被拒绝。</p><span class="tag">Strict</span></div>
+        <div class="cap-row"><span class="n">02</span><h3>Evidence linking</h3><p>每个结论自动挂回原文片段，支持逐条展开与人工复核。</p><span class="tag">Traceable</span></div>
+        <div class="cap-row"><span class="n">03</span><h3>Assumption hygiene</h3><p>模型不确定的地方显式标注，不把猜测伪装成事实。</p><span class="tag">Honest</span></div>
+        <div class="cap-row"><span class="n">04</span><h3>Deterministic replay</h3><p>固定种子与版本，同一输入可以复现同一条推理路径。</p><span class="tag">Replay</span></div>
+      </div>
+      <div class="cta">
+        <h2>Less prose.<br><em>More proof.</em></h2>
+        <a href="#try">Read the docs ↗</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Lattice Research · 结构化推理引擎</span><a href="../index.html" target="_top">← 模板展厅</a></div>
+</footer>
+
+<script>
+(() => {
+  const DATA = {
+    summary: { query:"请用 3 个要点总结这份年报，并标出你不确定的部分。", schema:"summary.v2",
+      blocks:[["Claim","全年营收增长 18%，主要来自企业服务续约，而不是新客扩张。"],["Evidence","第 4 页「经常性收入」：续约率 94%；第 11 页：新签合同数同比下降 6%。"],["Assumption","「增长主要来自续约」是基于收入结构推断的，年报没有直接给出归因。"]] },
+    migration: { query:"规划一次从单体到模块化的迁移，给出三个阶段和回滚条件。", schema:"migration.v1",
+      blocks:[["Phase 1","冻结跨模块直连，先建立接口清单与调用频次基线。回滚条件：接口错误率 > 1%。"],["Phase 2","按读多写少的边界拆出第一个模块，双写验证 14 天。"],["Phase 3","逐步切流并保留旧路径；当 P95 延迟与错误率同时不劣于基线时，再删除旧代码。"]] },
+    explain: { query:"用非技术语言解释「注意力机制」，并指出一个常见误解。", schema:"explain.v1",
+      blocks:[["Claim","注意力机制让模型在处理一个词时，先判断上下文里哪些词更相关。"],["Analogy","像读一句话时用手指着关键词：不是每个字都同等重要。"],["Misconception","常见误解是「注意力等于解释」。权重高只说明关联强，不代表因果。"]] },
+  };
+  const answer = document.getElementById("answer");
+  const structure = document.getElementById("structure");
+  const query = document.getElementById("query");
+  const schemaName = document.getElementById("schema-name");
+  const presets = [...document.querySelectorAll(".presets button")];
+  const demo = document.getElementById("demo-grid");
+  const toggle = document.getElementById("toggle-view");
+
+  function renderStructure(){
+    structure.innerHTML = `<svg viewBox="0 0 560 300" role="img" aria-label="结构化回答的节点图">
+      <rect x="26" y="118" width="88" height="56" fill="#f3efe6" stroke="#0b0b0c"/>
+      <text x="40" y="142" font-family="monospace" font-size="8" fill="#8a8274">INPUT</text>
+      <text x="40" y="158" font-family="monospace" font-size="9" fill="#0b0b0c">QUERY</text>
+      <line x1="114" y1="146" x2="190" y2="70" stroke="#0b0b0c" stroke-width=".8"/>
+      <line x1="114" y1="146" x2="190" y2="146" stroke="#0b0b0c" stroke-width=".8"/>
+      <line x1="114" y1="146" x2="190" y2="222" stroke="#0b0b0c" stroke-width=".8"/>
+      <rect x="190" y="42" width="122" height="56" fill="#f3efe6" stroke="#0b0b0c"/>
+      <rect x="190" y="118" width="122" height="56" fill="#d8c39c" stroke="#0b0b0c"/>
+      <rect x="190" y="194" width="122" height="56" fill="#f3efe6" stroke="#0b0b0c"/>
+      <text x="204" y="66" font-family="monospace" font-size="8" fill="#8a8274">CLAIM</text>
+      <text x="204" y="86" font-family="monospace" font-size="10" fill="#0b0b0c">3 条结论</text>
+      <text x="204" y="142" font-family="monospace" font-size="8" fill="#0b0b0c">EVIDENCE</text>
+      <text x="204" y="162" font-family="monospace" font-size="10" fill="#0b0b0c">原文 / 置信度</text>
+      <text x="204" y="218" font-family="monospace" font-size="8" fill="#8a8274">ASSUMPTION</text>
+      <text x="204" y="238" font-family="monospace" font-size="10" fill="#0b0b0c">不确定项 1 条</text>
+      <line x1="312" y1="70" x2="390" y2="146" stroke="#0b0b0c" stroke-width=".8"/>
+      <line x1="312" y1="146" x2="390" y2="146" stroke="#0b0b0c" stroke-width=".8"/>
+      <line x1="312" y1="222" x2="390" y2="146" stroke="#0b0b0c" stroke-width=".8"/>
+      <rect x="390" y="118" width="142" height="56" fill="#f3efe6" stroke="#0b0b0c"/>
+      <text x="404" y="142" font-family="monospace" font-size="8" fill="#8a8274">OUTPUT</text>
+      <text x="404" y="158" font-family="monospace" font-size="10" fill="#0b0b0c">schema valid ✓</text>
+    </svg>`;
+  }
+  function render(key){
+    const d = DATA[key];
+    query.textContent = d.query;
+    schemaName.textContent = d.schema;
+    answer.innerHTML = "";
+    d.blocks.forEach(([h,p]) => {
+      const el = document.createElement("div");
+      el.className = "block";
+      const hh = document.createElement("h3"); hh.textContent = h;
+      const pp = document.createElement("p"); pp.textContent = p;
+      el.append(hh, pp);
+      answer.appendChild(el);
+    });
+    renderStructure();
+  }
+  presets.forEach(b => b.addEventListener("click", () => {
+    presets.forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    render(b.dataset.q);
+    demo.classList.remove("struct");
+    toggle.textContent = "结构视图";
+  }));
+  toggle.addEventListener("click", () => {
+    const on = demo.classList.toggle("struct");
+    toggle.textContent = on ? "文本视图" : "结构视图";
+  });
+  render("summary");
+})();
+</script>
+</body>
+</html>

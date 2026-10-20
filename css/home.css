@@ -94,6 +94,123 @@
   outline-offset: 4px;
 }
 
+/* --- 模板实验室入口卡（2026-10-20） ---
+   横跨整行：上面是入口文案，下面是四个按参考缩略图重做的落地页截图。
+   截图在 img/templates/ 下，由本地 Playwright 从真实页面截取。移动端 2×2。 */
+.card-templates {
+  grid-column: span 12;
+  min-height: 0;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 30px 32px;
+  color: #f6f1e7;
+  background:
+    radial-gradient(ellipse at 88% 12%, rgba(200, 169, 107, 0.22), transparent 40%),
+    radial-gradient(ellipse at 8% 92%, rgba(168, 69, 46, 0.18), transparent 42%),
+    linear-gradient(120deg, #1b211e 0%, #111512 58%, #23241d 100%);
+  border-color: rgba(236, 204, 163, 0.22);
+}
+
+.card-templates::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245, 229, 199, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 229, 199, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(100deg, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+
+.templates-copy,
+.templates-gallery {
+  position: relative;
+  z-index: 1;
+}
+
+.templates-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.templates-kicker {
+  font:
+    10px ui-monospace,
+    "Cascadia Mono",
+    Consolas,
+    monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(236, 204, 163, 0.72);
+}
+
+.templates-title {
+  font-family: ui-serif, "Songti SC", "STSong", Georgia, serif;
+  font-size: clamp(1.9rem, 2.8vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.templates-desc {
+  max-width: 64ch;
+  color: rgba(246, 241, 231, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.templates-cta {
+  margin-top: 2px;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e9c98e;
+}
+
+.templates-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.templates-item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.templates-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid rgba(246, 241, 231, 0.2);
+  border-radius: 3px;
+  background: #0b0b0b;
+  transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.templates-item:hover img {
+  transform: translateY(-3px) scale(1.012);
+}
+
+.templates-item b {
+  overflow: hidden;
+  color: rgba(246, 241, 231, 0.76);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* --- 5. 英雄卡片 --- */
 .card-hero {
   grid-column: span 12;
@@ -841,4 +958,21 @@ body.index-page .grid {
   display: none !important;
   content: none !important;
   opacity: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .card-templates {
+    grid-column: span 1;
+    gap: 18px;
+    padding: 24px 20px;
+  }
+
+  .templates-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .templates-item b {
+    font-size: 0.68rem;
+  }
 }

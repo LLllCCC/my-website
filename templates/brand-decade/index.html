@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ines Maréchal — Brand & product design</title>
+<meta name="description" content="Independent designer, Lisbon → Paris. Brand and product design made to last a decade.">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#f0ece4; --paper-2:#e9e3d8; --ink:#1d1b18; --dim:#6e685f; --line:#d1c9bc;
+  --brown:#8b5a35; --olive:#58604b;
+  --serif:Georgia,"Songti SC","STSong","Times New Roman",serif;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.7 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--brown);color:var(--paper)}
+.wrap{max-width:1440px;margin:0 auto;padding:0 58px}
+
+header{padding:28px 0 0}
+.nav{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:14px;text-decoration:none;flex-wrap:wrap}
+.brand b{font:italic 400 24px/1 var(--serif)}
+.brand span{font:9.5px var(--mono);letter-spacing:.06em;color:var(--dim)}
+.nav-links{display:flex;gap:24px;font-size:12px;color:var(--dim)}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:54px;align-items:start;padding:50px 0 40px}
+h1{margin:0;font:400 clamp(48px,5.6vw,80px)/.98 var(--serif);letter-spacing:-.055em;max-width:18ch}
+h1 em{font-style:italic;color:var(--brown)}
+.side{padding-top:8px;display:flex;flex-direction:column;gap:24px}
+.side h3{margin:0 0 8px;font:9px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.side p{margin:0;font-size:12px;color:var(--dim);line-height:1.8;max-width:34ch}
+.side p b{color:var(--ink);font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tags span{font:8.5px var(--mono);letter-spacing:.02em;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--dim)}
+
+.work{display:grid;grid-template-columns:1.25fr .75fr;gap:38px;border-top:1px solid var(--ink);padding:14px 0 0}
+.work-left{min-width:0}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;font:8.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-bottom:10px}
+.sec-head b{font-weight:400;color:var(--ink)}
+.work-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.work-card{text-decoration:none;display:block}
+.art{position:relative;aspect-ratio:1.28;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
+.art::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 60px rgba(29,27,24,.08)}
+.art.a1{background:radial-gradient(circle at 74% 58%,rgba(255,255,255,.5) 0 2%,transparent 2.4% 8%,rgba(255,255,255,.35) 8.4% 9%,transparent 9.4%),linear-gradient(140deg,#c9bda8,#9d8f78 55%,#6f6352)}
+.art.a2{background:#1d211d;position:relative}
+.art.a2::before{content:"";position:absolute;inset:14%;border:1px solid rgba(240,236,228,.32)}
+.art.a2 span{position:absolute;left:50%;top:50%;width:72px;height:72px;border:1px solid rgba(240,236,228,.38);border-radius:50%;transform:translate(-50%,-50%)}
+.art.a3{background:linear-gradient(140deg,#e1d7c6,#c6b49b 60%,#8d7961)}
+.art.a4{background:#25211c;position:relative}
+.art.a4::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(240,236,228,.12) 0 1px,transparent 1px 22px);opacity:.4}
+.art.a4 span{position:absolute;left:18%;top:22%;width:64px;height:64px;border-radius:50%;background:#c8a15d}
+.work-label{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 1px 16px}
+.work-label b{font:italic 400 17px/1.3 var(--serif)}
+.work-label span{font:8px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.work-label small{display:block;font:8.5px var(--mono);color:var(--dim);letter-spacing:.05em}
+
+.path .timeline{display:flex;flex-direction:column;gap:0;margin-top:6px}
+.tl{display:grid;grid-template-columns:16px 74px 1fr;gap:10px;align-items:start;padding:10px 0;position:relative}
+.tl::before{content:"";position:absolute;left:6px;top:22px;bottom:-10px;width:1px;background:var(--line)}
+.tl:last-child::before{display:none}
+.tl i{width:9px;height:9px;border:1px solid var(--line);border-radius:50%;background:var(--paper);margin-top:5px}
+.tl.now i{background:var(--brown);border-color:var(--brown)}
+.tl time{font:8.5px var(--mono);color:var(--dim);padding-top:3px}
+.tl b{display:block;font:italic 400 15px/1.3 var(--serif)}
+.tl span{display:block;font-size:10px;color:var(--dim);line-height:1.5;margin-top:2px}
+.cap-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.cap-list span{font:8px var(--mono);border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--dim)}
+.cap-list span:nth-child(-n+4){background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.hello{margin-top:20px;border-top:1px solid var(--line);padding-top:12px}
+.hello .mail{font:italic 400 22px/1.3 var(--serif);text-decoration:none;border-bottom:1px solid var(--ink);display:inline-block}
+.hello .mail:hover{color:var(--brown);border-color:var(--brown)}
+.hello .book{display:inline-flex;align-items:center;gap:7px;float:right;background:var(--ink);color:var(--paper);
+  font:8.5px var(--mono);letter-spacing:.06em;padding:6px 10px;border-radius:999px;text-decoration:none}
+.hello .book i{width:5px;height:5px;border-radius:50%;background:#a8c69a;display:block}
+
+footer{padding:24px 0 30px;border-top:1px solid var(--line);margin-top:36px;display:flex;justify-content:space-between;
+  gap:18px;flex-wrap:wrap;font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--brown)}
+
+@media(max-width:1000px){
+  .wrap{padding:0 24px}
+  .hero,.work{grid-template-columns:1fr;gap:28px}
+  h1{max-width:16ch}
+  .side{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+}
+@media(max-width:640px){
+  .wrap{padding:0 18px}
+  .brand span{display:none}
+  .nav-links a:not(:last-child){display:none}
+  h1{font-size:clamp(44px,12vw,64px)}
+  .work-grid{grid-template-columns:1fr}
+  .side{grid-template-columns:1fr}
+  .hello .book{float:none;margin-top:10px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><b>Ines Maréchal</b><span>— Independent designer, Lisbon → Paris</span></a>
+    <nav class="nav-links" aria-label="主导航"><a href="#work">Work</a><a href="#top">Writing</a><a href="#top">Studio</a><a href="mailto:ines@marechal.studio">CV ↗</a></nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <section class="hero">
+      <h1>Brand &amp; product design,<br>made to <em>last</em> a decade.</h1>
+      <aside class="side">
+        <div><h3>Focus</h3><p>Identity systems, editorial &amp; type-led interfaces for cultural institutions and product teams who care about the details.</p></div>
+        <div><h3>Currently</h3><p>Senior design lead at <b>Forester</b> · Open to one engagement for Q3.</p></div>
+        <div><h3>Recognition</h3><div class="tags"><span>D&amp;AD ’24</span><span>TDC 70</span><span>Brand New Awards</span></div></div>
+      </aside>
+    </section>
+
+    <section class="work" id="work">
+      <div class="work-left">
+        <div class="sec-head"><span><b>01</b> Selected work</span><span>2022 — 2026</span></div>
+        <div class="work-grid">
+          <a class="work-card" href="#top"><div class="art a1"></div><div class="work-label"><span><b>Maison Aubel</b><small>Identity · Packaging</small></span><span>2025</span></div></a>
+          <a class="work-card" href="#top"><div class="art a2"><span></span></div><div class="work-label"><span><b>Observatoire</b><small>Editorial · Web</small></span><span>2024</span></div></a>
+          <a class="work-card" href="#top"><div class="art a3"></div><div class="work-label"><span><b>Atelier Serein</b><small>Brand · Print</small></span><span>2023</span></div></a>
+          <a class="work-card" href="#top"><div class="art a4"><span></span></div><div class="work-label"><span><b>Nocturne</b><small>Product · Type</small></span><span>2022</span></div></a>
+        </div>
+      </div>
+
+      <aside class="path">
+        <div class="sec-head"><span><b>02</b> Path</span><span>2015 — now</span></div>
+        <div class="timeline">
+          <div class="tl now"><i></i><time>2023 — now</time><div><b>Forester</b><span>Senior design lead, brand &amp; product</span></div></div>
+          <div class="tl"><i></i><time>2020 — 23</time><div><b>Studio Boucle</b><span>Designer · Editorial &amp; type</span></div></div>
+          <div class="tl"><i></i><time>2018 — 20</time><div><b>Atelier Maréchal</b><span>Independent practice, Lisbon</span></div></div>
+          <div class="tl"><i></i><time>2015 — 18</time><div><b>ECAL</b><span>BA Visual Communication, with distinction</span></div></div>
+        </div>
+
+        <div class="sec-head" style="margin-top:18px"><span><b>03</b> Capabilities</span><span>Selected</span></div>
+        <div class="cap-list"><span>Identity systems</span><span>Typography</span><span>Editorial</span><span>Art direction</span><span>Design systems</span><span>Product UI</span><span>Motion principles</span><span>Workshop facilitation</span></div>
+
+        <div class="hello">
+          <div class="sec-head"><span><b>04</b> Say hello</span><span>Booking · Q3 2026</span></div>
+          <a class="mail" href="mailto:ines@marechal.studio">ines@marechal.studio</a>
+          <a class="book" href="mailto:ines@marechal.studio"><i></i>Booking · Q3 2026</a>
+        </div>
+      </aside>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:0 58px">
+    <span>© 2026 Ines Maréchal · Lisbon / Paris</span>
+    <a href="../index.html" target="_top">← 模板展厅</a>
+  </div>
+</footer>
+</body>
+</html>

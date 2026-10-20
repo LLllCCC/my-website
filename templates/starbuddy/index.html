@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StarBuddy — 小星星的英语课</title>
+<meta name="description" content="StarBuddy 儿童英语学习面板：课程、单词进度与今日任务。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#fdf8ea; --panel:#fffdf5; --ink:#4a4230; --dim:#9b917c; --line:#f0e7d2;
+  --yellow:#f8e8a8; --orange:#f3b562; --teal:#4fb9ad; --pink:#f6b6c8; --purple:#b9a9e8; --red:#e88b7a;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --rounded:"Arial Rounded MT Bold","Microsoft YaHei",sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:13px/1.65 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--teal);color:#fff}
+.frame{max-width:1240px;margin:0 auto;padding:18px 28px 30px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fdf3cf;border:1px solid #f2e4b8;border-radius:18px;padding:12px 18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#6b5a33}
+.brand i{width:34px;height:34px;border-radius:50%;background:#fff;display:grid;place-items:center;border:2px solid #f3c95c;color:#f3b62e;font-size:18px;font-style:normal}
+.brand b{font:700 22px/1 var(--rounded);letter-spacing:-.02em}
+.header-r{display:flex;align-items:center;gap:10px}
+.streak{border:1px solid #f0d78d;background:#fff8df;border-radius:999px;padding:6px 11px;font:10px var(--sans);color:#a7852f}
+.avatar{width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid #f6b6c8;display:grid;place-items:center;font-size:14px}
+.tabs{display:flex;gap:8px;margin:14px 0 16px}
+.tabs a{text-decoration:none;font-size:11px;padding:7px 16px;border-radius:999px;background:#f6ecd2;color:#8f7c56;border:2px solid #f6ecd2}
+.tabs a[aria-current="page"]{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+.greet{background:#fff8e4;border:1px solid #f4e8c7;border-radius:22px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.cat{width:58px;height:58px;border-radius:50%;background:#fde3e0;display:grid;place-items:center;font-size:28px;flex:0 0 auto}
+.greet b{display:block;font:700 19px/1.3 var(--rounded);color:#6b5a33}
+.greet p{margin:4px 0 0;font-size:11px;color:#9a8a6b}
+.main{display:grid;grid-template-columns:1.35fr .65fr;gap:16px;align-items:start}
+.section-title{display:flex;align-items:center;gap:7px;font:700 15px var(--rounded);color:#5e513a;margin:0 0 10px}
+.section-title span{font-size:13px;color:#a99a7d}
+.courses{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.course{appearance:none;text-align:left;border:1px solid #f1e6cd;background:#fffdf7;border-radius:18px;padding:14px;cursor:pointer;
+  position:relative;overflow:hidden;transition:.18s}
+.course:hover{transform:translateY(-3px);box-shadow:0 14px 30px -24px rgba(90,70,30,.4)}
+.course::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--c)}
+.course .ic{width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:15px;color:var(--c)}
+.course .pill{position:absolute;right:12px;top:12px;background:var(--teal);color:#fff;border-radius:999px;padding:3px 8px;font-size:8px}
+.course b{display:block;margin-top:10px;font:700 14px var(--rounded);color:#5b4e38}
+.course small{display:block;font-size:9.5px;color:#a2947a;margin-top:2px}
+.course .bar{height:5px;border-radius:3px;background:#f4ecdb;margin-top:12px;position:relative;overflow:hidden}
+.course .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--c)}
+.course .meta{display:flex;justify-content:space-between;font-size:8.5px;color:#a2947a;margin-top:5px}
+.side-card{background:#fffdf7;border:1px solid #f1e6cd;border-radius:18px;padding:14px 16px;margin-bottom:12px}
+.side-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.side-head b{font:700 13px var(--rounded);color:#5e513a}
+.side-head span{font:9px var(--mono);color:var(--teal)}
+.progress-line{height:7px;border-radius:4px;background:#f4ecdb;overflow:hidden;margin:6px 0}
+.progress-line i{display:block;height:100%;width:25%;background:var(--teal);border-radius:4px}
+.word-meta{display:flex;justify-content:space-between;font-size:9px;color:#a2947a;margin-top:4px}
+.badges{display:flex;justify-content:space-between;margin-top:12px}
+.badge{text-align:center;font-size:8px;color:#a2947a}
+.badge i{width:28px;height:28px;border-radius:50%;background:#f6ecd2;display:grid;place-items:center;margin:0 auto 3px;font-style:normal;font-size:12px;color:#b6a57e}
+.badge.on i{background:var(--teal);color:#fff}
+.badge.next i{background:#f7d97a;color:#7a5a18}
+.badge.locked i{background:#f4ecdb;color:#c4b79c}
+.todo{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f4ecdb;font-size:10px;color:#776a52}
+.todo:last-child{border-bottom:0}
+.todo input{accent-color:var(--teal);width:15px;height:15px}
+.todo .pts{margin-left:auto;background:#fdf1c7;color:#a7852f;border-radius:999px;font:8px var(--mono);padding:2px 6px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,14px);background:#5b4e38;color:#fff;
+  font:9px var(--mono);padding:7px 12px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){
+  .frame{padding:12px 16px}
+  .main{grid-template-columns:1fr}
+  .courses{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .courses{grid-template-columns:1fr}
+  .brand b{font-size:18px}
+  .greet b{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <a class="brand" href="#top"><i>★</i><b>StarBuddy</b></a>
+    <div class="header-r"><span class="streak">🔥 7 天</span><span class="avatar">🐱</span></div>
+  </header>
+  <nav class="tabs" aria-label="主导航"><a href="#top" aria-current="page">首页</a><a href="#top">课程详情</a><a href="#top">单词练习</a></nav>
+
+  <div class="greet"><div class="cat">🐱</div><div><b>Good morning, 小星星！</b><p>今天我们一起学习动物单词吧，已经连续坚持 7 天啦，太棒了！</p></div></div>
+
+  <div class="main">
+    <section>
+      <h2 class="section-title"><span>▤</span> 我的课程</h2>
+      <div class="courses">
+        <button class="course" type="button" data-course="Animal Friends" style="--c:#f08f9f;--soft:#fde8ec"><span class="ic">🐾</span><span class="pill">进行中</span><b>Animal Friends 动物朋友</b><small>认识可爱的动物们，学习它们的英文名字</small><div class="bar"><i style="width:65%"></i></div><div class="meta"><span>13/20 个单词</span><span>65%</span></div></button>
+        <button class="course" type="button" data-course="Color World" style="--c:#8fa8f0;--soft:#e9edfd"><span class="ic">🎨</span><b>Color World 色彩世界</b><small>探索五彩缤纷的颜色词汇</small><div class="bar"><i style="width:40%"></i></div><div class="meta"><span>8/20 个单词</span><span>40%</span></div></button>
+        <button class="course" type="button" data-course="My Family" style="--c:#e49a6b;--soft:#fbeade"><span class="ic">🏠</span><b>My Family 我的家庭</b><small>学习家庭成员的称呼</small><div class="bar"><i style="width:20%"></i></div><div class="meta"><span>4/20 个单词</span><span>20%</span></div></button>
+        <button class="course" type="button" data-course="Yummy Food" style="--c:#b494e0;--soft:#f1eafa"><span class="ic">🍎</span><b>Yummy Food 美味食物</b><small>认识各种食物的英文名称</small><div class="bar"><i style="width:0%"></i></div><div class="meta"><span>未开始</span><span>0%</span></div></button>
+      </div>
+    </section>
+
+    <aside>
+      <div class="side-card">
+        <div class="side-head"><b>单词进度</b><span>25</span></div>
+        <div style="font-size:9px;color:#a2947a">已掌握</div>
+        <div class="progress-line"><i></i></div>
+        <div class="word-meta"><span>目标：100 个单词</span><span>25%</span></div>
+        <div class="badges">
+          <div class="badge on"><i>✓</i>10词</div><div class="badge next"><i>★</i>25词</div><div class="badge locked"><i>50</i>50词</div><div class="badge locked"><i>🔒</i>100词</div>
+        </div>
+      </div>
+      <div class="side-card">
+        <div class="side-head"><b>☑ 今日任务</b><span></span></div>
+        <label class="todo"><input type="checkbox" checked><span>复习昨日单词</span><span class="pts">+5</span></label>
+        <label class="todo"><input type="checkbox"><span>学习 5 个新单词</span><span class="pts">+10</span></label>
+        <label class="todo"><input type="checkbox"><span>完成拼写小测验</span><span class="pts">+15</span></label>
+      </div>
+    </aside>
+  </div>
+</div>
+<div class="toast" id="toast">已打开课程（演示）</div>
+<script>
+document.querySelectorAll("[data-course]").forEach(b => b.addEventListener("click", () => {
+  const t = document.getElementById("toast");
+  t.textContent = b.dataset.course + " · 演示课程";
+  t.classList.add("on");
+  setTimeout(() => t.classList.remove("on"), 1600);
+}));
+</script>
+</body>
+</html>

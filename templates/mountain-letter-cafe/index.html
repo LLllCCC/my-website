@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>山间来信 — 把日子放慢，让香气来信</title>
+<meta name="description" content="山间来信是一间开在山脚的咖啡馆。手冲、季节菜单、可以坐一下午的窗边。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#f1ede4; --paper-2:#faf7ef; --ink:#2b2a23; --dim:#777367; --line:#d9d2c3;
+  --green:#3f5548; --green-2:#59705f;
+  --kai:"KaiTi","STKaiti","FangSong","Songti SC",serif;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.75 var(--sans);overflow-x:hidden;
+  background-image:radial-gradient(circle at 14% 0%,rgba(255,255,255,.45),transparent 38%),
+    repeating-linear-gradient(0deg,rgba(80,66,44,.025) 0 1px,transparent 1px 5px)}
+a{color:inherit}
+::selection{background:var(--green);color:var(--paper-2)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 36px}
+
+header{padding:22px 0 0}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.leaf{width:30px;height:30px;display:grid;place-items:center;color:var(--green)}
+.leaf svg{width:26px;height:26px;display:block}
+.brand b{font:400 23px/1 var(--kai);letter-spacing:.05em}
+.brand small{display:block;font:8px var(--mono);letter-spacing:.18em;color:var(--dim);margin-top:4px}
+.nav-links{display:flex;align-items:center;gap:22px;font-size:12px;color:var(--dim)}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:var(--green)}
+.nav-book{background:var(--green);color:var(--paper-2)!important;border-radius:999px;padding:8px 15px}
+.nav-book:hover{background:#2f4338}
+
+.hero{display:grid;grid-template-columns:.82fr 1.18fr;gap:44px;align-items:center;padding:52px 0 46px}
+.eyebrow{font:9px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin:0 0 18px}
+.eyebrow b{color:var(--green);font-weight:400}
+h1{margin:0;font:400 clamp(44px,5.4vw,72px)/1.22 var(--kai);letter-spacing:.01em}
+h1 em{font-style:normal;color:var(--green)}
+.lede{max-width:32ch;margin:20px 0 0;color:var(--dim);font-size:14.5px;line-height:1.95}
+.actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:var(--paper-2);
+  text-decoration:none;border-radius:2px;padding:11px 17px;font-size:12px;transition:.2s}
+.btn:hover{background:#2f4338;transform:translateY(-1px)}
+.link{font-size:12px;color:var(--dim);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
+.link:hover{color:var(--green);border-color:var(--green)}
+.hero-meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px;font:9px var(--mono);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.hero-meta b{display:block;font:400 12px var(--sans);color:var(--ink);letter-spacing:0;margin-top:3px}
+.status{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font:10px var(--mono);
+  letter-spacing:.05em;color:var(--dim);border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+.status i{width:5px;height:5px;border-radius:50%;background:var(--green-2);display:block}
+.status.closed i{background:#b45a3f}
+
+.photo-wrap{position:relative;min-width:0}
+.photo{border:8px solid var(--paper-2);background:var(--paper-2);
+  box-shadow:0 30px 60px -38px rgba(43,42,35,.65);position:relative;overflow:hidden;margin:0}
+.photo svg{display:block;width:100%;height:auto;filter:saturate(.92) contrast(1.02)}
+.photo::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 60px rgba(30,24,18,.22)}
+.note-card{position:absolute;left:-22px;bottom:26px;z-index:2;width:190px;background:var(--paper-2);
+  border:1px solid var(--line);padding:14px 16px;transform:rotate(-2.2deg);
+  box-shadow:0 18px 34px -26px rgba(43,42,35,.65)}
+.note-card span{display:block;font:8px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.note-card p{margin:7px 0 0;font:15px/1.7 var(--kai)}
+.note-card small{display:block;margin-top:8px;text-align:right;font:12px var(--kai);color:var(--dim)}
+.photo-tag{position:absolute;right:12px;top:12px;font:8px var(--mono);letter-spacing:.1em;
+  text-transform:uppercase;color:rgba(255,255,255,.75);background:rgba(20,18,14,.35);padding:4px 7px}
+
+.ribbon{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);margin-top:8px}
+.ribbon div{padding:16px 20px;border-right:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;
+  font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.ribbon div:last-child{border-right:0}
+.ribbon b{font:400 12px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink)}
+
+.menu{padding:64px 0 54px}
+.menu-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;
+  padding-bottom:16px;border-bottom:1px solid var(--line)}
+.menu-head h2{margin:0;font:400 clamp(30px,3.6vw,44px)/1.2 var(--kai)}
+.menu-head p{margin:6px 0 0;color:var(--dim);font-size:12px}
+.filters{display:flex;gap:3px}
+.filters button{appearance:none;background:none;border:1px solid transparent;cursor:pointer;
+  font:13px var(--kai);padding:6px 14px;color:var(--dim);border-radius:999px;transition:.2s}
+.filters button:hover{color:var(--ink)}
+.filters button[aria-pressed="true"]{border-color:var(--line);background:var(--paper-2);color:var(--ink)}
+.items{display:grid;grid-template-columns:1fr 1fr;gap:0 44px;margin-top:12px}
+.item{display:flex;align-items:baseline;gap:10px;padding:13px 0;border-bottom:1px dashed var(--line)}
+.item .name{font:17px/1.4 var(--kai);white-space:nowrap}
+.item .dots{flex:1;border-bottom:1px dotted var(--line);transform:translateY(-5px)}
+.item .price{font:11px var(--mono);color:var(--green)}
+.item .note{display:block;font-size:10.5px;color:var(--dim);margin-top:2px;font-family:var(--sans)}
+
+.story{padding:50px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:grid;grid-template-columns:.42fr 1fr;gap:44px;align-items:start}
+.story h2{margin:10px 0 0;font:400 28px/1.5 var(--kai)}
+.story p{margin:0;color:var(--dim);font-size:13px;line-height:2;max-width:62ch}
+.story p + p{margin-top:12px}
+.story b{color:var(--ink);font-weight:400;border-bottom:1px solid var(--line)}
+
+.visit{padding:54px 0 64px}
+.visit .grid{display:grid;grid-template-columns:1fr .9fr;gap:44px;align-items:center}
+.visit h2{margin:0 0 18px;font:400 clamp(28px,3.2vw,38px)/1.3 var(--kai)}
+.info{display:grid;gap:0}
+.info div{display:grid;grid-template-columns:64px 1fr;gap:14px;font-size:12px;color:var(--dim);
+  padding:11px 0;border-bottom:1px solid var(--line)}
+.info b{font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);font-weight:400;padding-top:2px}
+.map{border:1px solid var(--line);background:rgba(255,255,255,.3);padding:12px;margin:0}
+.map svg{display:block;width:100%;height:auto}
+.map figcaption{margin-top:8px;font:8.5px var(--mono);letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+
+footer{padding:20px 0 28px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--green)}
+
+@media(max-width:980px){
+  .wrap{padding:0 22px}
+  .hero{grid-template-columns:1fr;gap:30px;padding-top:34px}
+  .photo-wrap{max-width:680px}
+  .story,.visit .grid{grid-template-columns:1fr;gap:22px}
+  .nav-links a:not(.nav-book){display:none}
+  .items{grid-template-columns:1fr}
+  .ribbon{grid-template-columns:1fr}
+  .ribbon div{border-right:0;border-bottom:1px solid var(--line)}
+  .ribbon div:last-child{border-bottom:0}
+  .note-card{left:auto;right:14px;bottom:14px;width:170px}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .brand b{font-size:20px}
+  h1{font-size:clamp(40px,11vw,56px)}
+  .photo{border-width:5px}
+  .note-card{position:relative;left:0;right:0;bottom:0;width:auto;margin-top:10px;transform:none}
+  .note-card p{font-size:14px}
+  .hero-meta{gap:14px}
+  .menu{padding:44px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top">
+      <span class="leaf" aria-hidden="true">
+        <svg viewBox="0 0 26 26"><path d="M21 4c-8 0-14 4-14 11 0 3 2 5 5 5 7 0 9-8 9-16Z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M6 21c3-5 7-8 11-10" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      </span>
+      <span><b>山间来信</b><small>MOUNTAIN LETTER · CAFÉ</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#story">关于</a><a href="#menu">菜单</a><a href="#visit">空间</a><a href="#visit">到访</a>
+      <a class="nav-book" href="#visit">预约座位</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <p class="eyebrow"><b>Est. 2023</b> / Coffee & slow mornings</p>
+        <h1>把日子放慢，<br>让香气<em>来信</em>。</h1>
+        <p class="lede">一间开在山脚的咖啡馆。推门进来，窗外的树影会先替我们打招呼。</p>
+        <div class="actions">
+          <a class="btn" href="#menu">查看菜单 →</a>
+          <a class="link" href="#story">今日豆单</a>
+        </div>
+        <div class="hero-meta">
+          <div>Open hours<b>09:00 — 19:00</b></div>
+          <div>Find us<b>临安 · 青山湖</b></div>
+          <div>Seats<b>12 个座位</b></div>
+        </div>
+        <span class="status" id="status"><i></i><span id="status-text">正在营业 · 来喝一杯</span></span>
+      </div>
+
+      <div class="photo-wrap">
+        <figure class="photo" aria-label="咖啡馆内景：窗边的木桌与绿植">
+          <svg viewBox="0 0 860 620" role="img" aria-label="咖啡馆内景插画">
+            <defs>
+              <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ded4c1"/><stop offset=".62" stop-color="#c4b9a3"/><stop offset="1" stop-color="#a89b83"/>
+              </linearGradient>
+              <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#4a3526"/><stop offset="1" stop-color="#21160f"/>
+              </linearGradient>
+              <linearGradient id="outside" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#b9c7a4"/><stop offset=".46" stop-color="#7e986c"/><stop offset="1" stop-color="#4e6547"/>
+              </linearGradient>
+              <linearGradient id="table" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#6a4a33"/><stop offset=".35" stop-color="#4d3423"/><stop offset="1" stop-color="#2a1b12"/>
+              </linearGradient>
+              <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#513826"/><stop offset="1" stop-color="#2a1a11"/>
+              </linearGradient>
+              <radialGradient id="light" cx=".38" cy=".34" r=".72">
+                <stop offset="0" stop-color="#fff3d6" stop-opacity=".55"/><stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="vig" cx=".5" cy=".45" r=".75">
+                <stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#160f0a" stop-opacity=".55"/>
+              </radialGradient>
+              <filter id="soft"><feGaussianBlur stdDeviation="14"/></filter>
+              <filter id="soft2"><feGaussianBlur stdDeviation="6"/></filter>
+              <filter id="grain">
+                <feTurbulence type="fractalNoise" baseFrequency=".86" numOctaves="2" stitchTiles="stitch"/>
+                <feColorMatrix type="saturate" values="0"/>
+              </filter>
+            </defs>
+
+            <rect width="860" height="620" fill="url(#wall)"/>
+            <rect y="440" width="860" height="180" fill="url(#floor)"/>
+            <ellipse cx="380" cy="300" rx="380" ry="260" fill="url(#light)"/>
+
+            <rect x="42" y="42" width="462" height="404" fill="#2a1d14"/>
+            <rect x="56" y="56" width="434" height="376" fill="url(#outside)"/>
+            <g filter="url(#soft)">
+              <ellipse cx="170" cy="190" rx="112" ry="98" fill="#6f8b5c" opacity=".95"/>
+              <ellipse cx="320" cy="146" rx="96" ry="76" fill="#8ba374" opacity=".9"/>
+              <ellipse cx="416" cy="232" rx="86" ry="82" fill="#5c7550" opacity=".9"/>
+              <ellipse cx="240" cy="330" rx="130" ry="76" fill="#4d6444" opacity=".85"/>
+              <ellipse cx="100" cy="342" rx="88" ry="60" fill="#7c9568" opacity=".8"/>
+              <ellipse cx="380" cy="388" rx="120" ry="58" fill="#536a49" opacity=".85"/>
+            </g>
+            <g filter="url(#soft2)" opacity=".55">
+              <path d="M92 56 C148 180 116 280 172 432" fill="none" stroke="#2f3c29" stroke-width="9"/>
+              <path d="M254 56 C214 168 292 270 246 432" fill="none" stroke="#38472f" stroke-width="7"/>
+              <path d="M386 56 C430 156 374 276 428 432" fill="none" stroke="#2f3c29" stroke-width="8"/>
+            </g>
+            <rect x="198" y="56" width="13" height="376" fill="#2a1d14"/>
+            <rect x="340" y="56" width="13" height="376" fill="#2a1d14"/>
+            <rect x="56" y="238" width="434" height="13" fill="#2a1d14"/>
+            <rect x="42" y="42" width="462" height="404" fill="none" stroke="#1d130d" stroke-width="6"/>
+            <polygon points="70,60 150,60 360,420 250,420" fill="#fff5dd" opacity=".055"/>
+            <polygon points="380,60 410,60 500,420 460,420" fill="#fff5dd" opacity=".035"/>
+
+            <rect x="690" y="96" width="82" height="104" fill="#3c2d21" stroke="#6d5842" stroke-width="3"/>
+            <rect x="700" y="106" width="62" height="84" fill="#b9a78b"/>
+            <path d="M706 174 C724 136 740 152 756 118" fill="none" stroke="#8c7c64" stroke-width="2" opacity=".7"/>
+            <rect x="668" y="226" width="124" height="7" fill="#4a3728"/>
+            <rect x="682" y="206" width="20" height="20" fill="#8d7b63"/>
+            <rect x="708" y="200" width="16" height="26" fill="#a08a6d"/>
+            <rect x="730" y="212" width="26" height="14" fill="#7d6a53"/>
+
+            <g>
+              <path d="M652 392 C636 330 604 310 596 270" fill="none" stroke="#40573b" stroke-width="5"/>
+              <path d="M652 392 C664 322 700 292 716 250" fill="none" stroke="#40573b" stroke-width="5"/>
+              <path d="M652 392 C650 330 660 296 648 242" fill="none" stroke="#4a6342" stroke-width="4"/>
+              <g fill="#5f7a4e" filter="url(#soft2)">
+                <ellipse cx="598" cy="268" rx="32" ry="18" transform="rotate(-28 598 268)"/>
+                <ellipse cx="634" cy="300" rx="36" ry="17" transform="rotate(18 634 300)"/>
+                <ellipse cx="716" cy="248" rx="30" ry="16" transform="rotate(28 716 248)"/>
+                <ellipse cx="686" cy="300" rx="34" ry="17" transform="rotate(-20 686 300)"/>
+                <ellipse cx="650" cy="240" rx="26" ry="14" transform="rotate(-8 650 240)"/>
+                <ellipse cx="702" cy="338" rx="36" ry="18" transform="rotate(32 702 338)"/>
+              </g>
+              <path d="M628 396 L676 396 L668 454 L636 454 Z" fill="#7b5b40"/>
+              <path d="M628 396 L676 396 L672 410 L632 410 Z" fill="#916d4d"/>
+            </g>
+
+            <g fill="url(#wood)" opacity=".95">
+              <rect x="470" y="354" width="18" height="112" rx="4"/>
+              <rect x="470" y="330" width="96" height="12" rx="5"/>
+              <rect x="556" y="330" width="8" height="24" rx="3"/>
+              <rect x="620" y="350" width="16" height="96" rx="4"/>
+              <rect x="588" y="326" width="88" height="11" rx="5"/>
+            </g>
+
+            <path d="M206 486 L860 442 L860 620 L78 620 Z" fill="url(#table)"/>
+            <path d="M206 486 L860 442" fill="none" stroke="#a07a55" stroke-width="3" opacity=".35"/>
+            <path d="M286 500 L860 462" fill="none" stroke="#000" stroke-width="16" opacity=".13"/>
+            <ellipse cx="620" cy="520" rx="230" ry="46" fill="#d7b98a" opacity=".055"/>
+
+            <ellipse cx="552" cy="518" rx="54" ry="15" fill="#d8ccb4" opacity=".95"/>
+            <path d="M516 496 L592 496 C590 528 580 545 554 545 C528 545 518 528 516 496 Z" fill="#efe7d6"/>
+            <ellipse cx="554" cy="496" rx="38" ry="10" fill="#e2d6c0"/>
+            <ellipse cx="554" cy="496" rx="27" ry="7" fill="#4b2c18"/>
+            <path d="M590 504 C615 500 620 530 596 532" fill="none" stroke="#efe7d6" stroke-width="7"/>
+            <ellipse cx="552" cy="518" rx="54" ry="15" fill="none" stroke="#b59d7c" stroke-width="1" opacity=".5"/>
+
+            <g transform="rotate(-8 352 520)">
+              <rect x="318" y="488" width="58" height="42" fill="#d9cdb5"/>
+              <rect x="322" y="492" width="50" height="34" fill="none" stroke="#a89272"/>
+              <path d="M327 504 h38 M327 511 h30 M327 518 h34" stroke="#8f7d61" stroke-width="1"/>
+            </g>
+            <path d="M760 486 l6 -38 h20 l6 38 Z" fill="#9c8060"/>
+            <path d="M770 448 C764 428 772 414 786 408" fill="none" stroke="#4d653f" stroke-width="2"/>
+            <ellipse cx="790" cy="408" rx="9" ry="5" fill="#6e8758" transform="rotate(20 790 408)"/>
+
+            <rect width="860" height="620" fill="url(#vig)"/>
+            <rect width="860" height="620" filter="url(#grain)" opacity=".1"/>
+          </svg>
+          <figcaption class="photo-tag">Interior / 2026</figcaption>
+        </figure>
+
+        <div class="note-card">
+          <span>今日豆单 / Today's beans</span>
+          <p>云南保山<br>中浅烘 · 红糖、梅子</p>
+          <small>— 阿岚</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="ribbon">
+      <div>Open<b>每天 09:00 — 19:00</b></div>
+      <div>Address<b>临安 · 青山湖 · 石阶路 18 号</b></div>
+      <div>Seats<b>12 个座位 · 不设最低消费</b></div>
+    </div>
+
+    <section class="menu" id="menu">
+      <div class="menu-head">
+        <div><p class="eyebrow" style="margin-bottom:8px">02 / Menu</p><h2>今天喝什么？</h2>
+          <p>豆单每周换一次。卖完就提前打烊。</p></div>
+        <div class="filters" role="group" aria-label="菜单时段">
+          <button type="button" data-time="morning" aria-pressed="true">早</button>
+          <button type="button" data-time="noon" aria-pressed="false">午</button>
+          <button type="button" data-time="evening" aria-pressed="false">晚</button>
+        </div>
+      </div>
+      <div class="items" id="items"></div>
+    </section>
+
+    <section class="story" id="story">
+      <div><p class="eyebrow">01 / About</p><h2>我们只做<br>三件小事。</h2></div>
+      <div>
+        <p>第一件：把咖啡烘焙得<strong>干净</strong>一点，不加糖浆，也不靠奶盖遮味道。第二件：留出足够宽的距离，让每张桌子都能听见窗外的风。第三件：<b>记住你上次点的东西</b>——如果你希望被记住的话。</p>
+        <p>店是旧屋改的，梁是原来的梁。窗边的位置最好，下午三点以后，光会慢慢爬到桌上。</p>
+      </div>
+    </section>
+
+    <section class="visit" id="visit">
+      <div class="grid">
+        <div>
+          <p class="eyebrow">03 / Visit</p>
+          <h2>沿着石阶往上，<br>看到那盏灯就是。</h2>
+          <div class="info">
+            <div><b>Address</b><span>杭州市临安区青山湖街道石阶路 18 号（近水库北门）</span></div>
+            <div><b>Hours</b><span>每天 09:00 — 19:00；周一烘焙日只供应手冲</span></div>
+            <div><b>Phone</b><span>0571 · 0000 0000</span></div>
+            <div><b>Note</b><span>店里有两只猫，怕猫的朋友请坐外间。</span></div>
+          </div>
+        </div>
+        <figure class="map">
+          <svg viewBox="0 0 420 300" role="img" aria-label="手绘位置示意图">
+            <rect width="420" height="300" fill="none"/>
+            <path d="M0 230 C70 210 90 170 150 175 S250 220 310 190 400 150 420 160" fill="none" stroke="#7f8a68" stroke-width="1.4"/>
+            <path d="M0 255 C80 240 120 205 180 210 S280 250 340 220 410 195 420 200" fill="none" stroke="#b9ad94" stroke-width="1"/>
+            <path d="M210 300 L210 205 L238 180 L238 120 L262 96" fill="none" stroke="#3f5548" stroke-width="1.4" stroke-dasharray="4 4"/>
+            <circle cx="262" cy="96" r="9" fill="none" stroke="#3f5548" stroke-width="1.4"/>
+            <circle cx="262" cy="96" r="3" fill="#3f5548"/>
+            <text x="276" y="92" font-family="KaiTi,serif" font-size="14" fill="#2b2a23">山间来信</text>
+            <text x="276" y="108" font-family="monospace" font-size="8" fill="#777367">YOU ARE HERE, ALMOST</text>
+            <path d="M120 150 l8 -8 m-8 8 l8 8" stroke="#777367" stroke-width="1"/>
+            <text x="134" y="154" font-family="monospace" font-size="8" fill="#777367">水库北门</text>
+            <text x="26" y="282" font-family="monospace" font-size="8" fill="#9a917f">SHIJIE RD. / HAND-DRAWN, NOT TO SCALE</text>
+          </svg>
+          <figcaption>手绘示意 · 不要按比例寻找</figcaption>
+        </figure>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 山间来信 · 雨天照常营业</span><a href="../index.html" target="_top">← 模板展厅</a></div>
+</footer>
+
+<script>
+(() => {
+  const MENU = {
+    morning: [
+      { name:"手冲 · 云南保山", price:"¥32", note:"红糖、梅子、干净的尾韵" },
+      { name:"燕麦拿铁", price:"¥30", note:"豆乳感，不额外加糖" },
+      { name:"山核桃司康", price:"¥18", note:"每天早上烤一盘，卖完为止" },
+      { name:"桂花冷萃", price:"¥34", note:"昨晚泡上的，只剩六杯" },
+      { name:"白粥配腐乳", price:"¥15", note:"给没吃早饭的人" },
+      { name:"热水（可续）", price:"¥0", note:"自带杯子也行" },
+    ],
+    noon: [
+      { name:"手冲 · 埃塞俄比亚", price:"¥36", note:"柑橘、白花，酸质明亮" },
+      { name:"冰美式", price:"¥26", note:"两支豆拼配，不寡淡" },
+      { name:"菌菇烩饭", price:"¥42", note:"现做，等 20 分钟" },
+      { name:"山野三明治", price:"¥36", note:"酸面包、芝士、烤南瓜" },
+      { name:"梅子苏打", price:"¥24", note:"自己腌的梅子，微咸" },
+      { name:"今日甜点", price:"¥22", note:"问吧台，每天不一样" },
+    ],
+    evening: [
+      { name:"手冲 · 哥斯达黎加", price:"¥38", note:"蜜处理，甜感更重" },
+      { name:"冷萃加冰", price:"¥30", note:"下午四点后不再加新冰" },
+      { name:"热红酒（无酒精）", price:"¥28", note:"肉桂、橙皮、苹果" },
+      { name:"烤吐司配蜂蜜", price:"¥20", note:"适合配最后一杯咖啡" },
+      { name:"书页饼干", price:"¥12", note:"形状像一本翻开的书" },
+      { name:"打烊前的热水", price:"¥0", note:"坐一会儿再走" },
+    ],
+  };
+  const items = document.getElementById("items");
+  const buttons = [...document.querySelectorAll("[data-time]")];
+  function render(time){
+    items.innerHTML = "";
+    MENU[time].forEach(x => {
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerHTML = `<div><span class="name"></span><span class="note"></span></div>
+        <span class="dots" aria-hidden="true"></span><span class="price"></span>`;
+      el.querySelector(".name").textContent = x.name;
+      el.querySelector(".note").textContent = x.note;
+      el.querySelector(".price").textContent = x.price;
+      items.appendChild(el);
+    });
+  }
+  buttons.forEach(b => b.addEventListener("click", () => {
+    buttons.forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    render(b.dataset.time);
+  }));
+  render("morning");
+
+  const status = document.getElementById("status");
+  const text = document.getElementById("status-text");
+  function syncStatus(){
+    const h = new Date().getHours();
+    const open = h >= 9 && h < 19;
+    status.classList.toggle("closed", !open);
+    text.textContent = open ? "正在营业 · 来喝一杯" : "已打烊 · 明早九点见";
+  }
+  syncStatus();
+  setInterval(syncStatus, 300000);
+})();
+</script>
+</body>
+</html>

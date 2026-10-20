@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Popcorn — A new way to connect</title>
+<meta name="description" content="Popcorn 是一张为高效工作的人设计的高端手机套餐：蜂窝与卫星，全球可用。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#f2efea; --ink:#1c1b19; --dim:#6f6c66; --line:#e0dcd4;
+  --peach:#f3ddd6; --lilac:#e5dcef; --lime:#e4e8cf; --grey:#efede8;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --serif:"Times New Roman","Songti SC","STSong",Georgia,serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:13px/1.65 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:#734fe0;color:#fff}
+.wrap{max-width:1260px;margin:0 auto;padding:0 28px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0}
+.logo{font:700 18px/1 var(--sans);letter-spacing:-.04em;text-decoration:none}
+.logo span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#734fe0;margin-left:3px}
+.nav{display:flex;gap:20px;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.nav a{text-decoration:none}.nav a:hover{color:var(--ink)}
+.alpha{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font:9px var(--mono);text-decoration:none}
+.alpha:hover{border-color:var(--ink)}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:14px 0 22px}
+.card{border-radius:18px;padding:22px 22px;min-height:290px;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+.card:hover{transform:translateY(-3px)}
+.card h2{margin:0;font:700 clamp(26px,2.6vw,38px)/1.02 var(--serif);letter-spacing:-.03em;max-width:12ch}
+.card p{margin:12px 0 0;font-size:11.5px;color:var(--dim);line-height:1.75;max-width:34ch}
+.card .bottom{margin-top:auto}
+.card .pill{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 9px;font:8.5px var(--mono);color:var(--dim)}
+.c1{background:var(--peach)}
+.c2{background:linear-gradient(145deg,#f0e2d9 0%,#e5dced 55%,#d9e1d1 100%)}
+.c3{background:#fff}
+.c4{background:#1c1230;color:#fff}
+.c4 p{color:rgba(255,255,255,.66)}
+.c4 h2{color:#fff;max-width:9ch}
+.c5{background:linear-gradient(145deg,#e6e6d2,#e9dcd2 55%,#dcd8e7)}
+.c6{background:var(--grey)}
+
+.can{width:92px;height:130px;border-radius:16px;background:linear-gradient(90deg,#f8d3e0,#fff 38%,#cfe5f7 72%,#f4c6aa);
+  margin:26px auto 0;position:relative;box-shadow:0 22px 34px -24px rgba(70,50,40,.5)}
+.can::before{content:"";position:absolute;left:14px;right:14px;top:8px;height:8px;border-radius:50%;background:#f4f1ea;border:1px solid #ded8cd}
+.can::after{content:"POPCORN";position:absolute;left:0;right:0;bottom:36px;text-align:center;
+  font:700 8px var(--mono);letter-spacing:.2em;color:#b0829b;transform:rotate(-90deg)}
+.shadow{width:120px;height:14px;border-radius:50%;background:rgba(60,40,30,.12);filter:blur(6px);margin:6px auto 0}
+.blobs{position:absolute;inset:0;overflow:hidden}
+.blobs i{position:absolute;border-radius:50%;filter:blur(.3px);opacity:.9}
+.blobs i:nth-child(1){width:150px;height:150px;left:-30px;top:20px;background:radial-gradient(circle at 35% 30%,#b59cff,#5b3fae 60%,#2b1b5e)}
+.blobs i:nth-child(2){width:110px;height:110px;right:16px;top:70px;background:radial-gradient(circle at 35% 30%,#a9d9b0,#4f8f63 60%,#1f4230)}
+.blobs i:nth-child(3){width:86px;height:86px;left:80px;bottom:-18px;background:radial-gradient(circle at 35% 30%,#d8c1ff,#7e5ec4 60%,#39256b)}
+.blobs i:nth-child(4){width:150px;height:150px;right:-40px;bottom:-40px;background:radial-gradient(circle at 35% 30%,#a9d9b0,#4f8f63 60%,#1f4230)}
+.c4 .bottom{position:relative;z-index:2;margin-top:auto}
+.c4 h2,.c4 p{position:relative;z-index:2}
+.mini-can{width:48px;height:68px;border-radius:8px;background:linear-gradient(90deg,#f6d7e2,#fff 40%,#d6e8f6 75%,#f3cbb5);margin:0 auto;position:relative;box-shadow:0 10px 18px -12px rgba(70,50,40,.4)}
+.mini-can::before{content:"";position:absolute;left:7px;right:7px;top:4px;height:4px;border-radius:50%;background:#f4f1ea;border:1px solid #ded8cd}
+.cta{appearance:none;border:0;border-radius:999px;background:#1c1b19;color:#fff;padding:9px 15px;font-size:10.5px;cursor:pointer;align-self:flex-start}
+.cta:hover{background:#734fe0}
+.card .device-line{display:flex;align-items:center;gap:6px;margin-top:10px;font:8px var(--mono);color:var(--dim)}
+.card .device-line i{width:5px;height:5px;border-radius:50%;background:#7fbf8d;display:block}
+
+footer{border-top:1px solid var(--line);padding:12px 0 22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font:8.5px var(--mono);letter-spacing:.08em;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:#734fe0}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,14px);background:#1c1b19;color:#fff;
+  font:9px var(--mono);padding:7px 12px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:980px){
+  .grid{grid-template-columns:1fr 1fr}
+  .c1,.c4{grid-column:span 2}
+}
+@media(max-width:560px){
+  .wrap{padding:0 14px}
+  .grid{grid-template-columns:1fr}
+  .c1,.c4{grid-column:span 1}
+  .card{min-height:240px}
+  .nav{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="logo" href="#top">Popcorn<span></span></a>
+    <nav class="nav" aria-label="主导航"><a href="#top">Product</a><a href="#top">Coverage</a><a href="#top">Pricing</a></nav>
+    <a class="alpha" href="#top">Join the alpha ↗</a>
+  </header>
+
+  <main class="grid" id="top">
+    <section class="card c1"><h2>Plug out. But stay in the loop.</h2><p>A high-end phone plan to boost productivity for business owners.</p><div class="bottom"><span class="pill">Cellular + satellite</span></div></section>
+
+    <section class="card c2"><p>Enjoy unlimited global service with cellular and satellite technology.</p><div class="can" aria-hidden="true"></div><div class="shadow" aria-hidden="true"></div></section>
+
+    <section class="card c3"><div class="mini-can" aria-hidden="true"></div><div class="device-line"><i></i>Available on iOS</div><div class="bottom"><h2>A new way to connect.</h2></div></section>
+
+    <section class="card c4"><div class="blobs" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2>Enjoy unlimited global service.</h2><p>With cellular and satellite technology. Easily manage extra lines.</p><div class="bottom"><span class="pill" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.75)">No roaming fees</span></div></section>
+
+    <section class="card c5"><h2>Popcorn. A new way to connect.</h2><p>Enjoy unlimited global service with cellular and satellite technology.</p><div class="bottom"><span class="pill">From $29 / month</span></div></section>
+
+    <section class="card c6"><h2 style="font:600 20px/1.3 var(--serif)">We're currently in alpha!</h2><p>Tell us a little about you to see if we can get you on.</p><div class="bottom"><button class="cta" type="button" id="join">Request an invite →</button></div></section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 28px">
+    <span>© 2026 Popcorn · 演示页面</span>
+    <a href="../index.html" target="_top">← 模板展厅</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast">已记录邀请申请（演示）</div>
+<script>
+document.getElementById("join").addEventListener("click", () => {
+  const t = document.getElementById("toast");
+  t.classList.add("on");
+  setTimeout(() => t.classList.remove("on"), 1800);
+});
+</script>
+</body>
+</html>

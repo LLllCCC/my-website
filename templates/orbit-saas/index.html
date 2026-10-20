@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orbit — 让团队专注于真正重要的工作</title>
+<meta name="description" content="Orbit 把计划、协作与发布放进同一条轨道。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --bg:#080d1a; --panel:#0e1730; --panel-2:#111c38;
+  --ink:#f1f5ff; --dim:#8a97b4; --line:#1c2a4a; --lime:#c9f76f; --blue:#3f6bff;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 var(--sans);overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 50% -16%,rgba(63,107,255,.22),transparent 46%),
+    radial-gradient(ellipse at 86% 12%,rgba(201,247,111,.06),transparent 32%)}
+a{color:inherit}
+::selection{background:var(--lime);color:#0a0f1e}
+.wrap{max-width:1280px;margin:0 auto;padding:0 34px}
+
+header{position:sticky;top:0;z-index:30;background:rgba(8,13,26,.78);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(28,42,74,.7)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:15px 0}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font:700 21px/1 var(--sans);letter-spacing:-.06em}
+.logo i{width:19px;height:19px;display:block;position:relative;overflow:hidden}
+.logo i::before,.logo i::after{content:"";position:absolute;width:4px;height:22px;background:var(--lime);
+  border-radius:2px;left:4px;top:-2px;transform:rotate(28deg)}
+.logo i::after{left:12px;background:rgba(201,247,111,.55)}
+.nav-links{display:flex;align-items:center;gap:26px;font-size:12.5px;color:var(--dim)}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{background:var(--lime);color:#0a0f1e!important;border-radius:4px;padding:8px 14px;font-weight:600}
+.nav-cta:hover{filter:brightness(.96)}
+
+.hero{padding:64px 0 0;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;margin:0 0 22px;
+  font:9.5px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--lime);display:block;
+  box-shadow:0 0 0 4px rgba(201,247,111,.12)}
+h1{margin:0 auto;font:700 clamp(46px,6.2vw,88px)/1.1 var(--sans);letter-spacing:-.055em}
+h1 em{font-style:normal;color:var(--lime)}
+.lede{max-width:54ch;margin:22px auto 0;color:var(--dim);font-size:15px;line-height:1.85}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;
+  padding:12px 20px;border-radius:4px;font-size:13px;border:1px solid transparent;cursor:pointer;transition:.2s}
+.btn-main{background:var(--lime);color:#0a0f1e;font-weight:600}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 12px 28px -18px var(--lime)}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:rgba(14,23,48,.5)}
+.btn-ghost:hover{border-color:var(--dim)}
+.note{margin:14px 0 0;font:9.5px var(--mono);letter-spacing:.05em;color:var(--dim)}
+.note span{color:var(--lime)}
+
+.app{margin:44px auto 0;max-width:1120px;text-align:left;border:1px solid var(--line);border-radius:10px;
+  background:var(--panel);box-shadow:0 50px 90px -50px rgba(0,0,0,.9);overflow:hidden}
+.app-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 15px;
+  border-bottom:1px solid var(--line);background:rgba(17,28,56,.7)}
+.dots{display:flex;gap:5px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#31415f;display:block}
+.app-top .t{font:9.5px var(--mono);letter-spacing:.08em;color:var(--dim)}
+.app-top .sync{display:flex;align-items:center;gap:6px;font:9px var(--mono);color:#7fe0a8}
+.app-top .sync i{width:5px;height:5px;border-radius:50%;background:#7fe0a8;display:block}
+.app-body{display:grid;grid-template-columns:196px 1fr;min-height:330px}
+.side{border-right:1px solid var(--line);padding:16px 12px;background:rgba(11,18,34,.72)}
+.side .team{display:flex;align-items:center;gap:8px;padding:0 6px 14px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.side .team b{width:22px;height:22px;border-radius:5px;background:var(--lime);color:#0a0f1e;
+  display:grid;place-items:center;font:10px var(--mono)}
+.side .team span{font-size:11.5px;font-weight:600}
+.side .team small{display:block;font:8px var(--mono);color:var(--dim);margin-top:1px}
+.side nav{display:grid;gap:2px}
+.side nav a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--dim);
+  font-size:11.5px;padding:7px 8px;border-radius:4px}
+.side nav a:hover{background:rgba(255,255,255,.04);color:var(--ink)}
+.side nav a[aria-current="page"]{background:rgba(201,247,111,.1);color:var(--lime)}
+.side nav a .n{margin-left:auto;font:8.5px var(--mono);color:var(--dim)}
+.side .side-label{font:8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#5d6a87;
+  padding:14px 8px 5px}
+.side .foot{margin-top:18px;padding:10px 8px 0;border-top:1px solid var(--line);font:8.5px var(--mono);color:var(--dim);line-height:1.7}
+
+.main{padding:20px 22px;min-width:0}
+.main-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.main-head h2{margin:0;font:700 22px/1.2 var(--sans);letter-spacing:-.035em}
+.main-head p{margin:4px 0 0;color:var(--dim);font-size:11px}
+.avatars{display:flex;align-items:center}
+.avatars span{width:22px;height:22px;border-radius:50%;border:2px solid var(--panel);margin-left:-6px;
+  display:grid;place-items:center;font:8px var(--mono);color:#fff}
+.avatars span:first-child{margin-left:0;background:#5d4b37}
+.avatars span:nth-child(2){background:#355f50}
+.avatars span:nth-child(3){background:#6d3f38}
+.task-list{border-top:1px solid var(--line)}
+.task-row{display:grid;grid-template-columns:20px 1fr 92px 62px;gap:10px;align-items:center;
+  padding:11px 2px;border-bottom:1px solid var(--line);font-size:11.5px;transition:opacity .25s}
+.task-row .box{width:13px;height:13px;border:1px solid #3b4c6d;border-radius:3px;position:relative}
+.task-row.done .box{background:var(--lime);border-color:var(--lime)}
+.task-row.done .box::after{content:"✓";position:absolute;inset:-3px 0 0 2px;color:#0a0f1e;font-size:10px}
+.task-row .name{color:var(--ink)}
+.task-row.done .name{color:var(--dim);text-decoration:line-through}
+.task-row .status{font:8.5px var(--mono);color:var(--dim)}
+.task-row .status.doing{color:var(--lime)}
+.task-row .status.done{color:#7fe0a8}
+.task-row .who{font:8.5px var(--mono);color:var(--dim);text-align:right}
+.task-row.moving{opacity:.35}
+.app-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px}
+.app-foot span{font:9px var(--mono);color:var(--dim)}
+.app-foot button{appearance:none;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);
+  font:10px var(--mono);letter-spacing:.05em;padding:7px 10px;border-radius:4px;cursor:pointer}
+.app-foot button:hover{border-color:var(--lime);color:var(--lime)}
+.toast{position:absolute;right:18px;bottom:16px;background:#f4f7ff;color:#0a0f1e;border-radius:5px;
+  padding:8px 11px;font:9px var(--mono);box-shadow:0 12px 28px -14px rgba(0,0,0,.6);display:none}
+.app-wrap{position:relative}
+
+.logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:54px}
+.logos .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:16px 34px}
+.logos span{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.logos b{font:600 13px var(--sans);letter-spacing:.06em;color:#5f6c88}
+
+section{padding:80px 0}
+.s-head{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px;align-items:end;margin-bottom:32px}
+.s-head h2{margin:0;font:700 clamp(28px,3.6vw,44px)/1.1 var(--sans);letter-spacing:-.045em}
+.s-head p{margin:0;color:var(--dim);max-width:52ch;font-size:13.5px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{appearance:none;border:0;background:none;padding:11px 14px;cursor:pointer;
+  font:10.5px var(--mono);letter-spacing:.05em;color:var(--dim);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--lime);border-bottom-color:var(--lime)}
+.panel{display:grid;grid-template-columns:.85fr 1.15fr;gap:34px;padding:30px 0 0}
+.panel h3{margin:0;font:600 24px/1.3 var(--sans);letter-spacing:-.03em}
+.panel p{color:var(--dim);margin:12px 0 0;font-size:12.5px;max-width:42ch;line-height:1.8}
+.panel ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:8px;font-size:12px;color:var(--dim)}
+.panel li::before{content:"→";color:var(--lime);margin-right:8px}
+.mock{background:var(--panel);border:1px solid var(--line);border-radius:8px;min-height:260px;padding:18px;
+  display:flex;flex-direction:column;gap:11px;position:relative;overflow:hidden}
+.mock .bar{height:9px;background:#1a2742;border-radius:2px}
+.mock .b1{width:34%;background:var(--blue);height:11px}
+.mock .b2{width:62%}.mock .b3{width:78%}
+.mock .row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:auto}
+.mock .cell{border:1px solid var(--line);border-radius:4px;padding:8px;font:8px var(--mono);color:var(--dim);
+  display:flex;flex-direction:column;justify-content:space-between;background:rgba(17,28,56,.5)}
+.mock .cell b{font:600 16px var(--sans);color:var(--ink)}
+.mock .chip{position:absolute;right:14px;top:14px;background:rgba(201,247,111,.14);color:var(--lime);
+  border:1px solid rgba(201,247,111,.3);border-radius:999px;font:8px var(--mono);padding:3px 7px}
+
+.price-wrap{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+.price-left h2{margin:0;font:700 clamp(30px,4vw,50px)/1.08 var(--sans);letter-spacing:-.045em}
+.price-left p{color:var(--dim);margin:16px 0 0;max-width:42ch;font-size:13.5px}
+.bill-toggle{display:inline-flex;border:1px solid var(--line);border-radius:4px;padding:3px;margin-top:24px;background:var(--panel)}
+.bill-toggle button{appearance:none;border:0;background:none;padding:7px 13px;border-radius:3px;
+  font:10px var(--mono);cursor:pointer;color:var(--dim)}
+.bill-toggle button[aria-pressed="true"]{background:var(--lime);color:#0a0f1e}
+.price-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:28px}
+.price-card .tag{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
+.price{display:flex;align-items:baseline;gap:8px;margin:13px 0 0}
+.price b{font:700 50px/1 var(--sans);letter-spacing:-.055em}
+.price span{color:var(--dim);font-size:12px}
+.save{display:inline-block;margin-top:9px;background:rgba(201,247,111,.12);color:var(--lime);
+  border-radius:3px;padding:3px 7px;font:9px var(--mono)}
+.price-card ul{list-style:none;padding:18px 0 0;margin:18px 0 0;border-top:1px solid var(--line);display:grid;gap:9px}
+.price-card li{font-size:12.5px;color:var(--dim)}
+.price-card li::before{content:"✓";color:var(--lime);margin-right:8px}
+.price-card .btn{width:100%;margin-top:20px}
+
+footer{border-top:1px solid var(--line);padding:22px 0}
+footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  font:9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--lime)}
+
+@media(max-width:900px){
+  .wrap{padding:0 20px}
+  .app-body{grid-template-columns:1fr}
+  .side{display:none}
+  .s-head,.panel,.price-wrap{grid-template-columns:1fr}
+  .hero{padding-top:44px}
+  .app{overflow:hidden}
+  .task-row{grid-template-columns:20px 1fr 78px}
+  .task-row .who{display:none}
+  .nav-links a:not(.nav-cta){display:none}
+  section{padding:58px 0}
+  .toast{display:none!important}
+  h1{max-width:14ch}
+}
+@media(max-width:560px){
+  .main{padding:16px}
+  .main-head h2{font-size:19px}
+  .app-foot{flex-wrap:wrap}
+  .price b{font-size:42px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top"><i aria-hidden="true"></i>orbit</a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="#workflow">产品</a><a href="#workflow">解决方案</a><a href="#pricing">定价</a><a href="#top">资源</a>
+      <a href="#top">登录</a><a class="nav-cta" href="#pricing">免费试用</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow"><i></i>Orbit 2.0 / 团队协作操作系统</p>
+      <h1>让团队专注于<br>真正重要的工作<em>。</em></h1>
+      <p class="lede">把计划、协作与发布放进同一条轨道。会议少一次，上下文多一层，交付自然快一步。</p>
+      <div class="actions">
+        <a class="btn btn-main" href="#pricing">免费开始 →</a>
+        <a class="btn btn-ghost" href="#workflow">预约演示</a>
+      </div>
+      <p class="note">无需信用卡 · <span>14 天</span>免费试用</p>
+
+      <div class="app-wrap" aria-label="Orbit 产品界面预览">
+        <div class="app">
+          <div class="app-top">
+            <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span class="t">orbit / 项目 · 网站改版</span>
+            <span class="sync"><i></i>已同步</span>
+          </div>
+          <div class="app-body">
+            <aside class="side">
+              <div class="team"><b>or</b><span>Orbit 团队<small>12 位成员 · 在线</small></span></div>
+              <nav aria-label="工作台导航">
+                <a href="#top">收件箱 <span class="n">3</span></a>
+                <a href="#top" aria-current="page">我的任务 <span class="n">7</span></a>
+                <a href="#top">项目</a><a href="#top">日历</a>
+              </nav>
+              <div class="side-label">Projects</div>
+              <nav aria-label="项目列表">
+                <a href="#top">网站改版</a><a href="#top">移动端 2.0</a><a href="#top">品牌指南</a>
+              </nav>
+              <div class="foot">本周已交付 18 项<br>较上周 +12%</div>
+            </aside>
+
+            <div class="main">
+              <div class="main-head">
+                <div><h2>新任务</h2><p>今天 · 4 项任务 · 1 项已完成</p></div>
+                <div class="avatars" aria-hidden="true"><span>林</span><span>周</span><span>陈</span></div>
+              </div>
+              <div class="task-list" id="task-list">
+                <div class="task-row done"><span class="box"></span><span class="name">新用户引导文案</span><span class="status done">已交付</span><span class="who">林 · 昨天</span></div>
+                <div class="task-row" id="move-task"><span class="box"></span><span class="name">支付页加载优化</span><span class="status doing">进行中</span><span class="who">陈 · 今天</span></div>
+                <div class="task-row"><span class="box"></span><span class="name">团队权限模型</span><span class="status">待处理</span><span class="who">赵 · 2 天</span></div>
+                <div class="task-row"><span class="box"></span><span class="name">用户访谈纪要归档</span><span class="status">待处理</span><span class="who">周 · 3 天</span></div>
+              </div>
+              <div class="app-foot"><span id="app-note">今天还有 2 项待推进</span>
+                <button type="button" id="advance">推进一项 →</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="toast" id="toast">已推进：支付页加载优化</div>
+      </div>
+    </div>
+
+    <div class="logos">
+      <div class="wrap">
+        <span>被这些团队每天使用</span>
+        <b>NORTHWIND</b><b>平原实验室</b><b>Kinetic</b><b>岛屿科技</b><b>MORI</b>
+      </div>
+    </div>
+  </section>
+
+  <section id="workflow">
+    <div class="wrap">
+      <div class="s-head"><h2>一条轨道，<br>三个阶段。</h2>
+        <p>大多数工具把计划、执行和发布拆成三个地方。Orbit 让它们共享同一份上下文——改动一次，所有相关的人都能看到变化。</p></div>
+      <div class="tabs" role="tablist" aria-label="工作流阶段">
+        <button class="tab" role="tab" aria-selected="true" data-tab="plan">01 规划</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="build">02 协作</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="ship">03 发布</button>
+      </div>
+      <div class="panel">
+        <div>
+          <h3 id="panel-title">先对齐「为什么」，再分配「谁来做」。</h3>
+          <p id="panel-desc">把目标、约束和验收标准放在任务最前面。每个成员打开任务时，看到的不是一句标题，而是完整的决策上下文。</p>
+          <ul id="panel-list"><li>目标与关键结果自动关联</li><li>依赖关系可视化</li><li>容量预警提前两周</li></ul>
+        </div>
+        <div class="mock" aria-hidden="true"><span class="chip">LIVE</span>
+          <div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div>
+          <div class="row">
+            <div class="cell"><span>本周完成</span><b id="m1">18</b></div>
+            <div class="cell"><span>进行中</span><b id="m2">7</b></div>
+            <div class="cell"><span>风险项</span><b id="m3">2</b></div>
+            <div class="cell"><span>发布</span><b id="m4">4</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap price-wrap">
+      <div class="price-left">
+        <p class="eyebrow"><i></i>Pricing / simple</p>
+        <h2>一个价格，<br>整个团队。</h2>
+        <p>不按席位加价，不为自动化另收费。先让团队用起来，再谈规模。</p>
+        <div class="bill-toggle" role="group" aria-label="计费周期">
+          <button type="button" data-bill="month" aria-pressed="true">按月</button>
+          <button type="button" data-bill="year" aria-pressed="false">按年 · 省 20%</button>
+        </div>
+      </div>
+      <div class="price-card">
+        <span class="tag">Team / 全部功能</span>
+        <div class="price"><b id="price">¥199</b><span id="per">/ 月 · 最多 20 人</span></div>
+        <span class="save" id="save" hidden>年付省 ¥478</span>
+        <ul><li>无限项目与发布轨道</li><li>目标、依赖与容量视图</li><li>自动化规则与 Webhook</li><li>SSO 与审计日志</li></ul>
+        <a class="btn btn-main" href="#top">开始 14 天试用 →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Orbit · 为认真交付的团队</span><a href="../index.html" target="_top">← 模板展厅</a></div>
+</footer>
+
+<script>
+(() => {
+  const stages = {
+    plan: { title:"先对齐「为什么」，再分配「谁来做」。", desc:"把目标、约束和验收标准放在任务最前面。每个成员打开任务时，看到的不是一句标题，而是完整的决策上下文。", list:["目标与关键结果自动关联","依赖关系可视化","容量预警提前两周"], metrics:["18","7","2","4"] },
+    build: { title:"让协作发生在任务里，而不是会议里。", desc:"评论、文件、决策记录都挂在任务上。新成员加入时，不用再问「这个决定是谁做的」。", list:["任务内讨论与决策留档","跨项目依赖自动提醒","每周自动生成进展摘要"], metrics:["24","11","1","6"] },
+    ship: { title:"发布不是终点，是下一次迭代的起点。", desc:"发布清单、回滚方案和监控指标在同一条轨道上。上线后自动把结果写回目标。", list:["发布检查单与责任人","一键生成变更日志","上线后指标自动回填"], metrics:["31","3","0","9"] },
+  };
+  const tabs = [...document.querySelectorAll(".tab")];
+  const title = document.getElementById("panel-title");
+  const desc = document.getElementById("panel-desc");
+  const list = document.getElementById("panel-list");
+  const metrics = ["m1","m2","m3","m4"].map(id => document.getElementById(id));
+  tabs.forEach(tab => tab.addEventListener("click", () => {
+    tabs.forEach(t => t.setAttribute("aria-selected", String(t === tab)));
+    const s = stages[tab.dataset.tab];
+    title.textContent = s.title; desc.textContent = s.desc;
+    list.innerHTML = "";
+    s.list.forEach(x => { const li = document.createElement("li"); li.textContent = x; list.appendChild(li); });
+    metrics.forEach((m,i) => { m.textContent = s.metrics[i]; });
+  }));
+
+  const task = document.getElementById("move-task");
+  const toast = document.getElementById("toast");
+  const note = document.getElementById("app-note");
+  let moved = false;
+  let toastTimer;
+  document.getElementById("advance").addEventListener("click", () => {
+    if (moved){
+      moved = false;
+      task.classList.remove("done");
+      task.querySelector(".status").className = "status doing";
+      task.querySelector(".status").textContent = "进行中";
+      document.querySelector(".task-list").insertBefore(task, document.querySelectorAll(".task-row")[1]);
+      note.textContent = "今天还有 2 项待推进";
+      return;
+    }
+    moved = true;
+    task.classList.add("moving");
+    setTimeout(() => {
+      task.classList.remove("moving");
+      task.classList.add("done");
+      task.querySelector(".status").className = "status done";
+      task.querySelector(".status").textContent = "已交付";
+      document.getElementById("task-list").prepend(task);
+      note.textContent = "已完成 3 项，干得漂亮。";
+      toast.style.display = "block";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.style.display = "none"; }, 2200);
+    }, 300);
+  });
+
+  const price = document.getElementById("price"), per = document.getElementById("per"), save = document.getElementById("save");
+  document.querySelectorAll("[data-bill]").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-bill]").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+    const year = btn.dataset.bill === "year";
+    price.textContent = year ? "¥159" : "¥199";
+    per.textContent = year ? "/ 月 · 按年计费" : "/ 月 · 最多 20 人";
+    save.hidden = !year;
+  }));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maison Aubel — Slow cooking, quietly made in the 11th</title>
+<meta name="description" content="Maison Aubel 是一间开在巴黎十一区的小餐厅：开放厨房、每日市场菜单、三道菜。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#f0eadf; --paper-2:#fbf7ef; --ink:#26221c; --dim:#746e63; --line:#dcd4c6;
+  --rust:#8c4a32; --brown:#4a2d1f; --green:#5d704b; --red:#b34a30; --gold:#9b7b4b;
+  --serif:"Times New Roman","Songti SC","STSong",Georgia,serif;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:13px/1.7 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--rust);color:#fff}
+.wrap{max-width:1380px;margin:0 auto;padding:0 34px}
+header{border-bottom:1px solid var(--line);background:var(--paper)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:13px 0}
+.brand{text-decoration:none;display:flex;align-items:baseline;gap:8px}
+.brand b{font:500 20px/1 var(--serif);letter-spacing:.01em}
+.brand b em{font-style:italic;color:var(--rust)}
+.nav-mid{display:flex;gap:24px;font-size:11px;color:var(--dim)}
+.nav-mid a{text-decoration:none}
+.nav-mid a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:14px;font:9px var(--mono);letter-spacing:.05em}
+.nav-right span{color:var(--dim)}
+.reserve{background:#26221c;color:#fff!important;text-decoration:none;padding:7px 12px;border-radius:2px;font-size:10px}
+
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:560px;border-bottom:1px solid var(--line)}
+.hero-left{padding:34px 40px 26px 0;display:flex;flex-direction:column}
+.eyebrow{display:flex;align-items:center;gap:9px;font:italic 10.5px var(--serif);color:var(--dim);margin:0 0 20px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--line)}
+h1{margin:0;font:400 clamp(48px,5.4vw,74px)/.98 var(--serif);letter-spacing:-.045em;max-width:18ch}
+h1 em{font-style:italic;color:var(--rust)}
+.lede{max-width:44ch;margin:20px 0 0;color:var(--dim);font-size:12.5px;line-height:1.85}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.facts span{display:block;font:8px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.facts b{display:block;margin-top:4px;font-size:11.5px;font-weight:500}
+.facts small{display:block;font-size:10px;color:var(--dim);margin-top:1px}
+.hero-right{position:relative;background:linear-gradient(150deg,#8a5b3f,#5c3825 60%,#3d2418);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px;color:#f5e9d7}
+.plate{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:74%;max-width:470px;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#fbf4e7 0 40%,#f2e7d4 62%,#e2d2b9 82%,#d5c2a5 100%);
+  box-shadow:0 40px 60px -34px rgba(0,0,0,.6),inset -18px -20px 44px rgba(110,70,40,.18)}
+.plate .food{position:absolute;border-radius:50%}
+.f1{width:22%;height:17%;left:24%;top:38%;background:radial-gradient(circle at 35% 30%,#c05a3a,#7e2f1e);transform:rotate(-14deg)}
+.f2{width:18%;height:14%;left:54%;top:36%;background:radial-gradient(circle at 35% 30%,#8b6a4a,#402719);transform:rotate(10deg)}
+.f3{width:24%;height:7%;left:35%;top:60%;background:radial-gradient(circle at 35% 30%,#7f9760,#3f4f2c);border-radius:50%}
+.f4{width:4%;height:4%;left:58%;top:54%;background:#c78a3f}
+.f5{width:2.5%;height:2.5%;left:28%;top:56%;background:#c78a3f}
+.hero-right .topline{position:relative;z-index:2;display:flex;justify-content:space-between;gap:10px;font:8px var(--mono);letter-spacing:.1em;color:rgba(245,233,215,.7)}
+.dish{position:relative;z-index:2;margin-top:auto;font-size:9px;color:rgba(245,233,215,.8)}
+.dish b{display:block;font:italic 15px var(--serif);color:#fff;margin-top:3px}
+
+.lower{display:grid;grid-template-columns:1fr 1.15fr .85fr;gap:0;border-bottom:1px solid var(--line)}
+.lower > section{padding:20px 26px 24px;border-right:1px solid var(--line)}
+.lower > section:last-child{border-right:0}
+.s-title{margin:0;font:500 22px/1.2 var(--serif)}
+.s-sub{margin:4px 0 12px;font:8.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.dish-row{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.dish-row:last-child{border-bottom:0}
+.swatch{width:30px;height:30px;border-radius:50%;background:var(--c);box-shadow:inset -5px -6px 10px rgba(0,0,0,.2)}
+.dish-row b{display:block;font:italic 14px var(--serif);font-weight:400}
+.dish-row small{display:block;font-size:9px;color:var(--dim);margin-top:1px}
+.dish-row .p{font:10px var(--mono);color:var(--dim)}
+
+.form-title{font:500 22px/1.2 var(--serif);margin:0 0 3px}
+.form-sub{font:8.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:0 0 12px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.field{display:flex;flex-direction:column;gap:3px}
+.field span{font:8px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.field input,.field select{font:11px var(--sans);padding:8px 9px;border:1px solid var(--line);background:#fff;color:var(--ink);outline:none}
+.field input:focus,.field select:focus{border-color:var(--rust)}
+.times{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:4px 0 9px}
+.times button{appearance:none;border:1px solid var(--line);background:#fff;padding:7px 4px;font:9px var(--mono);color:var(--dim);cursor:pointer}
+.times button:hover{border-color:var(--rust);color:var(--ink)}
+.times button[aria-pressed="true"]{background:var(--brown);border-color:var(--brown);color:#fff}
+.book{appearance:none;border:0;background:var(--rust);color:#fff;padding:9px 13px;font-size:11px;cursor:pointer;width:100%;margin-top:4px}
+.book:hover{background:#733a25}
+.hours{display:grid;gap:5px;font:9.5px var(--mono)}
+.hours div{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.hours div:last-child{border-bottom:0}
+.addr{margin-top:12px;background:#26221c;color:#f5e9d7;padding:12px;font-size:9.5px;line-height:1.7}
+.addr b{display:block;color:#fff;font:italic 13px var(--serif);margin-bottom:2px}
+
+footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 0 20px;
+  font:8px var(--mono);letter-spacing:.08em;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--rust)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,14px);background:var(--brown);color:#fff;
+  font:9px var(--mono);padding:7px 12px;border-radius:2px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1000px){
+  .wrap{padding:0 20px}
+  .hero{grid-template-columns:1fr;min-height:0}
+  .hero-left{padding:28px 0 20px}
+  .hero-right{min-height:380px}
+  .lower{grid-template-columns:1fr}
+  .lower > section{border-right:0;border-bottom:1px solid var(--line)}
+}
+@media(max-width:600px){
+  .wrap{padding:0 16px}
+  .nav-mid{display:none}
+  h1{font-size:clamp(42px,12vw,60px)}
+  .facts{grid-template-columns:1fr 1fr}
+  .hero-right{min-height:330px}
+  .times{grid-template-columns:repeat(3,1fr)}
+  .field-row{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><b>Maison <em>Aubel</em></b></a>
+    <nav class="nav-mid" aria-label="主导航"><a href="#menu">Menus</a><a href="#menu">The room</a><a href="#hours">Wine cellar</a><a href="#hours">Stories</a></nav>
+    <div class="nav-right"><span>EN / FR</span><a class="reserve" href="#book">Reserve a table</a></div>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <section class="hero">
+    <div class="hero-left">
+      <p class="eyebrow">A neighbourhood bistro since 1987</p>
+      <h1>Slow cooking,<br><em>quietly</em><br>made in the 11th.</h1>
+      <p class="lede">A small dining room, an open kitchen, and a daily menu drawn from what the morning market in Aligre brought us. Three courses, unhurried, with a glass that fits.</p>
+      <div class="facts">
+        <div><span>Address</span><b>14 rue Sedaine</b><small>Paris, 75011</small></div>
+        <div><span>Tonight</span><b>Dinner 19:00 — 23:00</b><small>3 tables remaining</small></div>
+        <div><span>Chef</span><b>Camille Aubel</b><small>2nd generation</small></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="topline"><span>MAISON AUBEL / PARIS 11</span><span>№ 039</span></div>
+      <div class="plate" aria-hidden="true"><span class="food f1"></span><span class="food f2"></span><span class="food f3"></span><span class="food f4"></span><span class="food f5"></span></div>
+      <div class="dish">Dish of the week<b>Confit duck leg, parsnip purée, vin jaune jus</b></div>
+    </div>
+  </section>
+
+  <div class="lower">
+    <section id="menu">
+      <h2 class="s-title">Featured dishes</h2>
+      <p class="s-sub">Spring menu · changes weekly</p>
+      <div class="dish-row"><span class="swatch" style="--c:radial-gradient(circle at 35% 30%,#c05a3a,#7e2f1e)"></span><span><b>Steak tartare, smoked egg</b><small>Hand-cut, capers, baguette</small></span><span class="p">€26</span></div>
+      <div class="dish-row"><span class="swatch" style="--c:radial-gradient(circle at 35% 30%,#9a7a58,#5b402a)"></span><span><b>Duck confit, parsnip</b><small>Slow-cooked 6h, vin jaune</small></span><span class="p">€32</span></div>
+      <div class="dish-row"><span class="swatch" style="--c:radial-gradient(circle at 35% 30%,#7f9760,#3f4f2c)"></span><span><b>Sea bream, fennel, anise</b><small>Whole roasted, citrus oil</small></span><span class="p">€34</span></div>
+      <div class="dish-row"><span class="swatch" style="--c:radial-gradient(circle at 35% 30%,#d8c38d,#a3864f)"></span><span><b>Tarte Tatin, crème fraîche</b><small>Caramelised apples, butter</small></span><span class="p">€14</span></div>
+    </section>
+
+    <section id="book">
+      <h2 class="form-title">Reserve a table</h2>
+      <p class="form-sub">Confirmed instantly · no deposit</p>
+      <div class="field-row">
+        <label class="field"><span>Date</span><input type="text" value="Sat, 12 April 2026"></label>
+        <label class="field"><span>Guests</span><select><option>2 people</option><option>3 people</option><option>4 people</option><option>5 people</option></select></label>
+      </div>
+      <span class="s-sub" style="display:block;margin-bottom:0">Time</span>
+      <div class="times" role="group" aria-label="选择时间">
+        <button type="button">18:30</button><button type="button">19:00</button><button type="button">19:30</button><button type="button" aria-pressed="true">20:00</button><button type="button">20:30</button>
+        <button type="button">21:00</button><button type="button">21:30</button><button type="button">22:00</button><button type="button">22:30</button><button type="button">23:00</button>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>Name</span><input type="text" value="Élise Moreau"></label>
+        <label class="field"><span>Telephone</span><input type="text" value="+33 6 12 34 56 78"></label>
+      </div>
+      <button class="book" type="button" id="book-btn">Confirm reservation</button>
+    </section>
+
+    <section id="hours">
+      <h2 class="s-title">Hours</h2>
+      <p class="s-sub">Location · etc.</p>
+      <div class="hours">
+        <div><span>Today — Sat</span><span>12:00 — 14:30 · 19:00 — 23:00</span></div>
+        <div><span>Sun</span><span>12:00 — 15:00</span></div>
+        <div><span>Mon</span><span>Closed</span></div>
+        <div><span>Tue — Fri</span><span>19:00 — 23:00</span></div>
+      </div>
+      <div class="addr"><b>14 rue Sedaine, 75011 Paris</b>M° Bréguet-Sabin · 4 min walk<br>Bookings: +33 1 47 00 12 14</div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 34px">
+    <span>© 2026 Maison Aubel · Paris 11</span>
+    <a href="../index.html" target="_top">← 模板展厅</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast">已确认预订（演示）</div>
+<script>
+document.querySelectorAll(".times button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".times button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+}));
+document.getElementById("book-btn").addEventListener("click", () => {
+  const t = document.getElementById("toast");
+  t.classList.add("on");
+  setTimeout(() => t.classList.remove("on"), 1800);
+});
+</script>
+</body>
+</html>

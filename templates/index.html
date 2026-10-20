@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>模板实验室 · 24 个原创单页 — Yopo</title>
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<meta name="description" content="24 个零依赖、可交互的原创单页模板，覆盖落地页、作品集、博客与内容、数据看板、内部工具六种场合。">
+<style>
+:root{
+  --ground:#f1eee6; --panel:#fbf9f4; --ink:#171613; --dim:#6d6a61;
+  --line:#d8d3c6; --accent:#c8472c; --accent-ink:#fff7f2;
+  --tag:#e8e3d7;
+  --sans:ui-sans-serif,"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --serif:ui-serif,"Songti SC","STSong",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,"Cascadia Mono","Consolas","Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--ground:#131311;--panel:#1b1b18;--ink:#efebe0;--dim:#969183;
+        --line:#302f29;--accent:#e4674a;--accent-ink:#1a0e0a;--tag:#26251f;}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+     font-size:15px;line-height:1.55;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit}
+
+/* ---------- header ---------- */
+header{max-width:1360px;margin:0 auto;padding:68px 36px 0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:54px}
+.home-link{display:inline-flex;align-items:center;gap:8px;color:var(--dim);
+  font:11px var(--mono);letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+.home-link:hover{color:var(--accent)}
+.home-link::before{content:"←";font-size:13px}
+.mark{font:11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.eyebrow{font:11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 20px}
+h1{margin:0;font-family:var(--serif);font-weight:600;
+   font-size:clamp(42px,6.4vw,96px);line-height:.96;letter-spacing:-.045em}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{max-width:60ch;margin:28px 0 0;color:var(--dim);font-size:16px;line-height:1.7}
+.facts{display:flex;flex-wrap:wrap;gap:0;margin:46px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fact{flex:1 1 140px;padding:18px 22px 18px 0;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0;padding-right:0}
+.fact b{display:block;font:600 24px/1.1 var(--serif);letter-spacing:-.02em}
+.fact span{display:block;margin-top:6px;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+/* ---------- tabs ---------- */
+.tabs-wrap{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ground) 92%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-top:36px}
+.tabs{max-width:1360px;margin:0 auto;padding:0 36px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{appearance:none;border:0;background:transparent;color:var(--dim);cursor:pointer;
+  padding:16px 14px 14px;white-space:nowrap;font:12px var(--mono);letter-spacing:.06em;
+  border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .n{color:var(--dim);font-size:10px;margin-left:5px;vertical-align:1px}
+.tab[aria-selected="true"] .n{color:var(--accent)}
+
+/* ---------- grid ---------- */
+main{max-width:1360px;margin:0 auto;padding:36px 36px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:30px 28px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:2px;
+  display:flex;flex-direction:column;overflow:hidden;position:relative;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
+.card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--ink) 30%,var(--line));
+  box-shadow:0 18px 44px -24px rgba(20,18,14,.35)}
+.card[hidden]{display:none}
+.shot{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--tag);border-bottom:1px solid var(--line)}
+.shot .preview{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;
+  object-position:top center;display:block;transition:opacity .2s;background:#fff}
+.shot[data-live="1"] .preview{opacity:0}
+.shot iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;z-index:2;
+  transform-origin:0 0;pointer-events:none;background:#fff;opacity:0;transition:opacity .2s}
+.shot[data-live="1"] iframe{pointer-events:auto;opacity:1}
+.placeholder{position:absolute;inset:0;display:grid;place-items:center;
+  font:10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:center;padding:0 20px}
+.badge{position:absolute;right:10px;top:10px;z-index:3;display:flex;gap:6px}
+.badge button{font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 9px;border:1px solid var(--line);border-radius:2px;background:var(--panel);
+  color:var(--dim);cursor:pointer;transition:color .2s,border-color .2s,background .2s}
+.badge button:hover{color:var(--ink);border-color:var(--ink)}
+.shot[data-live="1"] .badge .live{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.no{position:absolute;left:12px;top:10px;z-index:3;font:10px var(--mono);letter-spacing:.1em;color:var(--dim);
+  background:color-mix(in srgb,var(--panel) 86%,transparent);padding:4px 7px;border-radius:2px}
+.body{padding:19px 20px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
+.kicker{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.kicker .cat{color:var(--accent)}
+.kicker-left{display:flex;align-items:center;gap:8px}
+.pick{font:8px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  border:1px solid var(--accent);padding:1px 5px;border-radius:2px}
+.title{margin:0;font:600 21px/1.25 var(--serif);letter-spacing:-.02em}
+.title a{text-decoration:none;background-image:linear-gradient(var(--accent),var(--accent));
+  background-size:0 1px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .35s}
+.title a:hover{background-size:100% 1px}
+.desc{margin:0;font-size:13.5px;line-height:1.65;color:var(--dim);flex:1}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
+.meta span{font:9.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  background:var(--tag);color:var(--dim);padding:3px 7px;border-radius:2px}
+.empty{padding:80px 0;text-align:center;color:var(--dim);font:12px var(--mono);letter-spacing:.1em}
+
+footer{max-width:1360px;margin:0 auto;padding:72px 36px 88px;display:flex;
+  justify-content:space-between;gap:24px;flex-wrap:wrap;color:var(--dim);font-size:13px;border-top:1px solid var(--line);margin-top:72px}
+footer p{margin:0;max-width:62ch}
+footer a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+footer a:hover{border-color:var(--accent);color:var(--accent)}
+
+@media(max-width:720px){
+  header{padding:40px 20px 0}
+  .top{margin-bottom:38px}
+  .mark{display:none}
+  .facts{margin-top:34px}
+  .fact{flex-basis:50%}
+  .tabs-wrap{margin-top:28px}
+  .tabs{padding:0 20px}
+  main{padding:26px 20px 0}
+  .grid{grid-template-columns:minmax(0,1fr);gap:24px}
+  footer{padding:52px 20px 64px;margin-top:52px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .card,.title a{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <a class="home-link" href="../index.html">Yopo 的主页</a>
+    <span class="mark">Template Lab / Vol.01 / 2026</span>
+  </div>
+  <p class="eyebrow">24 single files · 6 occasions</p>
+  <h1>二十四个单页，<br>六种<em>场合</em>。</h1>
+  <p class="lede">每个模板都是一个独立的 HTML 文件：没有框架、没有 CDN、没有图片外链。
+    预览是页面截图；点 LIVE 才会在格子里加载真实页面，点名字全屏打开。24 个模板全部按 Qoder 原始示例缩略图重做。</p>
+  <div class="facts">
+    <div class="fact"><b>24</b><span>独立页面</span></div>
+    <div class="fact"><b>6</b><span>使用场合</span></div>
+    <div class="fact"><b>0</b><span>外部依赖</span></div>
+    <div class="fact"><b>1</b><span>文件即整站</span></div>
+  </div>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs" role="tablist" aria-label="模板分类"></div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty" hidden>这个分类还在施工。</p>
+</main>
+
+<footer>
+  <p>模板展厅是独立的实验场：每个页面自带一套设计语言，互不共享样式。
+    和站内其他页面一样，它们不加载任何第三方脚本或字体。</p>
+  <p><a href="../index.html">← 回到 Yopo 的主页</a></p>
+</footer>
+
+<script>
+const CATS = [
+  { id:"landing", label:"落地页" },
+  { id:"portfolio", label:"作品集" },
+  { id:"blog", label:"博客与内容" },
+  { id:"dashboard", label:"数据看板" },
+  { id:"internal", label:"内部工具" },
+  { id:"other", label:"其他" },
+];
+
+const CASES = [
+  { dir:"particle-enterprise", cat:"landing", featured:true, title:"数字粒子 · 企业官网",
+    desc:"Nebula Studio：橙色粒子波 + 衬线大标题，把品牌策略做成一张会呼吸的封面。",
+    meta:["Serif","Canvas 粒子","品牌站"] },
+  { dir:"orbit-saas", cat:"landing", featured:true, title:"Orbit · SaaS 产品官网",
+    desc:"深蓝产品站：居中大标题、荧光绿 CTA 与一块可推进任务的产品面板。",
+    meta:["深色","产品 UI","任务流转"] },
+  { dir:"mountain-letter-cafe", cat:"landing", featured:true, title:"山间来信 · 咖啡馆",
+    desc:"暖白咖啡馆：窗边木桌与绿植的内联 SVG 场景、手写便签和当日豆单。",
+    meta:["SVG 内景","豆单切换","暖白"] },
+  { dir:"lattice-ai", cat:"landing", featured:true, title:"Lattice · AI 产品",
+    desc:"黑底衬线 AI 站：白色结论、暖色重点与一排可验证的指标。",
+    meta:["衬线","结构化回答","黑底"] },
+
+  { dir:"liubai-portfolio", featured:true, cat:"portfolio", title:"留白 · 产品设计师作品集",
+    desc:"暖白纸面 + 巨大中文标题，把作品集做成一张有呼吸的编辑版式。",
+    meta:["作品集","编辑排版","中文"] },
+  { dir:"brand-decade", featured:true, cat:"portfolio", title:"Ines Maréchal · 品牌与产品设计",
+    desc:"奶油纸底与衬线大标题，作品、履历与能力标签排成一份克制的设计师简历。",
+    meta:["品牌","衬线","履历"] },
+  { dir:"korva-headphones", featured:true, cat:"portfolio", title:"KORVA · 耳机产品页",
+    desc:"浅色产品页：可切换配色与版本，价格和购物袋实时联动。",
+    meta:["产品页","配色切换","购物袋"] },
+  { dir:"field-notes-kyoto", featured:true, cat:"portfolio", title:"Field Notes · 京都旅行手记",
+    desc:"黄昏京都的 SVG 街景，压上手写旅行标题与本期精选。",
+    meta:["旅行","SVG 场景","手记"] },
+
+  { dir:"obsidian-article", featured:true, cat:"blog", title:"我如何改造 Obsidian",
+    desc:"浅蓝底、紫色标题和一张倾斜的 dashboard 截图，长文正文带目录与代码块。",
+    meta:["长文","Obsidian","代码块"] },
+  { dir:"conference-notes", featured:true, cat:"blog", title:"SIGNAL /26 · 会议站",
+    desc:"黑底、奶油衬线大标题与一颗橙色星球，会议信息、讲者与议程一次排开。",
+    meta:["会议","深色","议程"] },
+  { dir:"patagonia-story", featured:true, cat:"blog", title:"Wander · Patagonia",
+    desc:"用渐变山脊和太阳拼出的旅行页面，路线、价格与评价卡片完整可交互。",
+    meta:["旅行","渐变山景","路线"] },
+  { dir:"signal-ai", featured:true, cat:"blog", title:"Signal. · AI 科技周刊",
+    desc:"白底蓝字的科技周刊：线框环面插图、封面故事与编者按。",
+    meta:["周刊","线框插图","AI"] },
+
+  { dir:"energy-transition", cat:"dashboard", featured:true, title:"Northcape · 能源研究报告",
+    desc:"重工业电气化研究报告：衬线大标题、KPI 与两张 SVG 图表，配内容目录。",
+    meta:["研究报告","SVG 图表","目录"] },
+  { dir:"finance-ledger", cat:"dashboard", featured:true, title:"小账本 · 收支概览",
+    desc:"小账本：收入/支出/结余卡、环形分类图、每日趋势与预算进度。",
+    meta:["记账","环形图","预算"] },
+  { dir:"pulse-dashboard", cat:"dashboard", featured:true, title:"pulse. · 经营概览",
+    desc:"pulse. 经营概览：深色侧栏、四张 KPI、收入趋势与渠道环图。",
+    meta:["经营","侧栏","渠道"] },
+  { dir:"mercator-overview", cat:"dashboard", featured:true, title:"Mercator · 经营总览",
+    desc:"Mercator 总览：Good morning 问候、MRR/客户/留存卡与团队动态。",
+    meta:["总览","KPI","团队"] },
+
+  { dir:"meridian-wealth", cat:"internal", featured:true, title:"MERIDIAN · 资产总览",
+    desc:"MERIDIAN 资产总览：净值曲线、交易流水、资产配置与风险提示。",
+    meta:["资产","交易","配置"] },
+  { dir:"one-thing-timer", cat:"internal", featured:true, title:"一日一事 · 专注计时",
+    desc:"一日一事：今日任务清单 + 可运行的 25 分钟专注计时器。",
+    meta:["任务","计时器","专注"] },
+  { dir:"starbuddy", cat:"internal", featured:true, title:"StarBuddy · 课程面板",
+    desc:"StarBuddy 儿童英语面板：彩色课程卡、单词进度与每日任务。",
+    meta:["儿童","课程","进度"] },
+  { dir:"mila-learning", cat:"internal", featured:true, title:"Mila · 学习面板",
+    desc:"Mila 学习面板：今日冒险、单词卡、课程进度与星星奖励。",
+    meta:["儿童","学习","奖励"] },
+
+  { dir:"sidecladdy", cat:"other", featured:true, title:"Sideloadly · 工具首页",
+    desc:"Sideloadly 风格的深色工具首页：渐变齿轮、平台标签与下载按钮。",
+    meta:["工具","渐变","下载"] },
+  { dir:"ai-systems", cat:"other", featured:true, title:"Meridian · AI 研究页",
+    desc:"Meridian AI 研究页：奶油底衬线大标题与轨道线稿。",
+    meta:["研究","轨道图","衬线"] },
+  { dir:"popcorn-mobile", cat:"other", featured:true, title:"Popcorn · 手机套餐",
+    desc:"Popcorn 套餐页：六格便当布局，含一张 3D 质感深紫卡片。",
+    meta:["套餐","便当","3D"] },
+  { dir:"slow-cooking", cat:"other", featured:true, title:"Maison Aubel · 餐厅页",
+    desc:"Maison Aubel 餐厅页：慢食标题、餐盘插画、菜单与预订表单。",
+    meta:["餐厅","预订","菜单"] },
+];
+
+const grid = document.getElementById("grid");
+const tabs = document.getElementById("tabs");
+const empty = document.getElementById("empty");
+
+function pad(n){ return String(n).padStart(2,"0"); }
+
+CASES.forEach((c, i) => {
+  const el = document.createElement("article");
+  el.className = "card";
+  el.dataset.cat = c.cat;
+  el.innerHTML = `
+    <div class="shot" data-dir="${c.dir}" data-live="0">
+      <img class="preview" src="/img/templates/preview/${c.dir}.jpg" alt="" width="960" height="600" loading="lazy" decoding="async">
+      <div class="placeholder">${pad(i+1)} · ${c.dir}</div>
+      <span class="no">${pad(i+1)}</span>
+      <div class="badge">
+        <button class="live" type="button">live</button>
+        <button class="open" type="button">open ↗</button>
+      </div>
+    </div>
+    <div class="body">
+      <div class="kicker"><span class="kicker-left"><span class="cat">${CATS.find(x=>x.id===c.cat).label}</span>${c.featured ? '<span class="pick">还原示例</span>' : ''}</span><span>${pad(i+1)} / 24</span></div>
+      <h2 class="title"><a href="${c.dir}/index.html" target="_blank" rel="noopener">${c.title}</a></h2>
+      <p class="desc">${c.desc}</p>
+      <div class="meta">${c.meta.map(m=>`<span>${m}</span>`).join("")}</div>
+    </div>`;
+  grid.appendChild(el);
+});
+
+// tabs
+const total = CASES.length;
+const allTab = document.createElement("button");
+allTab.className = "tab";
+allTab.type = "button";
+allTab.role = "tab";
+allTab.dataset.cat = "all";
+allTab.innerHTML = `全部<span class="n">${total}</span>`;
+allTab.setAttribute("aria-selected","true");
+tabs.appendChild(allTab);
+
+CATS.forEach(cat => {
+  const b = document.createElement("button");
+  b.className = "tab";
+  b.type = "button";
+  b.role = "tab";
+  b.dataset.cat = cat.id;
+  const count = CASES.filter(c=>c.cat===cat.id).length;
+  b.innerHTML = `${cat.label}<span class="n">${count}</span>`;
+  b.setAttribute("aria-selected","false");
+  tabs.appendChild(b);
+});
+
+tabs.addEventListener("click", ev => {
+  const btn = ev.target.closest(".tab");
+  if (!btn) return;
+  tabs.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t === btn)));
+  const cat = btn.dataset.cat;
+  let shown = 0;
+  document.querySelectorAll(".card").forEach(card => {
+    const ok = cat === "all" || card.dataset.cat === cat;
+    card.hidden = !ok;
+    if (ok) shown++;
+  });
+  empty.hidden = shown > 0;
+  window.scrollTo(0, 0);
+});
+
+// iframe scaling
+function fit(shot){
+  const f = shot.querySelector("iframe");
+  if (!f) return;
+  f.style.transform = `scale(${shot.clientWidth / 1440})`;
+}
+
+function ensureFrame(shot){
+  let f = shot.querySelector("iframe");
+  if (f) return f;
+  f = document.createElement("iframe");
+  // 加版本参数，避免浏览器复用旧的登录表单缓存。
+  f.src = shot.dataset.dir + "/index.html?v=58";
+  f.setAttribute("scrolling","no");
+  f.setAttribute("tabindex","-1");
+  f.title = shot.dataset.dir;
+  f.addEventListener("load", () => fit(shot));
+  shot.appendChild(f);
+  requestAnimationFrame(()=>fit(shot));
+  return f;
+}
+
+function stopLive(shot){
+  shot.dataset.live = "0";
+  const f = shot.querySelector("iframe");
+  if (f) f.remove();
+}
+
+grid.addEventListener("click", ev => {
+  const shot = ev.target.closest(".shot");
+  if (!shot) return;
+  if (ev.target.classList.contains("open")){
+    window.open(shot.dataset.dir + "/index.html", "_blank", "noopener");
+    return;
+  }
+  if (ev.target.classList.contains("live")){
+    const wasLive = shot.dataset.live === "1";
+    document.querySelectorAll('.shot[data-live="1"]').forEach(stopLive);
+    if (wasLive) return;
+    shot.dataset.live = "1";
+    ensureFrame(shot);
+  }
+});
+
+addEventListener("resize", () => document.querySelectorAll(".shot").forEach(fit));
+</script>
+</body>
+</html>

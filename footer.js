@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     '<a href="/stats.html">统计</a>' +
     '<a href="/gallery.html">壁纸</a>' +
     '<a href="/motion-web/cases/">动效案例</a>' +
+    '<a href="/templates/">模板展厅</a>' +
     '<a href="/site.html">这个网站</a>' +
     '<a href="/feed.xml">RSS</a>' +
     "</p>" +

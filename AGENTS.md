@@ -36,6 +36,7 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 | `scripts/test-comment-markdown.mjs` | 评论渲染器测试 |
 | `scripts/e2e_check.py` + `e2e_stub_server.py` | 浏览器端到端检查（假接口 + Playwright，随机端口）；CI 会跑，本地 `python scripts/e2e_check.py` |
 | `motion-web/` | 外部 CC BY-NC 动效案例素材，**不要改其中的代码** |
+| `templates/` | 模板实验室：`templates/index.html` 是展厅（分类筛选 + 截图预览，点 LIVE 才创建 iframe）。每个子目录一个**单文件**模板页，24 个页面均按 Qoder 缓存里的原始示例截图重做。模板不引用站内 CSS/JS，加新模板时同步更新展厅 `CASES`、`publish.mjs` 的 sitemap 列表和 favicon 链接。24 张预览图在 `img/templates/preview/`，从对应页面 hero（1440×900）截取；首页「模板实验室」卡复用其中四张 |
 
 ## 壁纸约定（加壁纸时必须走这条流程）
 
@@ -86,7 +87,7 @@ push 到 `main` 即自动部署上线（Actions SSH 到服务器 `git pull` + �
 ## 改代码的规则
 
 1. 新功能进对应页面的入口脚本；跨页面复用的函数放 `config.js` 并 `export`。
-2. 任何 `.js`/`.css` 改动后：所有 HTML 里的 `?v=` **和**各模块 `import` 路径里的 `?v=` 一起 +1（当前 `40`），否则浏览器继续用旧缓存。没有构建步骤，版本号是唯一缓存失效手段。
+2. 任何 `.js`/`.css` 改动后：所有 HTML 里的 `?v=` **和**各模块 `import` 路径里的 `?v=` 一起 +1（当前 `58`），否则浏览器继续用旧缓存。没有构建步骤，版本号是唯一缓存失效手段。
    **必须做全库替换并把残留数检查到 0**：只改自己知道的那几个文件会漏（2026-10-10 就漏过 91 处，见下）。
    ```bash
    grep -rlE '\?v=NN' --include=*.html --include=*.js . | grep -v node_modules | grep -v 'motion-web/cases' \

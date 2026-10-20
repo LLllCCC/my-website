@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MERIDIAN — Assets overview</title>
+<meta name="description" content="MERIDIAN 私人银行资产总览：净值、配置、风险与近期交易。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --bg:#f7f7f4; --panel:#fff; --ink:#17191a; --dim:#7e817d; --line:#e5e6e1;
+  --dark:#101314; --dark-2:#191d1f; --gold:#c8a96b; --red:#b45545; --green:#3f8b62;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --serif:Georgia,"Songti SC","STSong",serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.6 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--ink);color:#fff}
+.app{display:grid;grid-template-columns:222px 1fr;min-height:100vh}
+.side{background:var(--dark);color:#b9bcb8;padding:18px 14px;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:#fff;padding:0 8px}
+.brand i{width:27px;height:27px;background:#fff;display:grid;place-items:center;color:#111;font:700 15px var(--sans)}
+.brand b{font:600 14px/1 var(--sans);letter-spacing:.14em}
+.side-label{font:7.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#616663;padding:0 8px;margin-top:6px}
+.nav{display:grid;gap:1px}
+.nav a{display:flex;align-items:center;gap:8px;text-decoration:none;color:#9da19d;font-size:10.5px;padding:7px 8px;border-radius:4px}
+.nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav a[aria-current="page"]{background:#272b2c;color:#fff;box-shadow:inset 2px 0 0 #fff}
+.nav a .n{margin-left:auto;border:1px solid #3a3f3f;border-radius:7px;font:7px var(--mono);padding:0 5px}
+.advisor{margin-top:auto;border:1px solid #2e3333;border-radius:6px;padding:11px}
+.advisor b{display:block;color:#fff;font-size:9.5px}
+.advisor p{margin:4px 0 7px;font-size:8px;color:#858a86;line-height:1.7}
+.advisor a{font-size:8.5px;color:#d8c294;text-decoration:none}
+
+.main{padding:14px 24px 28px;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);font:8.5px var(--mono);color:var(--dim)}
+.top b{color:var(--ink);font-weight:400}
+.top-r{display:flex;align-items:center;gap:8px}
+.icon{width:25px;height:25px;border:1px solid var(--line);border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--dim);font-size:9px}
+.avatar{width:25px;height:25px;border-radius:50%;background:#c9ab73;color:#403624;display:grid;place-items:center;font:8px var(--mono)}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-top:14px}
+h1{margin:0;font:600 26px/1.2 var(--sans);letter-spacing:-.03em}
+.head p{margin:3px 0 0;font-size:10px;color:var(--dim)}
+.head-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);background:#fff;border-radius:4px;overflow:hidden}
+.seg button{appearance:none;border:0;background:none;padding:6px 8px;font:8.5px var(--mono);color:var(--dim);cursor:pointer}
+.seg button[aria-pressed="true"]{background:#17191a;color:#fff}
+
+.grid{display:grid;grid-template-columns:1.55fr .75fr;gap:10px;margin-top:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px 15px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:6px;background:#fff;overflow:hidden;margin-top:12px}
+.kpi{padding:11px 13px;border-right:1px solid var(--line)}
+.kpi:last-child{border-right:0}
+.kpi span{display:block;font:7.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.kpi b{display:block;font:600 21px/1.2 var(--sans);letter-spacing:-.04em;margin-top:5px}
+.kpi b small{font:9px var(--mono);color:var(--dim);font-weight:400}
+.kpi small{display:block;font:7.5px var(--mono);color:var(--green);margin-top:2px}
+.kpi small.bad{color:var(--red)}
+
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.panel-head h2{margin:0;font-size:11.5px;font-weight:600}
+.panel-head span{font:7.5px var(--mono);color:var(--dim)}
+.tabs{display:flex;gap:10px;font:8px var(--mono);color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:4px}
+.tabs b{color:var(--ink);font-weight:400;border-bottom:1px solid var(--ink);padding-bottom:4px}
+.chart{display:block;width:100%;height:auto}
+.table{width:100%;border-collapse:collapse;font-size:9.5px}
+.table th{text-align:left;padding:5px 0;border-bottom:1px solid var(--line);font:7px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);font-weight:400}
+.table td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.table tr:last-child td{border-bottom:0}
+.table td.r{text-align:right;font-family:var(--mono);font-size:9px}
+.table .name b{display:block;font-weight:500}
+.table .name small{display:block;font:7.5px var(--mono);color:var(--dim)}
+.tag{display:inline-block;font:7px var(--mono);padding:2px 5px;border-radius:2px;background:#f2f4f1;color:#5e6a61}
+.tag.sell{background:#faece8;color:#b45545}
+.tag.buy{background:#eaf3ed;color:#3f8b62}
+.alloc{display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap}
+.donut{width:130px;height:130px;position:relative;flex:0 0 auto}
+.donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut .c{position:absolute;inset:0;display:grid;place-items:center;font:600 12px var(--sans);color:var(--ink)}
+.legend{flex:1;display:grid;gap:5px;min-width:150px}
+.lg{display:grid;grid-template-columns:7px 1fr auto auto;gap:6px;font-size:8.5px;color:#5e615e}
+.lg i{width:6px;height:6px;border-radius:1px;background:var(--c)}
+.lg b{font-weight:400;text-align:right;color:var(--ink)}
+.lg small{font:7px var(--mono);color:var(--dim);min-width:28px;text-align:right}
+.risk{margin-top:12px}
+.risk .bar{height:7px;border-radius:4px;background:linear-gradient(90deg,#9dbb9a,#d8c28d,#d99a7c);position:relative;margin:8px 0 4px}
+.risk .bar i{position:absolute;left:52%;top:-2px;width:2px;height:11px;background:#17191a}
+.risk .labels{display:flex;justify-content:space-between;font:7px var(--mono);color:var(--dim)}
+.notice{margin-top:10px;background:#faf4e4;border:1px solid #efe1bd;border-radius:5px;padding:9px 10px;font-size:8.5px;color:#7c6a43;line-height:1.7}
+.notice b{color:#5d4a28}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.quick button{appearance:none;border:1px solid var(--line);background:#fff;border-radius:4px;padding:8px;font-size:9px;cursor:pointer;color:var(--ink)}
+.quick button:first-child{background:#17191a;color:#fff;border-color:#17191a}
+.quick button:hover{filter:brightness(.97)}
+
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,14px);background:#17191a;color:#fff;
+  font:9px var(--mono);padding:7px 12px;border-radius:4px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1000px){
+  .app{grid-template-columns:1fr}
+  .side{flex-direction:row;align-items:center;overflow-x:auto;padding:9px 12px;gap:8px}
+  .brand b{font-size:12px}
+  .side-label,.advisor{display:none}
+  .nav{display:flex}
+  .nav a{white-space:nowrap;font-size:10px;padding:6px 8px}
+  .main{padding:14px 18px}
+}
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpi:nth-child(2){border-right:0}
+  .kpi:nth-child(-n+2){border-bottom:1px solid var(--line)}
+}
+@media(max-width:480px){
+  .main{padding:12px}
+  .head h1{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="#top"><i>M</i><b>MERIDIAN</b></a>
+    <div class="side-label">Portfolio</div>
+    <nav class="nav" aria-label="主导航"><a href="#top" aria-current="page">Overview <span class="n">$2.43M</span></a><a href="#top">Holdings <span class="n">38</span></a><a href="#top">Performance</a><a href="#top">Income</a><a href="#top">Tax centre</a></nav>
+    <div class="side-label">Operate</div>
+    <nav class="nav" aria-label="操作"><a href="#top">Transfer</a><a href="#top">Trade</a><a href="#top">Documents</a><a href="#top">Settings</a></nav>
+    <div class="advisor"><b>Advisor available</b><p>Marcus Wei is online — review your Q1 statement together.</p><a href="#top">Book a call →</a></div>
+  </aside>
+
+  <main class="main" id="top">
+    <div class="top"><span>Portfolio · <b>Overview</b> · Account #4087-2231</span><div class="top-r"><span class="icon">⌕</span><span class="icon">↗</span><span class="avatar">EM</span><span style="font-size:9px">Élise Moreau<br><span style="color:var(--dim)">Private banking</span></span></div></div>
+    <div class="head"><div><h1>Assets overview</h1><p>All accounts · valued in USD · as of 28 Mar 2026, 16:00 ET</p></div>
+      <div class="head-r"><div class="seg" role="group" aria-label="时间范围"><button type="button" data-range="1" aria-pressed="false">1D</button><button type="button" data-range="7" aria-pressed="false">1W</button><button type="button" data-range="30" aria-pressed="false">1M</button><button type="button" data-range="ytd" aria-pressed="true">YTD</button><button type="button" data-range="1y" aria-pressed="false">1Y</button></div></div>
+    </div>
+
+    <section class="kpis">
+      <div class="kpi"><span>Total net worth</span><b id="v1">$2,431,084<small>.20</small></b><small id="d1">▲ $128,420 · +5.58% YTD</small></div>
+      <div class="kpi"><span>Invested</span><b>$2,108,750</b><small>cost basis $1,892,340</small></div>
+      <div class="kpi"><span>Cash &amp; equivalents</span><b>$284,920</b><small>earning 4.35% APY</small></div>
+      <div class="kpi"><span>YTD income</span><b>$37,414</b><small>dividends $22,108</small></div>
+    </section>
+
+    <div class="grid">
+      <div>
+        <section class="card">
+          <div class="panel-head"><h2>Performance — YTD</h2><span>Net worth · Return · vs. S&amp;P 500</span></div>
+          <div class="tabs"><b>Net worth</b><span>Return</span><span>vs. S&amp;P 500</span></div>
+          <svg class="chart" viewBox="0 0 760 230" role="img" aria-label="资产净值走势">
+            <g stroke="#f0f0ec"><line x1="38" y1="40" x2="740" y2="40"/><line x1="38" y1="90" x2="740" y2="90"/><line x1="38" y1="140" x2="740" y2="140"/><line x1="38" y1="190" x2="740" y2="190"/></g>
+            <g fill="#9c9c95" font-family="monospace" font-size="8"><text x="2" y="44">2.5M</text><text x="2" y="94">2.4M</text><text x="2" y="144">2.3M</text><text x="2" y="194">2.2M</text></g>
+            <path d="M38 175 C90 170 120 172 160 160 S230 168 280 150 340 155 400 138 470 146 530 124 610 132 670 110 720 116 740 100 L740 220 L38 220 Z" fill="#f4f4ef"/>
+            <path d="M38 175 C90 170 120 172 160 160 S230 168 280 150 340 155 400 138 470 146 530 124 610 132 670 110 720 116 740 100" fill="none" stroke="#17191a" stroke-width="1.7"/>
+            <path d="M38 185 C90 182 120 183 160 176 S230 180 280 170 340 174 400 164 470 168 530 154 610 160 670 146 720 150 740 142" fill="none" stroke="#b7b7b0" stroke-width="1.1" stroke-dasharray="4 4"/>
+            <g fill="#9c9c95" font-family="monospace" font-size="8"><text x="38" y="226">Jan</text><text x="180" y="226">Mar</text><text x="320" y="226">May</text><text x="460" y="226">Jul</text><text x="600" y="226">Sep</text><text x="710" y="226">Dec</text></g>
+          </svg>
+        </section>
+
+        <section class="card" style="margin-top:10px">
+          <div class="panel-head"><h2>Recent transactions</h2><span>All activity →</span></div>
+          <table class="table">
+            <thead><tr><th>Date</th><th>Description</th><th>Type</th><th style="text-align:right">Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="r">28 Mar</td><td class="name"><b>iShares Core MSCI World</b><small>IWDA · 64 shares @ $112.40</small></td><td><span class="tag buy">BUY</span></td><td class="r">−$7,193.60</td><td>Settled</td></tr>
+              <tr><td class="r">26 Mar</td><td class="name"><b>US Treasury 4.25% Bond</b><small>Coupon · matures 2031</small></td><td><span class="tag">DIV</span></td><td class="r">+$2,125.00</td><td>Settled</td></tr>
+              <tr><td class="r">22 Mar</td><td class="name"><b>Atlas Industrials Inc.</b><small>ATLS · 120 shares @ $84.10</small></td><td><span class="tag sell">SELL</span></td><td class="r">+$10,092.00</td><td>Settled</td></tr>
+              <tr><td class="r">20 Mar</td><td class="name"><b>Cash sweep — money market</b><small>4.35% APY</small></td><td><span class="tag">INT</span></td><td class="r">+$1,032.18</td><td>Posted</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <div>
+        <section class="card">
+          <div class="panel-head"><h2>Allocation</h2><span>by asset class</span></div>
+          <div class="alloc">
+            <div class="donut">
+              <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="#f1f1ec" stroke-width="16"/>
+                <circle cx="60" cy="60" r="46" fill="none" stroke="#17191a" stroke-width="16" stroke-dasharray="58 245" stroke-dashoffset="0"/>
+                <circle cx="60" cy="60" r="46" fill="none" stroke="#6d6f6a" stroke-width="16" stroke-dasharray="30 245" stroke-dashoffset="-58"/>
+                <circle cx="60" cy="60" r="46" fill="none" stroke="#b9b5a9" stroke-width="16" stroke-dasharray="15 245" stroke-dashoffset="-88"/>
+                <circle cx="60" cy="60" r="46" fill="none" stroke="#d9d5ca" stroke-width="16" stroke-dasharray="11 245" stroke-dashoffset="-103"/>
+              </svg>
+              <div class="c">$2.43M</div>
+            </div>
+            <div class="legend">
+              <div class="lg"><i style="--c:#17191a"></i><span>Equities</span><b>$1.17M</b><small>48%</small></div>
+              <div class="lg"><i style="--c:#6d6f6a"></i><span>Fixed income</span><b>$534K</b><small>22%</small></div>
+              <div class="lg"><i style="--c:#b9b5a9"></i><span>Cash &amp; MM</span><b>$340K</b><small>14%</small></div>
+              <div class="lg"><i style="--c:#d9d5ca"></i><span>Alternatives</span><b>$243K</b><small>10%</small></div>
+              <div class="lg"><i style="--c:#e8e4da"></i><span>Real estate</span><b>$146K</b><small>6%</small></div>
+            </div>
+          </div>
+          <div class="risk">
+            <div class="panel-head"><h2>Risk profile</h2><span>moderate · score 6 / 10</span></div>
+            <div class="bar"><i></i></div>
+            <div class="labels"><span>Conservative</span><span>Moderate</span><span>Aggressive</span></div>
+          </div>
+          <div class="notice"><b>Concentration notice</b><br>Tech equities now represent 28% of your portfolio — above your target of 22%. Consider rebalancing.</div>
+          <div class="quick"><button type="button" data-toast="转账">↗ Transfer in</button><button type="button" data-toast="交易">Trade</button><button type="button" data-toast="提现">Withdraw</button><button type="button" data-toast="再平衡">Rebalance</button></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast">已打开（演示）</div>
+
+<script>
+document.querySelectorAll("[data-toast]").forEach(b => b.addEventListener("click", () => {
+  const t = document.getElementById("toast");
+  t.textContent = b.dataset.toast + " · 演示";
+  t.classList.add("on");
+  setTimeout(() => t.classList.remove("on"), 1600);
+}));
+document.querySelectorAll("[data-range]").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+}));
+</script>
+</body>
+</html>

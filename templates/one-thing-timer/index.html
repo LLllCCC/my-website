@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>一日一事 — 把注意力留给当下</title>
+<meta name="description" content="一日一事：今日任务与专注计时器。">
+<link rel="icon" href="/img/my-avatar.jpg" type="image/jpeg">
+<style>
+:root{
+  --paper:#f6f5ef; --panel:#fffefa; --ink:#2d342c; --dim:#8b9085; --line:#e6e5db;
+  --green:#687d5f; --green-2:#8a9d7d; --green-soft:#e8ede2; --gold:#c6a45b;
+  --sans:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+  --serif:"Songti SC","STSong",Georgia,serif;
+  --mono:"Cascadia Mono","Consolas","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:13px/1.65 var(--sans);overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--green);color:#fff}
+.wrap{max-width:1200px;margin:0 auto;padding:0 38px}
+header{border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand i{width:34px;height:34px;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.brand i span{background:var(--green);border-radius:3px;display:block}
+.brand i span:nth-child(2){opacity:.7}.brand i span:nth-child(3){opacity:.55}.brand i span:nth-child(4){opacity:.35}
+.brand b{display:block;font:400 22px/1 var(--serif);letter-spacing:.08em}
+.brand small{display:block;font:7px var(--mono);letter-spacing:.18em;color:var(--dim);margin-top:3px}
+.nav-right{display:flex;align-items:center;gap:18px;font-size:10px;color:var(--dim)}
+.nav-right span{display:flex;align-items:center;gap:5px}
+.nav-right i{width:5px;height:5px;border-radius:50%;background:var(--green-2);display:block}
+.theme{width:28px;height:28px;border:1px solid var(--line);border-radius:50%;background:none;cursor:pointer;color:var(--dim)}
+main{padding:36px 0 40px}
+.date{display:flex;align-items:center;gap:7px;font:9px var(--mono);color:var(--dim);margin-bottom:16px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.head h1{margin:0;font:400 clamp(38px,4.6vw,58px)/1.15 var(--serif);letter-spacing:-.03em}
+.head h1 span{color:var(--green);font-size:.55em;vertical-align:.12em;margin-left:4px}
+.head p{margin:8px 0 0;color:var(--dim);font-size:12px}
+.day{text-align:right;font:8.5px var(--mono);color:var(--dim);letter-spacing:.08em}
+.day b{display:block;font:400 22px/1.2 var(--serif);color:var(--ink);letter-spacing:-.01em;margin-top:3px}
+.day b small{font-size:11px;color:var(--dim)}
+
+.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;margin-top:26px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 20px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.card-head h2{margin:0;font:600 15px var(--sans);display:flex;align-items:center;gap:7px}
+.card-head h2 .n{font:9px var(--mono);background:var(--green-soft);color:var(--green);padding:2px 6px;border-radius:6px}
+.card-head span{font:9px var(--mono);color:var(--dim)}
+.add-box{background:#f5f6f0;border:1px solid var(--line);border-radius:12px;padding:12px}
+.add-box input{width:100%;border:0;background:none;outline:none;font:13px var(--sans);color:var(--ink);padding:3px 0}
+.add-box .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap}
+.add-box .row span{font:9px var(--mono);color:var(--dim)}
+.add-box .row button{appearance:none;border:0;background:var(--green);color:#fff;font-size:11px;padding:7px 13px;border-radius:7px;cursor:pointer}
+.add-box .row button:hover{filter:brightness(.96)}
+.filters{display:flex;gap:6px;align-items:center;margin:12px 0 4px;font:9px var(--mono);color:var(--dim);flex-wrap:wrap}
+.filters b{background:var(--green-soft);color:var(--green);padding:3px 7px;border-radius:5px;font-weight:400}
+.filters span{padding:3px 2px}
+.filters .right{margin-left:auto}
+.task{display:grid;grid-template-columns:18px 1fr auto;gap:9px;align-items:center;padding:13px;border-radius:12px;border:1px solid var(--line);margin-top:8px;background:#fff}
+.task.active{background:var(--green-soft);border-color:#d7e0ce}
+.task input{accent-color:var(--green);width:15px;height:15px}
+.task b{display:block;font-size:12px;font-weight:500}
+.task small{display:flex;gap:8px;font:8.5px var(--mono);color:var(--dim);margin-top:3px;flex-wrap:wrap}
+.task small .priority{color:#b36a4a}
+.task .go{width:28px;height:28px;border:0;border-radius:50%;background:var(--green-soft);color:var(--green);cursor:pointer;font-size:11px}
+.task.active .go{background:var(--green);color:#fff}
+.task.done b{text-decoration:line-through;color:var(--dim)}
+.progress{margin-top:14px;display:flex;justify-content:space-between;font:9px var(--mono);color:var(--dim);border-top:1px solid var(--line);padding-top:10px}
+
+.timer{display:flex;flex-direction:column;align-items:center}
+.tabs{display:flex;width:100%;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#f7f8f3;margin-bottom:18px}
+.tabs button{flex:1;appearance:none;border:0;background:none;padding:8px;font:10px var(--mono);color:var(--dim);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.clock{width:220px;height:220px;border-radius:50%;border:8px solid #e5e8dc;border-top-color:var(--green);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:8px 0 14px}
+.clock::before{content:"";position:absolute;inset:-14px;border:1px dashed #d7dbcb;border-radius:50%;opacity:.6}
+.clock .big{font:600 46px/1 var(--sans);letter-spacing:-.04em}
+.clock .lbl{font:8px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+.clock .note{font:10px var(--serif);color:var(--dim);margin-top:9px}
+.focus-task{font:10px var(--mono);color:var(--dim);margin-bottom:14px;text-align:center}
+.focus-task b{display:block;color:var(--green);font:400 14px var(--serif);margin-top:3px}
+.timer-actions{display:flex;gap:7px;width:100%}
+.timer-actions button{appearance:none;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:11px;cursor:pointer;background:#fff;color:var(--ink)}
+.timer-actions .start{flex:1;background:var(--green);border-color:var(--green);color:#fff}
+.timer-actions .start:hover{filter:brightness(.96)}
+.timer-actions .reset{width:42px;font-size:14px;color:var(--dim)}
+.pomodoro-count{font:8px var(--mono);color:var(--dim);margin-top:11px;letter-spacing:.06em}
+
+footer{border-top:1px solid var(--line);padding:14px 0 22px;display:flex;justify-content:space-between;
+  gap:14px;flex-wrap:wrap;font:8px var(--mono);letter-spacing:.06em;color:var(--dim)}
+footer a{text-decoration:none}footer a:hover{color:var(--green)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,14px);background:var(--green);color:#fff;
+  font:9px var(--mono);padding:7px 12px;border-radius:4px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){
+  .wrap{padding:0 20px}
+  .grid{grid-template-columns:1fr}
+  .head h1{font-size:clamp(32px,9vw,46px)}
+  .day{display:none}
+}
+@media(max-width:520px){
+  .wrap{padding:0 14px}
+  .nav-right span{display:none}
+  main{padding:22px 0 28px}
+  .card{padding:14px}
+  .clock{width:190px;height:190px}
+}
+@media(prefers-reduced-motion:reduce){.task,.tabs button{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i><span><b>一日一事</b><small>ONE DAY, ONE THING</small></span></a>
+    <div class="nav-right"><span><i></i>只在此刻，只在本地</span><button class="theme" type="button" aria-label="切换主题">☾</button></div>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <div class="date">▣ 2026 年 9 月 12 日 · 星期六</div>
+  <div class="head">
+    <div><h1>把注意力，留给当下。<span>♧</span></h1><p>不必一次做好所有事。今天，从一件小事开始。</p></div>
+    <div class="day">MAKE ROOM FOR FOCUS<b>DAY 255 <small>/ 2026</small></b></div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="card-head"><h2>≡ 今日任务 <span class="n" id="count">3</span></h2><span>一点点，也在向前</span></div>
+      <div class="add-box"><input id="new-task" type="text" placeholder="＋ 今天，想完成什么？"><div class="row"><span>⌐ 中优先级 ⌄</span><button type="button" id="add">＋ 添加任务</button></div></div>
+      <div class="filters"><b>全部 <span id="all-count">3</span></b><span>未完成 <span id="open-count">3</span></span><span>已完成 <span id="done-count">0</span></span><span class="right">↕ 添加顺序</span></div>
+      <div id="tasks">
+        <label class="task active"><input type="checkbox"><span><b>完成产品设计方案</b><small><span class="priority">● 高优先级</span><span>▥ 当前专注</span><span>示例任务</span></small></span><button class="go" type="button">▶</button></label>
+        <label class="task"><input type="checkbox"><span><b>阅读 20 页书</b><small><span class="priority">● 中优先级</span><span>示例任务</span></small></span><button class="go" type="button">▶</button></label>
+        <label class="task"><input type="checkbox"><span><b>整理本周工作笔记</b><small><span>● 低优先级</span><span>示例任务</span></small></span><button class="go" type="button">▶</button></label>
+      </div>
+      <div class="progress"><span>✓ 已完成 <span id="p-done">0</span> / <span id="p-total">3</span> 件事</span><span id="pct">0%</span></div>
+    </section>
+
+    <section class="card timer">
+      <div class="card-head" style="width:100%"><h2>◉ 专注时刻</h2><span>● 准备就绪</span></div>
+      <div class="tabs" role="group" aria-label="计时模式"><button type="button" data-mode="focus" aria-pressed="true">◉ 专注 25 分钟</button><button type="button" data-mode="break" aria-pressed="false">☕ 短休息 5 分钟</button></div>
+      <div class="clock"><span class="big" id="time">25:00</span><span class="lbl">Time to focus</span><span class="note">一次，只专注一件事</span></div>
+      <div class="focus-task">正在为这件事留出时间<b>完成产品设计方案</b></div>
+      <div class="timer-actions"><button class="start" type="button" id="start">▶ 开始专注</button><button class="reset" type="button" id="reset" aria-label="重置">↺</button></div>
+      <div class="pomodoro-count">●●●●○ 今日已完成 <span id="pomos">0</span> 个番茄钟</div>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast">已添加（演示）</div>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:0 38px">
+    <span>© 2026 一日一事 · 只在此刻，只在本地</span>
+    <a href="../index.html" target="_top">← 模板展厅</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const tasks = [...document.querySelectorAll("#tasks .task")];
+  const total = document.getElementById("p-total");
+  const done = document.getElementById("p-done");
+  const pct = document.getElementById("pct");
+  function update(){
+    const d = tasks.filter(t => t.classList.contains("done")).length;
+    done.textContent = d;
+    pct.textContent = Math.round(d / tasks.length * 100) + "%";
+    document.getElementById("open-count").textContent = tasks.length - d;
+    document.getElementById("done-count").textContent = d;
+    document.getElementById("all-count").textContent = tasks.length;
+    document.getElementById("count").textContent = tasks.length;
+  }
+  tasks.forEach(t => {
+    const cb = t.querySelector("input");
+    cb.addEventListener("change", () => {
+      t.classList.toggle("done", cb.checked);
+      t.classList.remove("active");
+      update();
+    });
+    t.querySelector(".go").addEventListener("click", e => {
+      e.preventDefault(); e.stopPropagation();
+      tasks.forEach(x => x.classList.remove("active"));
+      t.classList.add("active");
+    });
+  });
+  document.getElementById("add").addEventListener("click", () => {
+    const input = document.getElementById("new-task");
+    const v = input.value.trim();
+    if (!v) return;
+    const label = document.createElement("label");
+    label.className = "task";
+    label.innerHTML = `<input type="checkbox"><span><b></b><small><span>● 中优先级</span><span>示例任务</span></small></span><button class="go" type="button">▶</button>`;
+    label.querySelector("b").textContent = v;
+    label.querySelector("input").addEventListener("change", e => {
+      label.classList.toggle("done", e.target.checked);
+      update();
+    });
+    label.querySelector(".go").addEventListener("click", e => {
+      e.preventDefault(); e.stopPropagation();
+      tasks.forEach(x => x.classList.remove("active"));
+      label.classList.add("active");
+    });
+    document.getElementById("tasks").appendChild(label);
+    tasks.push(label);
+    input.value = "";
+    update();
+  });
+
+  let focus = true, remaining = 25 * 60, timer = null, running = false, pomos = 0;
+  const time = document.getElementById("time");
+  const start = document.getElementById("start");
+  function paint(){
+    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+    const s = String(remaining % 60).padStart(2, "0");
+    time.textContent = m + ":" + s;
+  }
+  document.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("[data-mode]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    focus = b.dataset.mode === "focus";
+    remaining = (focus ? 25 : 5) * 60;
+    running = false; clearInterval(timer); start.textContent = focus ? "▶ 开始专注" : "▶ 开始休息"; paint();
+  }));
+  start.addEventListener("click", () => {
+    if (running){
+      running = false; clearInterval(timer); start.textContent = "▶ 继续专注"; return;
+    }
+    running = true; start.textContent = "❚❚ 暂停";
+    timer = setInterval(() => {
+      if (remaining <= 0){
+        clearInterval(timer); running = false; start.textContent = "▶ 开始专注";
+        if (focus){ pomos++; document.getElementById("pomos").textContent = pomos; }
+        return;
+      }
+      remaining--; paint();
+    }, 1000);
+  });
+  document.getElementById("reset").addEventListener("click", () => {
+    running = false; clearInterval(timer); remaining = (focus ? 25 : 5) * 60; paint(); start.textContent = focus ? "▶ 开始专注" : "▶ 开始休息";
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
